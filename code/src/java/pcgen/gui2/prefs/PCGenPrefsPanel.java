@@ -16,23 +16,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/07/2008 12:29:10
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
 import javax.swing.JPanel;
 
 /**
- * The abstract class <code>PCGenPrefsPanel</code> defines the 
+ * The abstract class {@code PCGenPrefsPanel} defines the
  * interface for a panel in the Preferences dialog.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public abstract class PCGenPrefsPanel extends JPanel

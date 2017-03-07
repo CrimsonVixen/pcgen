@@ -15,10 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * Created on 14/06/2010 5:15:14 PM
- *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -26,16 +22,13 @@ import pcgen.facade.core.TodoFacade;
 import pcgen.util.enumeration.Tab;
 
 /**
- * The Class <code>TodoFacadeImpl</code> represents a task
+ * The Class {@code TodoFacadeImpl} represents a task
  * to be done for a character.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
+@SuppressWarnings("TodoComment")
 public class TodoFacadeImpl implements TodoFacade
 {
 
@@ -51,7 +44,7 @@ public class TodoFacadeImpl implements TodoFacade
 	 * @param fieldName The field on which the task exists
 	 * @param messageKey The il8n property key of the task details.
 	 */
-	public TodoFacadeImpl(Tab tab, String fieldName, String messageKey, int order)
+	TodoFacadeImpl(Tab tab, String fieldName, String messageKey, int order)
 	{
 		this.tab = tab;
 		this.fieldName = fieldName;
@@ -67,7 +60,7 @@ public class TodoFacadeImpl implements TodoFacade
 	 * @param subTabName The internal name of the sub tab where the task can be completed.
 	 * @param order The value for use when sorting the messages, low appears higher in the displayed list.
 	 */
-	public TodoFacadeImpl(Tab tab, String fieldName, String messageKey, String subTabName, int order)
+	TodoFacadeImpl(Tab tab, String fieldName, String messageKey, String subTabName, int order)
 	{
 		this.tab = tab;
 		this.fieldName = fieldName;
@@ -120,7 +113,7 @@ public class TodoFacadeImpl implements TodoFacade
 	    }
 
 	    // Sort first by tab 
-	    if (!(this.tab == that.getTab()))
+	    if (this.tab != that.getTab())
 	    {
 	    	return this.tab.compareTo(that.getTab());
 	    }
@@ -142,9 +135,6 @@ public class TodoFacadeImpl implements TodoFacade
 		return EQUAL;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getSubTabName()
 	{

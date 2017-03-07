@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 17/06/2007
  *
- * $Id$
  */
 
 package pcgen.util;
@@ -26,13 +24,9 @@ package pcgen.util;
 import java.util.logging.Level;
 
 /**
- * <code>PCGenLogLevel</code> defines PCGen's custom logging levels.
+ * {@code PCGenLogLevel} defines PCGen's custom logging levels.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class PCGenLogLevel extends Level
 {

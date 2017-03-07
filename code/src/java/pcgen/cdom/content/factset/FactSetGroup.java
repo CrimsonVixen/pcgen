@@ -89,11 +89,12 @@ public class FactSetGroup<T extends CDOMObject, F> implements
 		def = fsi;
 		AbstractReferenceContext refContext = context.getReferenceContext();
 		allObjects = refContext.getCDOMAllReference(def.getUsableLocation());
-		toMatch = def.getFormatManager().convertIndirect(context, value);
+		toMatch = def.getFormatManager().convertIndirect(value);
 		if (toMatch == null)
 		{
 			throw new IllegalArgumentException("Failed to convert " + value
-				+ " as a " + def.getFormatManager().getType().getSimpleName());
+				+ " as a "
+				+ def.getFormatManager().getManagedClass().getSimpleName());
 		}
 	}
 
@@ -105,7 +106,7 @@ public class FactSetGroup<T extends CDOMObject, F> implements
 	{
 		if (cache == null)
 		{
-			List<T> setupCache = new ArrayList<T>();
+			List<T> setupCache = new ArrayList<>();
 			for (T obj : allObjects.getContainedObjects())
 			{
 				if (contains(obj))
@@ -125,7 +126,7 @@ public class FactSetGroup<T extends CDOMObject, F> implements
 	public String getLSTformat(boolean useAny)
 	{
 		return def.getFactSetName() + "="
-			+ def.getFormatManager().unconvert(toMatch.resolvesTo());
+			+ def.getFormatManager().unconvert(toMatch.get());
 	}
 
 	/**
@@ -134,13 +135,13 @@ public class FactSetGroup<T extends CDOMObject, F> implements
 	@Override
 	public boolean contains(T obj)
 	{
-		List<ObjectContainer<F>> factset = obj.getSetFor(def.getFactSetKey());
+		List<Indirect<F>> factset = obj.getSetFor(def.getFactSetKey());
 		if (factset != null)
 		{
-			F tgt = toMatch.resolvesTo();
-			for (ObjectContainer<F> oc : factset)
+			F tgt = toMatch.get();
+			for (Indirect<F> indirect : factset)
 			{
-				if (oc.contains(tgt))
+				if (indirect.get().equals(tgt))
 				{
 					return true;
 				}

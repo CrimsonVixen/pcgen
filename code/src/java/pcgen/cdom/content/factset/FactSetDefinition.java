@@ -19,9 +19,11 @@ package pcgen.cdom.content.factset;
 
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.content.ContentDefinition;
+import pcgen.cdom.enumeration.DataSetID;
 import pcgen.cdom.enumeration.FactSetKey;
+import pcgen.cdom.facet.CDOMWrapperInfoFacet;
+import pcgen.cdom.facet.FacetLibrary;
 import pcgen.output.actor.FactSetKeyActor;
-import pcgen.output.wrapper.CDOMObjectWrapper;
 import pcgen.rules.context.LoadContext;
 import pcgen.util.Logging;
 
@@ -60,14 +62,15 @@ public class FactSetDefinition<T extends CDOMObject, F> extends
 	}
 
 	/**
-	 * @see pcgen.cdom.content.ContentDefinition#activateOutput()
+	 * @see pcgen.cdom.content.ContentDefinition#activateOutput(DataSetID)
 	 */
 	@Override
-	protected void activateOutput()
+	protected void activateOutput(DataSetID dsID)
 	{
-		FactSetKeyActor<F> fca = new FactSetKeyActor<F>(getFactSetKey());
-		CDOMObjectWrapper cow = CDOMObjectWrapper.getInstance();
-		if (!cow.load(getUsableLocation(), factSetName.toLowerCase(), fca))
+		FactSetKeyActor<F> fca = new FactSetKeyActor<>(getFactSetKey());
+		CDOMWrapperInfoFacet wiFacet =
+				FacetLibrary.getFacet(CDOMWrapperInfoFacet.class);
+		if (!wiFacet.set(dsID, getUsableLocation(), factSetName.toLowerCase(), fca))
 		{
 			Logging
 				.errorPrint(getUsableLocation().getSimpleName()
@@ -84,16 +87,16 @@ public class FactSetDefinition<T extends CDOMObject, F> extends
 	@Override
 	protected void activateTokens(LoadContext context)
 	{
-		context.loadLocalToken(new FactSetParser<T, F>(this));
+		context.loadLocalToken(new FactSetParser<>(this));
 		Boolean required = getRequired();
 		if ((required != null) && required.booleanValue())
 		{
-			context.loadLocalToken(new FactSetDefinitionEnforcer<T, F>(this));
+			context.loadLocalToken(new FactSetDefinitionEnforcer<>(this));
 		}
 		Boolean selectable = getSelectable();
 		if ((selectable != null) && selectable.booleanValue())
 		{
-			context.loadLocalToken(new FactSetGroupDefinition<T, F>(this));
+			context.loadLocalToken(new FactSetGroupDefinition<>(this));
 		}
 	}
 
@@ -111,7 +114,7 @@ public class FactSetDefinition<T extends CDOMObject, F> extends
 		{
 			throw new IllegalArgumentException("Fact Set Name cannot be null");
 		}
-		if (name.length() == 0)
+		if (name.isEmpty())
 		{
 			throw new IllegalArgumentException("Fact Set Name cannot be empty");
 		}

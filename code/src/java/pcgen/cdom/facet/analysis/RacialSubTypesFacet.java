@@ -34,7 +34,6 @@ import pcgen.core.Race;
  * RacialSubTypesFacet is a Facet that tracks the Racial Sub Types of a
  * PlayerCharacter
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public class RacialSubTypesFacet
 {
@@ -61,7 +60,7 @@ public class RacialSubTypesFacet
 	 */
 	public Collection<RaceSubType> getRacialSubTypes(CharID id)
 	{
-		List<RaceSubType> racialSubTypes = new ArrayList<RaceSubType>();
+		List<RaceSubType> racialSubTypes = new ArrayList<>();
 		Race race = raceFacet.get(id);
 		if (race != null)
 		{
@@ -73,8 +72,8 @@ public class RacialSubTypesFacet
 		Collection<PCTemplate> templates = templateFacet.getSet(id);
 		if (!templates.isEmpty())
 		{
-			List<RaceSubType> added = new ArrayList<RaceSubType>();
-			List<RaceSubType> removed = new ArrayList<RaceSubType>();
+			List<RaceSubType> added = new ArrayList<>();
+			List<RaceSubType> removed = new ArrayList<>();
 			for (PCTemplate aTemplate : templates)
 			{
 				added.addAll(aTemplate.getSafeListFor(ListKey.RACESUBTYPE));

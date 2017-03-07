@@ -18,7 +18,6 @@
  *
  * VariableHashMap.java
  *
- * Created on November 1, 2002, 1:15 PM
  */
 package pcgen.core.doomsdaybook;
 
@@ -28,26 +27,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <code>VariableHashMap</code> is a collection of variables (key/value 
+ * {@code VariableHashMap} is a collection of variables (key/value
  * pairs) and DataElements optimised for quick lookup and updating. Note
  * there are three structures here, the principle map of variables, a
  * secondary map of DataElement objects and a list of Operation objects.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author devon
- * @version $Revision$
  */
 public class VariableHashMap extends HashMap<String, String>
 {
-	private List<Operation> initialize = new ArrayList<Operation>();
+	private List<Operation> initialize = new ArrayList<>();
 	private Map<String, DataElement> dataElements;
 
 	/** Creates a new instance of VariableHashMap */
 	public VariableHashMap()
 	{
-		this.dataElements = new HashMap<String, DataElement>();
+		this.dataElements = new HashMap<>();
 	}
 
 	/**

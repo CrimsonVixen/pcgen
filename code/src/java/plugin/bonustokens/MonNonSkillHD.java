@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Oct 16, 2004
  *
- * $Id$
  *
  */
 package plugin.bonustokens;
@@ -26,16 +24,12 @@ package plugin.bonustokens;
 import pcgen.core.bonus.MultiTagBonusObj;
 
 /**
- * <code>MonNonSkillHD</code> defines the MonNonSkillHD tag which
+ * {@code MonNonSkillHD} defines the MonNonSkillHD tag which
  * allows the LST code to specify how many of a monster's hit dice
  * do not gain skills.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author	James Dempsey <jdempsey@users.sourceforge.net>
- * @author  Greg Bingleman <byngl@hotmail.com>
- * @version $Revision$
+ * @author	James Dempsey &lt;jdempsey@users.sourceforge.net&gt;
  */
 
 public final class MonNonSkillHD extends MultiTagBonusObj

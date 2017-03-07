@@ -17,6 +17,7 @@
  */
 package pcgen.cdom.facet;
 
+import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.facet.base.AbstractAssociationFacet;
 import pcgen.core.Skill;
 
@@ -24,9 +25,8 @@ import pcgen.core.Skill;
  * SkillOutputOrderFacet stores the order for Skills and how they should be
  * output for a Player Character.
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public class SkillOutputOrderFacet extends
-		AbstractAssociationFacet<Skill, Integer>
+		AbstractAssociationFacet<CharID, Skill, Integer>
 {
 }

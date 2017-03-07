@@ -18,17 +18,18 @@
  *
  * Created 03-Oct-2008 02:57:13
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
 package pcgen.core.term;
 
-import pcgen.core.Equipment;
-import pcgen.core.PlayerCharacter;
 import pcgen.cdom.enumeration.IntegerKey;
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
+import pcgen.core.Equipment;
+import pcgen.core.Globals;
+import pcgen.core.PlayerCharacter;
+import pcgen.util.Logging;
 
 public class EQRangeTermEvaluator extends BaseEQTermEvaluator implements TermEvaluator
 {
@@ -51,6 +52,12 @@ public class EQRangeTermEvaluator extends BaseEQTermEvaluator implements TermEva
 			Equipment eq,
 			boolean primary,
 			PlayerCharacter pc) {
+		if (ControlUtilities.hasControlToken(Globals.getContext(),
+			CControl.EQRANGE))
+		{
+			Logging.errorPrint("RANGE term is deprecated (does not function)"
+				+ " when RANGE CodeControl is used");
+		}
 		return String.valueOf(eq.getSafe(IntegerKey.RANGE));
 	}
 

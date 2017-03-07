@@ -18,7 +18,6 @@
  *
  *  OpposedSkillAvailableModel.java
  *
- *  Created on May 4, 2004, 2:56:35 PM
  */
 
 package plugin.initiative;
@@ -27,21 +26,17 @@ import java.util.List;
 
 /**
  * <p>
- * Overrides <code>OpposedSkillBasicModel</code> to provide a column displaying
+ * Overrides {@code OpposedSkillBasicModel} to provide a column displaying
  * combatant type.
  * </p>
  * 
  * <p>
- * Current Ver: $Revision$
  * </p>
  * <p>
- * Last Editor: $Author$
  * </p>
  * <p>
- * Last Edited: $Date$
  * </p>
  * 
- * @author LodgeR
  */
 public class OpposedSkillTypeModel extends OpposedSkillBasicModel
 {

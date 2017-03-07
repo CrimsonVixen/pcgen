@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on August 16, 2002, 10:00 PM AEST (+10:00)
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core.system;
@@ -39,28 +35,26 @@ import pcgen.core.SizeAdjustment;
 import pcgen.util.Logging;
 
 /**
- * <code>LoadInfo</code> describes the data associated with a loads and
+ * {@code LoadInfo} describes the data associated with a loads and
  * encumbrance
  * 
- * @author Stefan Radermacher <zaister@users.sourceforge.net>
- * @version $Revision$
  */
 public class LoadInfo implements Loadable
 {
 	private URI sourceURI;
 	private String loadInfoName;
 
-	private Map<CDOMSingleRef<SizeAdjustment>, BigDecimal> rawSizeMultiplierMap = new HashMap<CDOMSingleRef<SizeAdjustment>, BigDecimal>();
-	private Map<SizeAdjustment, BigDecimal> sizeMultiplierMap = new HashMap<SizeAdjustment, BigDecimal>();
+	private Map<CDOMSingleRef<SizeAdjustment>, BigDecimal> rawSizeMultiplierMap = new HashMap<>();
+	private Map<SizeAdjustment, BigDecimal> sizeMultiplierMap = new HashMap<>();
 
-	private SortedMap<Integer, BigDecimal> strengthLoadMap = new TreeMap<Integer, BigDecimal>();
+	private SortedMap<Integer, BigDecimal> strengthLoadMap = new TreeMap<>();
 	private int minStrenghScoreWithLoad = 0;
 	private int maxStrengthScoreWithLoad = 0;
 
 	private BigDecimal loadScoreMultiplier = BigDecimal.ZERO;
 	private int loadMultStep = 10;
 
-	private Map<String, LoadInfo.LoadMapEntry> loadMultiplierMap = new HashMap<String, LoadInfo.LoadMapEntry>();
+	private Map<String, LoadInfo.LoadMapEntry> loadMultiplierMap = new HashMap<>();
 	private String modifyFormula;
 
     @Override
@@ -163,7 +157,7 @@ public class LoadInfo implements Loadable
 		for (Map.Entry<CDOMSingleRef<SizeAdjustment>, BigDecimal> me : rawSizeMultiplierMap
 				.entrySet())
 		{
-			sizeMultiplierMap.put(me.getKey().resolvesTo(), me.getValue());
+			sizeMultiplierMap.put(me.getKey().get(), me.getValue());
 		}
 	}
 

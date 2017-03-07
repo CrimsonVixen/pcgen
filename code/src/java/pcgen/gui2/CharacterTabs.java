@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Aug 29, 2009, 2:59:53 PM
  */
 package pcgen.gui2;
 
@@ -42,7 +41,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.facade.core.CharacterFacade;
 import pcgen.facade.util.ReferenceFacade;
@@ -65,7 +64,6 @@ import pcgen.system.CharacterManager;
  *
  * @see pcgen.gui2.PCGenFrame
  * @see pcgen.gui2.tabs.InfoTabbedPane
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public final class CharacterTabs extends SharedTabPane
 		implements ChangeListener, ReferenceListener<CharacterFacade>, ListListener<CharacterFacade>
@@ -81,9 +79,9 @@ public final class CharacterTabs extends SharedTabPane
 	public CharacterTabs(PCGenFrame frame)
 	{
 		this.frame = frame;
-		this.characters = new ArrayList<CharacterFacade>();
+		this.characters = new ArrayList<>();
 		this.infoTabbedPane = new InfoTabbedPane();
-		this.listenerMap = new HashMap<CharacterFacade, TabLabel>();
+		this.listenerMap = new HashMap<>();
 		this.popupMenu = new JPopupMenu();
 		initComponents();
 	}
@@ -202,13 +200,13 @@ public final class CharacterTabs extends SharedTabPane
 
 		private void initComponents()
 		{
-			if (StringUtils.isNotEmpty(tabNameRef.getReference()))
+			if (StringUtils.isNotEmpty(tabNameRef.get()))
 			{
-				titleLabel = new JLabel(tabNameRef.getReference());
+				titleLabel = new JLabel(tabNameRef.get());
 			}
 			else
 			{
-				titleLabel = new JLabel(nameRef.getReference());
+				titleLabel = new JLabel(nameRef.get());
 			}
 			add(titleLabel);
 
@@ -248,7 +246,7 @@ public final class CharacterTabs extends SharedTabPane
 		{
 			if (e.getSource() == nameRef)
 			{
-				if (StringUtils.isEmpty(tabNameRef.getReference()))
+				if (StringUtils.isEmpty(tabNameRef.get()))
 				{
 					titleLabel.setText(e.getNewReference());
 				}
@@ -261,7 +259,7 @@ public final class CharacterTabs extends SharedTabPane
 				}
 				else
 				{
-					titleLabel.setText(nameRef.getReference());
+					titleLabel.setText(nameRef.get());
 				}
 			}
 		}

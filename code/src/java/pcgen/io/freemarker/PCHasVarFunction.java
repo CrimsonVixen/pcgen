@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 21/12/2013
  */
 package pcgen.io.freemarker;
 
@@ -32,10 +31,8 @@ import freemarker.template.TemplateModelException;
  * Freemarker template. It checks if the character has a variable and returns 
  * true if so. e.g. ${pchasvar("Foo")} 
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
-public class PCHasVarFunction extends CharacterExportAction implements TemplateMethodModelEx
+public class PCHasVarFunction implements TemplateMethodModelEx, CharacterExportAction
 {
 	private PlayerCharacter pc;
 	private ExportHandler eh;
@@ -47,14 +44,10 @@ public class PCHasVarFunction extends CharacterExportAction implements TemplateM
 	 */
 	public PCHasVarFunction(PlayerCharacter pc, ExportHandler eh)
 	{
-		super();
 		this.pc = pc;
 		this.eh = eh;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object exec(List arg0) throws TemplateModelException

@@ -18,9 +18,9 @@
 package pcgen.io.filters;
 
 /**
- * @author apsen
  *
  */
+@FunctionalInterface
 public interface OutputFilter
 {
 	/**

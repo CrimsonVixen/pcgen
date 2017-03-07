@@ -16,20 +16,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on May 18, 2014, 4:32:41 PM
  */
 package pcgen.gui2.tabs.models;
 
-import javax.swing.tree.DefaultTreeCellRenderer;
-
 import pcgen.facade.core.CharacterFacade;
 import pcgen.gui2.UIPropertyContext;
+import pcgen.gui2.util.TreeColumnCellRenderer;
 
 /**
  *
- * @author Connor
  */
-public abstract class CharacterTreeCellRenderer extends DefaultTreeCellRenderer
+public abstract class CharacterTreeCellRenderer extends TreeColumnCellRenderer
 {
 
 	protected CharacterFacade character = null;
@@ -37,9 +34,6 @@ public abstract class CharacterTreeCellRenderer extends DefaultTreeCellRenderer
 	public CharacterTreeCellRenderer()
 	{
 		setTextNonSelectionColor(UIPropertyContext.getQualifiedColor());
-		setClosedIcon(null);
-		setLeafIcon(null);
-		setOpenIcon(null);
 	}
 
 	public void setCharacter(CharacterFacade character)
@@ -71,5 +65,7 @@ public abstract class CharacterTreeCellRenderer extends DefaultTreeCellRenderer
 		{
 			setCharacter(null);
 		}
+
 	}
+
 }

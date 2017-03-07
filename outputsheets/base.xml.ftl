@@ -1,7 +1,6 @@
 <#ftl encoding="UTF-8" strip_whitespace=true >
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	$Id: base.xml 24177 2014-06-16 22:41:07Z jdempsey $
 -->
 <character>
 	<export>
@@ -246,13 +245,13 @@
 		<campaign_histories>
 			<@loop from=0 to=pcvar('count("CAMPAIGNHISTORY")-1') ; campaignhistory , campaignhistory_has_next>	
 			<campaign_history>
-				<campaign>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.CAMPAIGN</campaign>
-				<adventure>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.ADVENTURE</adventure>
-				<party>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.PARTY</party>
-				<date>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.DATE</date>
-				<xp>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.XP</xp>
-				<gm>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.GM</gm>
-				<text>CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.TEXT</text>
+				<campaign>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.CAMPAIGN')}</campaign>
+				<adventure>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.ADVENTURE')}</adventure>
+				<party>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.PARTY')}</party>
+				<date>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.DATE')}</date>
+				<xp>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.XP')}</xp>
+				<gm>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.GM')}</gm>
+				<text>${pcstring('CAMPAIGNHISTORY.VISIBLE.${campaignhistory}.TEXT')}</text>
 			</campaign_history>
 			</@loop>	
 		</campaign_histories>
@@ -480,7 +479,7 @@
 			<total>${pcstring('CHECK.${checknum}.TOTAL')}</total>
 			<base>${pcstring('CHECK.${checknum}.BASE')}</base>
 			<abil_mod>${pcstring('CHECK.${checknum}.STATMOD')}</abil_mod>
-			<feats>${pcstring('CHECK.${checknum}.FEATS')}</feats>
+			<feats>${pcstring('CHECK.${checknum}.FEAT')}</feats>
 			<magic_mod>${pcstring('CHECK.${checknum}.MAGIC')}</magic_mod>
 			<misc_mod>${pcstring('CHECK.${checknum}.MISC.NOMAGIC.NOSTAT')}</misc_mod>
 			<misc_w_magic_mod>${pcstring('CHECK.${checknum}.MISC.NOSTAT')}</misc_w_magic_mod>
@@ -501,12 +500,16 @@
 			<conditional_modifiers>
 				<@loop from=0 to=pcvar('countdistinct("ABILITIES","ASPECT=CombatBonus")-1') ; ability , ability_has_next>
 				<combatbonus>
+					<name>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=CombatBonus')}</name>
+					<type>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=CombatBonus.TYPE')}</type>
 					<description>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=CombatBonus.ASPECT.CombatBonus')}</description>
 				</combatbonus>
 				</@loop>
 				<@loop from=0 to=pcvar('countdistinct("ABILITIES","ASPECT=SaveBonus")-1') ; ability , ability_has_next>
 				<savebonus>
-				<description>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=SaveBonus.ASPECT.SaveBonus')}</description>
+					<name>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=SaveBonus')}</name>
+					<type>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=SaveBonus.TYPE')}</type>
+					<description>${pcstring('ABILITYALL.ANY.${ability}.ASPECT=SaveBonus.ASPECT.SaveBonus')}</description>
 				</savebonus>
 				</@loop>
 			</conditional_modifiers>
@@ -675,6 +678,8 @@
 				<ohdamagebonus>${pcstring('WEAPON.${weap}.OHDAMAGEBONUS')}</ohdamagebonus>
 				<rateoffire>${pcstring('WEAPON.${weap}.RATEOFFIRE')}</rateoffire>
 				<islight>${pcstring('WEAPON.${weap}.ISLIGHT')}</islight>
+				<quality>${pcstring('WEAPON.${weap}.QUALITY')}</quality>
+				<charges>${pcstring('WEAPON.${weap}.CHARGES')}</charges>
 				<sequence>${weap}</sequence>
 			</common>
 			</#macro>
@@ -760,7 +765,20 @@
 		</martialarts>
 		<#else>
 		<unarmed>
+			<#assign fab = pcstring('WEAPONH.TOTALHIT')?keep_before("/")?number>
+			<flurry_level>${pcvar('VAR.FlurryLVL.INTVAL')}</flurry_level>
+			<flurry_attacks>${pcvar('VAR.FlurryAttacks.INTVAL')}</flurry_attacks>
+			<fab_1>${pcvar('VAR.FAB_1.INTVAL')}</fab_1>
+			<fab_2>${pcvar('VAR.FAB_2.INTVAL')}</fab_2>
+			<fab_3>${pcvar('VAR.FAB_3.INTVAL')}</fab_3>
+			<fab_4>${pcvar('VAR.FAB_4.INTVAL')}</fab_4>
+			<fab_5>${pcvar('VAR.FAB_5.INTVAL')}</fab_5>
+			<fab_6>${pcvar('VAR.FAB_6.INTVAL')}</fab_6>
+			<fab_7>${pcvar('VAR.FAB_7.INTVAL')}</fab_7>
+			<fab_8>${pcvar('VAR.FAB_8.INTVAL')}</fab_8>
+			<fab_9>${pcvar('VAR.FAB_9.INTVAL')}</fab_9>
 			<total>${pcstring('WEAPONH.TOTALHIT')}</total>
+			<to_hit>${fab}</to_hit>
 			<damage>${pcstring('WEAPONH.DAMAGE')}</damage>
 			<critical>${pcstring('WEAPONH.CRIT')}/x${pcstring('WEAPONH.MULT')}</critical>
 			<!-- Should be changed to a variable due to improved crit -->
@@ -1101,7 +1119,7 @@
 		<#if (pcboolean('ABILITYALL.Special Ability.0.TYPE=RageDescription.HASASPECT.RageDescription')) >
 		<description>${pcstring('ABILITYALL.Special Ability.0.TYPE=RageDescription.ASPECT.RageDescription')}</description>
 		<#else>
-		<description>The Barbarian gains +${pcstring('VAR.RageStrBonus.INTVAL')} to Strength, +${pcstring('VAR.RageConBonus.INTVAL')} to Constitution, and a +${pcstring('VAR.RageMorale.INTVAL')} morale bonus on Will saves, but suffers a -${pcstring('VAR.RageACPenalty.INTVAL')} penalty to AC for ${pcvar('VAR.RageConBonus.INTVAL+3')} rounds. At the end of the rage, the barbarian is fatigued (-2 to Strength, -2 to Dexterity, can't charge or run) for the duration of that encounter. The barbarian can only rage once per encounter. Entering a rage takes no time itself, but the barbarian can only do it during his action.</description>
+		<description>The Barbarian gains +${pcstring('VAR.RageStrBonus.INTVAL')} to Strength, +${pcstring('VAR.RageConBonus.INTVAL')} to Constitution, and a +${pcstring('VAR.RageMorale.INTVAL')} morale bonus on Will saves, but suffers a -${pcstring('VAR.RageACPenalty.INTVAL')} penalty to AC for ${pcvar('VAR.RageConBonus.INTVAL')} rounds. At the end of the rage, the barbarian is fatigued (-2 to Strength, -2 to Dexterity, can't charge or run) for the duration of that encounter. The barbarian can only rage once per encounter. Entering a rage takes no time itself, but the barbarian can only do it during his action.</description>
 		</#if>
 	</rage>
 	<!-- this stuff needs a bit of work to display correct info for both 3e and 3.5e properly. - Tir Gwaith -->
@@ -1434,7 +1452,7 @@
 	<!--
 	  ====================================
 	  ====================================
-			FEATS
+			FEAT
 	  ====================================
 	  ====================================-->
 	<feats>
@@ -1501,7 +1519,7 @@
 			<source>${pcstring('FEAT.HIDDEN.${feat}.SOURCE')}</source>
 		</feat>
 		</@loop>
-		<!-- Hidden VFEATS -->
+		<!-- Hidden VFEAT -->
 		<@loop from=0 to=pcvar('COUNT[VFEATS.HIDDEN]-1') ; feat , feat_has_next>
 		<feat>
 			<name>${pcstring('VFEAT.HIDDEN.${feat}')}</name>
@@ -1516,7 +1534,7 @@
 			<source>${pcstring('VFEAT.HIDDEN.${feat}.SOURCE')}</source>
 		</feat>
 		</@loop>
-		<!-- END Hidden VFEATS -->
+		<!-- END Hidden VFEAT -->
 		<@loop from=0 to=pcvar('COUNT[FEATSAUTO.HIDDEN]-1') ; feat , feat_has_next>
 		<feat>
 			<name>${pcstring('FEATAUTO.HIDDEN.${feat}')}</name>
@@ -2574,6 +2592,70 @@
 	<!--
 	  ====================================
 	  ====================================
+			Drawbacks
+	  ====================================
+	  ====================================-->
+	<drawbacks>
+	<@loop from=0 to=pcvar('countdistinct("ABILITIES","CATEGORY=Special Ability","TYPE=drawback","VISIBILITY=DEFAULT[or]VISIBILITY=OUTPUT_ONLY")-1') ; drawback , drawback_has_next>
+		<drawback>
+			<#if (pcstring("VABILITY.Special Ability.VISIBLE.${drawback}.TYPE=drawback") != "")><#-- TODO: THis doesn't work unless all the virtual abilities are at the start of the loop. Need a new subtag on ABILITYALL of nature -->
+			<name>${pcstring('VABILITY.Special Ability.VISIBLE.${drawback}.TYPE=drawback')} (Granted)</name>
+			<#else>
+			<name>${pcstring('ABILITYALL.Special Ability.VISIBLE.${drawback}.TYPE=drawback')}</name>
+			</#if>
+			<description>${pcstring('ABILITYALL.Special Ability.VISIBLE.${drawback}.TYPE=drawback.DESC')}</description>
+			<source>${pcstring('ABILITYALL.Special Ability.VISIBLE.${drawback}.TYPE=drawback.SOURCE')}</source>
+		</drawback>
+	</@loop>
+	</drawbacks>
+	<!--
+	====================================
+	====================================
+	MASTER ABILITY
+	====================================
+	====================================-->
+	<master_abilities>
+	<@loop from=0 to=pcvar('countdistinct("ABILITIES","CATEGORY=Special Ability","ASPECT=MasterAbility")-1') ; ability , ability_has_next>
+		<master_ability>
+			<#if (pcstring("ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.TYPE") = "Extraordinary")>
+			<name>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility')} (Ex)</name>
+			<#else>
+				<#if (pcstring("ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.TYPE") = "Supernatural")>
+				<name>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility')} (Su)</name>
+				<#else>
+					<#if (pcstring("ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.TYPE") = "SpellLike")>
+					<name>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility')} (Sp)</name>
+					<#else>
+					<name>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility')}</name>
+					</#if>
+				</#if>
+			</#if>
+			<header>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility')}</header>
+			<description>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.DESC')}</description>
+			<type>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.TYPE')}</type>
+			<source>${pcstring('ABILITYALL.Special Ability.VISIBLE.${ability}.ASPECT=MasterAbility.SOURCE')}</source>
+			<check_count>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.ASPECT.CheckCount.INTVAL')}</check_count>
+			<check_type>${pcstring('ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.ASPECT.CheckType')}</check_type>
+
+			<#if (pcstring("ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.HASASPECT.MasterAbility") = "Y")>
+				<@loop from=0 to=pcvar('countdistinct("ABILITIES","CATEGORY=Special Ability")-1') ; subability , subability_has_next>
+					<#if (pcstring("ABILITYALL.Special Ability.${subability}.ASPECT.ChildAbility") = pcstring("ABILITYALL.Special Ability.${ability}.ASPECT=MasterAbility.ASPECT.MasterAbility"))>
+					<subability>
+						<name>${pcstring('ABILITYALL.Special Ability.${subability}')}</name>
+						<description>${pcstring('ABILITYALL.Special Ability.${subability}.DESC')}</description>
+						<type>${pcstring('ABILITYALL.Special Ability.${subability}.TYPE')}</type>
+						<source>${pcstring('ABILITYALL.Special Ability.${subability}.SOURCE')}</source>
+					</subability>
+					</#if>
+				</@loop>
+			</#if>
+		</master_ability>
+	</@loop>
+	</master_abilities>
+
+		<!--
+	  ====================================
+	  ====================================
 			Afflictions
 	  ====================================
 	  ====================================-->
@@ -2596,6 +2678,15 @@
 	<pfs_chronicles>
 	<@abilityBlock category="PFS Chronicle" nature="ALL" hidden=false typeName="PFSChronicle" nodeName="pfs_chronicle" />
 	</pfs_chronicles>
+	<!--
+	  ====================================
+	  ====================================
+			PFS Boons
+	  ====================================
+	  ====================================-->
+	<pfs_boons>
+	<@abilityBlock category="Special Ability" nature="ALL" hidden=false typeName="PFSBoon" nodeName="pfs_boon" />
+	</pfs_boons>
 	<!--
 	====================================
 	  ====================================
@@ -2983,6 +3074,7 @@
 		<racial_innate>
 			<@loop from=0 to=pcvar('COUNT[SPELLSINBOOK.${class}.${spellbook}.${level}]-1') ; spell , spell_has_next>
 			<spell>
+					<basecasterlevel>${pcstring('SPELLLISTCLASS.${class}.CASTERLEVEL')}</basecasterlevel>
 					<name>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.NAME')}</name>
 					<outputname>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.OUTPUTNAME')}</outputname>
 					<times_memorized>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.TIMES')}</times_memorized>
@@ -3026,6 +3118,7 @@
 			<spellbook number="${spellbook}" name="${pcstring('SPELLBOOKNAME.${spellbook}')}">
 			<@loop from=0 to=pcvar('COUNT[SPELLSINBOOK.${class}.${spellbook}.${level}]-1') ; spell , spell_has_next>
 				<spell>
+						<basecasterlevel>${pcstring('SPELLLISTCLASS.${class}.CASTERLEVEL')}</basecasterlevel>
 						<name>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.NAME')}</name>
 						<outputname>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.OUTPUTNAME')}</outputname>
 						<times_memorized>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.TIMES')}</times_memorized>
@@ -3079,6 +3172,7 @@
 			<#else>
 			<@loop from=0 to=pcvar('COUNT[SPELLSINBOOK.${class}.${spellbook}.${level}]-1') ; spell , spell_has_next>
 				<spell>
+						<basecasterlevel>${pcstring('SPELLLISTCLASS.${class}.CASTERLEVEL')}</basecasterlevel>
 						<name>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.NAME')}</name>
 						<outputname>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.OUTPUTNAME')}</outputname>
 						<times_memorized>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.TIMES')}</times_memorized>
@@ -3140,6 +3234,7 @@
 		<racial_innate_memorized>
 		  <@loop from=0 to=pcvar('COUNT[SPELLSINBOOK.${class}.${spellbook}.${level}]-1') ; spell , spell_has_next>
 			<spell>
+					<basecasterlevel>${pcstring('SPELLLISTCLASS.${class}.CASTERLEVEL')}</basecasterlevel>
 					<name>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.NAME')}</name>
 					<outputname>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.OUTPUTNAME')}</outputname>
 					<times_memorized>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.TIMES')}</times_memorized>
@@ -3184,6 +3279,7 @@
 			<spellbook number="${spellbook}" name="${pcstring('SPELLBOOKNAME.${spellbook}')}">
 			<@loop from=0 to=pcvar('COUNT[SPELLSINBOOK.${class}.${spellbook}.${level}]-1') ; spell , spell_has_next>
 				<spell>
+						<basecasterlevel>${pcstring('SPELLLISTCLASS.${class}.CASTERLEVEL')}</basecasterlevel>
 						<name>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.NAME')}</name>
 						<outputname>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.OUTPUTNAME')}</outputname>
 						<times_memorized>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.TIMES')}</times_memorized>
@@ -3232,7 +3328,7 @@
 			<!-- FOR,${bar},COUNT[SPELLSINBOOK0.${spellbook}.0],COUNT[SPELLSINBOOK0.${spellbook}.0],1,1 -->
 			<#if (foo = 0 || bar = 0) >
 			<!-- Either we do not have a innate race, or if we do we do not have any 0 level spell for the innate race -->
-			<spellbook number="${spellbook}" name="${pcstring('SPELLBOOKNAME.${spellbook}')}">
+			<spellbook number="${spellbook}" name="${pcstring('SPELLBOOKNAME.${spellbook}')}" type="${pcstring('SPELLBOOK.${spellbook}.TYPE')}">
 			<@loop from=pcvar('COUNT[SPELLRACE]') to=pcvar('COUNT[SPELLRACE]+COUNT[CLASSES]-1') ; class , class_has_next><#-- TODO: Loop was of early exit type 1 -->
 			<class number="${class}" spelllistclass="${pcstring('SPELLLISTCLASS.${class}')}" spellcasterlevel="${pcstring('SPELLLISTCLASS.${class}.LEVEL')}" spellcastertype="${pcstring('SPELLLISTTYPE.${class}')}" memorize="${pcstring('SPELLLISTMEMORIZE.${class}')}">
 			 <@loop from=0 to=pcvar('MAXSPELLLEVEL.${class}') ; level , level_has_next><#-- TODO: Loop was of early exit type 1 -->
@@ -3243,6 +3339,7 @@
 				<level number="${level}" spellcount="${spelllevelcount}">
 				   <@loop from=0 to=pcvar('COUNT[SPELLSINBOOK.${class}.${spellbook}.${level}]-1') ; spell , spell_has_next>
 					<spell>
+							<basecasterlevel>${pcstring('SPELLLISTCLASS.${class}.CASTERLEVEL')}</basecasterlevel>
 							<name>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.NAME')}</name>
 							<outputname>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.OUTPUTNAME')}</outputname>
 							<times_memorized>${pcstring('SPELLMEM.${class}.${spellbook}.${level}.${spell}.TIMES')}</times_memorized>

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 12/04/2013 5:34:17 PM
  *
- * $Id$
  */
 package pcgen.persistence.lst.utils;
 
@@ -41,7 +39,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.core.Campaign;
@@ -56,15 +54,11 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * The Class <code>VariableReport</code> produces a report on variable 
+ * The Class {@code VariableReport} produces a report on variable
  * definitions within the PCGen LST data.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class VariableReport
@@ -83,14 +77,14 @@ public class VariableReport
 	{
 		List<GameMode> games = SystemCollections.getUnmodifiableGameModeList();
 		Map<String, List<VarDefine>> gameModeVarMap =
-				new TreeMap<String, List<VarDefine>>();
+                new TreeMap<>();
 		Map<String, Integer> gameModeVarCountMap =
-				new TreeMap<String, Integer>();
+                new TreeMap<>();
 		for (GameMode gameMode : games)
 		{
-			List<VarDefine> varList = new ArrayList<VarDefine>();
-			Map<String, Integer> varCountMap = new HashMap<String, Integer>();
-			Set<File> processedLstFiles = new HashSet<File>();
+			List<VarDefine> varList = new ArrayList<>();
+			Map<String, Integer> varCountMap = new HashMap<>();
+			Set<File> processedLstFiles = new HashSet<>();
 			List<Campaign> campaignsForGameMode =
 					getCampaignsForGameMode(gameMode);
 			for (Campaign campaign : campaignsForGameMode)
@@ -148,7 +142,7 @@ public class VariableReport
 			Template template = cfg.getTemplate(reportFormat.getTemplate());
 
 			// data-model
-			Map<String, Object> input = new HashMap<String, Object>();
+			Map<String, Object> input = new HashMap<>();
 			input.put("gameModeVarMap", gameModeVarMap);
 			input.put("gameModeVarCountMap", gameModeVarCountMap);
 			input.put("pathIgnoreLen", dataPathLen + 1);
@@ -174,12 +168,12 @@ public class VariableReport
 
 	private List<Campaign> getCampaignsForGameMode(GameMode game)
 	{
-		List<String> gameModeList = new ArrayList<String>();
+		List<String> gameModeList = new ArrayList<>();
 		gameModeList.addAll(game.getAllowedModes());
 
 		// Only add those campaigns in the user's chosen folder and game mode
 		List<Campaign> allCampaigns = Globals.getCampaignList();
-		Set<Campaign> gameModeCampaigns = new HashSet<Campaign>();
+		Set<Campaign> gameModeCampaigns = new HashSet<>();
 		for (Campaign campaign : allCampaigns)
 		{
 			if (campaign.containsAnyInList(ListKey.GAME_MODE, gameModeList))
@@ -201,7 +195,7 @@ public class VariableReport
 			}
 		}
 
-		return new ArrayList<Campaign>(gameModeCampaigns);
+		return new ArrayList<>(gameModeCampaigns);
 	}
 
 	private List<File> processCampaign(Campaign campaign,
@@ -209,7 +203,7 @@ public class VariableReport
 		Set<File> processedLstFiles) throws FileNotFoundException, IOException
 	{
 		List<CampaignSourceEntry> cseList =
-				new ArrayList<CampaignSourceEntry>();
+                new ArrayList<>();
 		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_LST_EXCLUDE));
 		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_RACE));
 		//TODO: Handle class with a special processor that tracks the class, sublass and level 
@@ -231,9 +225,12 @@ public class VariableReport
 		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_EQUIP_MOD));
 		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_KIT));
 		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_BIO_SET));
+		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_VARIABLE));
+		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_DYNAMIC));
 		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_DATACTRL));
+		cseList.addAll(campaign.getSafeListFor(ListKey.FILE_GLOBALMOD));
 
-		List<File> missingLstFiles = new ArrayList<File>();
+		List<File> missingLstFiles = new ArrayList<>();
 		for (CampaignSourceEntry cse : cseList)
 		{
 			File lstFile = new File(cse.getURI());
@@ -257,10 +254,9 @@ public class VariableReport
 		Map<String, Integer> varCountMap, File file)
 		throws FileNotFoundException, IOException
 	{
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		try
+		try (BufferedReader br = new BufferedReader(new FileReader(file)))
 		{
-			Map<String, String> varUseMap = new HashMap<String, String>();
+			Map<String, String> varUseMap = new HashMap<>();
 			String line = br.readLine();
 
 			while (line != null)
@@ -285,11 +281,11 @@ public class VariableReport
 							String define[] = tok.split("[:|]");
 							String varName = define[1];
 							if (define.length > 1
-								&& !varName.startsWith("LOCK.")
-								&& !varName.startsWith("UNLOCK."))
+									&& !varName.startsWith("LOCK.")
+									&& !varName.startsWith("UNLOCK."))
 							{
 								varList.add(new VarDefine(varName, object,
-									file, varUseMap.get(varName)));
+										file, varUseMap.get(varName)));
 								Integer count = varCountMap.get(varName);
 								if (count == null)
 								{
@@ -304,10 +300,6 @@ public class VariableReport
 
 				line = br.readLine();
 			}
-		}
-		finally
-		{
-			br.close();
 		}
 	}
 
@@ -339,7 +331,7 @@ public class VariableReport
 	}
 
 	/**
-	 * The Class <code>VarDefine</code> contains a single definition of 
+	 * The Class {@code VarDefine} contains a single definition of
 	 * a variable.
 	 */
 	public static class VarDefine implements Comparable<VarDefine>
@@ -366,9 +358,6 @@ public class VariableReport
 			this.use = use;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int hashCode()
 		{
@@ -385,9 +374,6 @@ public class VariableReport
 			return result;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -429,9 +415,6 @@ public class VariableReport
 			return true;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int compareTo(VarDefine other)
 		{
@@ -451,9 +434,6 @@ public class VariableReport
 			return varName.compareToIgnoreCase(other.varName);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String toString()
 		{

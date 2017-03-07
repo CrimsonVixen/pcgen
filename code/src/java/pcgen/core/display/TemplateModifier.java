@@ -32,6 +32,7 @@ import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.facet.DamageReductionFacet;
 import pcgen.cdom.facet.FacetLibrary;
 import pcgen.cdom.facet.model.StatFacet;
+import pcgen.cdom.util.CControl;
 import pcgen.core.PCStat;
 import pcgen.core.PCTemplate;
 import pcgen.core.PlayerCharacter;
@@ -76,11 +77,11 @@ public class TemplateModifier
 			}
 		}
 
-		Map<DamageReduction, Set<Object>> drMap = new IdentityHashMap<DamageReduction, Set<Object>>();
+		Map<DamageReduction, Set<Object>> drMap = new IdentityHashMap<>();
 		CharacterDisplay display = aPC.getDisplay();
 		int totalLevels = display.getTotalLevels();
 		int totalHitDice = display.totalHitDice();
-		List<PCTemplate> templList = new ArrayList<PCTemplate>();
+		List<PCTemplate> templList = new ArrayList<>();
 		templList.add(pct);
 		templList.addAll(pct.getConditionalTemplates(totalLevels, totalHitDice));
 		for (PCTemplate subt : templList)
@@ -94,23 +95,26 @@ public class TemplateModifier
 					Set<Object> set = drMap.get(dr);
 					if (set == null)
 					{
-						set = new HashSet<Object>();
+						set = new HashSet<>();
 						drMap.put(dr, set);
 					}
 					set.add(pct);
 				}
 			}
 		}
-		if (drMap.size() != 0)
+		if (!drMap.isEmpty())
 		{
 			mods.append("DR:").append(drFacet.getDRString(id, drMap));
 		}
 
-		int nat = (int) BonusCalc.charBonusTo(pct, "COMBAT", "AC", aPC);
-
-		if (nat != 0)
+		if (!aPC.hasControl(CControl.ACVARTOTAL))
 		{
-			mods.append("AC BONUS:").append(nat);
+			int nat = (int) BonusCalc.charBonusTo(pct, "COMBAT", "AC", aPC);
+
+			if (nat != 0)
+			{
+				mods.append("AC BONUS:").append(nat);
+			}
 		}
 
 		float cr = pct.getCR(totalLevels, totalHitDice);

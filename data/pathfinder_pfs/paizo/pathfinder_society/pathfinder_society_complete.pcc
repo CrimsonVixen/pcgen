@@ -1,14 +1,14 @@
 # CVS $Revision$ $Author$ -- Sat Nov 23 14:46:39 2013 -- reformated by prettylst.pl v1.50 (build 22134)
-CAMPAIGN:Pathfinder Society Complete
+CAMPAIGN:Pathfinder Society Complete Rules
 KEY:Pathfinder Society
-GAMEMODE:Pathfinder|Pathfinder_PFS
+GAMEMODE:Pathfinder_PFS
 TYPE:Paizo Publishing.Pathfinder Society
 RANK:3
 STATUS:RELEASE
 GENRE:Fantasy
 BOOKTYPE:MultiSet
 SETTING:Pathfinder|Golarion
-SHOWINMENU:YES
+#SHOWINMENU:YES
 # COMMENT: No books should be allowed if this set is used. Causes issues!
 !PRECAMPAIGN:1,BOOKTYPE=Core Rules,BOOKTYPE=MultiSet,[Pathfinder Society]
 #!PRECAMPAIGN:1,INCLUDES=Guide To Pathfinder Society Organized Play
@@ -47,13 +47,13 @@ DESC:The Pathfinder Roleplaying Game puts you in the role of a brave adventurer 
 #######################
 
 PCC:@/pathfinder/paizo/roleplaying_game/core_rulebook/core_rulebook.pcc
-PCC:@/pathfinder_pfs/paizo/pathfinder_society/organized_play/_guide_to_pathfinder_society_organized_play.pcc
+
+PCC:@/pathfinder_pfs/paizo/pathfinder_society/roleplaying_guild_guide/_roleplaying_guild_guide.pcc
 PCC:@/pathfinder_pfs/paizo/pathfinder_society/pfs_chronicle_sheets/pfs_chronicle_sheets.pcc
 
 OPTION:gameMode.Pathfinder_PFS.purchaseMethodName=High Fantasy
+OPTION:gameMode.Pathfinder_PFS.rollMethod=2
 OPTION:gameMode.Pathfinder_PFS.xpTableName=PFS Rules
-OPTION:gameMode.Pathfinder_PFS.rollMethod=0
-OPTION:gameMode.Pathfinder_PFS.allStatsValue=10
 
 ########################
 # Blocked Resources    #
@@ -77,9 +77,9 @@ PCC:@/pathfinder/paizo/roleplaying_game/bestiary_3/bestiary_3.pcc
 # PCC:@/pathfinder/paizo/roleplaying_game/monster_codex/monster_codex.pcc
 # PCC:@/pathfinder/paizo/roleplaying_game/npc_codex/npc_codex.pcc
 PCC:@/pathfinder/paizo/roleplaying_game/pathfinder_unchained/_pathfinder_unchained.pcc
-PCC:@/pathfinder/paizo/roleplaying_game/ultimate_combat/ultimate_combat.pcc
+PCC:@/pathfinder/paizo/roleplaying_game/ultimate_combat/_ultimate_combat.pcc
 PCC:@/pathfinder/paizo/roleplaying_game/ultimate_equipment/ultimate_equipment.pcc
-PCC:@/pathfinder/paizo/roleplaying_game/ultimate_magic/ultimate_magic.pcc
+PCC:@/pathfinder/paizo/roleplaying_game/ultimate_magic/_ultimate_magic.pcc
 PCC:@/pathfinder/paizo/roleplaying_game/ultimate_campaign/_ultimate_campaign.pcc
 
 

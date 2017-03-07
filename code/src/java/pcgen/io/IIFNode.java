@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 5, 2001, 8:00 PM
  */
 package pcgen.io;
 
@@ -27,8 +26,6 @@ import java.util.List;
 /**
  * {@code IIFNode}.
  *
- * @author Mark Hulsman <mark_hulsman@users.sourceforge.net>
- * @version $Revision$
  */
 class IIFNode
 {
@@ -36,7 +33,7 @@ class IIFNode
 	private final List<Object> trueChildren;
 	private final String expr;
 
-	IIFNode(String expr)
+	IIFNode(final String expr)
 	{
 		this.expr = expr;
 		trueChildren = new ArrayList<>();
@@ -65,7 +62,7 @@ class IIFNode
 	 * Add a false child
 	 * @param child
 	 */
-	public void addFalseChild(Object child)
+	public void addFalseChild(final Object child)
 	{
 		falseChildren.add(child);
 	}

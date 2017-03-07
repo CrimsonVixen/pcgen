@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on January 20, 2005, 9:46 AM
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -29,10 +27,8 @@ import pcgen.core.Kit;
 import pcgen.core.PlayerCharacter;
 
 /**
- * <code>KitFunds</code>.
+ * {@code KitFunds}.
  *
- * @author Greg Bingleman <byngl@hotmail.com>
- * @version $Revision$
  */
 public final class KitFunds extends BaseKit
 {

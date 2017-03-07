@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/10/2008 21:59:06
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
@@ -47,15 +45,11 @@ import pcgen.gui2.util.JComboBoxEx;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>CopySettingsPanel</code> is responsible for 
+ * The Class {@code CopySettingsPanel} is responsible for
  * allowing game mode dependent settings to be copied from another 
  * gamemode.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public class CopySettingsPanel extends PCGenPrefsPanel
@@ -68,7 +62,7 @@ public class CopySettingsPanel extends PCGenPrefsPanel
 			new JButton(LanguageBundle.getString("in_copy"));
 
 	private List<PCGenPrefsPanel> affectedPanels =
-			new ArrayList<PCGenPrefsPanel>();
+            new ArrayList<>();
 
 	/**
 	 * Instantiates a new copy settings panel.

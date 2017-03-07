@@ -16,15 +16,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Sep 1, 2009, 10:49:27 PM
  */
 package pcgen.gui2;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -39,7 +40,6 @@ import pcgen.system.PCGenTaskListener;
  * PCGen's splash screen which is shown upon startup.
  *
  * @see pcgen.system.Main
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class SplashScreen extends JWindow implements PCGenTaskListener
 {
@@ -56,9 +56,9 @@ public class SplashScreen extends JWindow implements PCGenTaskListener
 
 	private void initComponents()
 	{
-		JPanel pane = new JPanel(new BorderLayout());
+		JComponent pane = new JPanel(new BorderLayout());
 		pane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-		JLabel splashLabel = new JLabel(Icons.SplashPcgen_Ennie.getImageIcon());
+		Component splashLabel = new JLabel(Icons.SplashPcgen_Ennie.getImageIcon());
 		pane.add(splashLabel, BorderLayout.NORTH);
 		loadingLabel.setBorder(BorderFactory.createEmptyBorder(10, 7, 10, 10));
 		pane.add(loadingLabel, BorderLayout.CENTER);
@@ -90,7 +90,7 @@ public class SplashScreen extends JWindow implements PCGenTaskListener
 	 * It is not assumed that this method will be called on the Event Dispatch
 	 * thread so UI updates are added to the Event Dispatch queue so that they
 	 * are handled appropriately. To make sure that update requests do not
-	 * overwhelm the UI thread a <code>dirty</code> flag is used to make sure
+	 * overwhelm the UI thread a {@code dirty} flag is used to make sure
 	 * that the multiple UI update requests are not queued at the same time.
 	 *
 	 * @param event a PCGenTaskEvent
@@ -101,18 +101,12 @@ public class SplashScreen extends JWindow implements PCGenTaskListener
 		if (!dirty)
 		{
 			dirty = true;
-			SwingUtilities.invokeLater(new Runnable()
+			SwingUtilities.invokeLater(() ->
 			{
-
-				@Override
-				public void run()
-				{
-					PCGenTask task = event.getSource();
-					loadProgress.getModel().setRangeProperties(task.getProgress(), 1, 0, task.getMaximum(), true);
-					loadingLabel.setText(task.getMessage());
-					dirty = false;
-				}
-
+				PCGenTask task = event.getSource();
+				loadProgress.getModel().setRangeProperties(task.getProgress(), 1, 0, task.getMaximum(), true);
+				loadingLabel.setText(task.getMessage());
+				dirty = false;
 			});
 		}
 

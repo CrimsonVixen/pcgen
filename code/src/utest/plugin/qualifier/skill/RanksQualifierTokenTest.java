@@ -19,8 +19,6 @@ package plugin.qualifier.skill;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.ChooseInformation;
 import pcgen.cdom.content.fact.FactDefinition;
@@ -28,10 +26,13 @@ import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.core.PCClass;
 import pcgen.core.Skill;
 import pcgen.persistence.PersistenceLayerException;
+import pcgen.persistence.lst.LstToken;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.CDOMSecondaryToken;
 import pcgen.rules.persistence.token.QualifierToken;
+
+import org.junit.Test;
 import plugin.lsttokens.ChooseLst;
 import plugin.lsttokens.choose.SkillToken;
 import plugin.lsttokens.testsupport.AbstractQualifierTokenTestCase;
@@ -44,14 +45,14 @@ public class RanksQualifierTokenTest extends
 		AbstractQualifierTokenTestCase<CDOMObject, Skill>
 {
 
-	static ChooseLst token = new ChooseLst();
-	static SkillToken subtoken = new SkillToken();
-	static CDOMTokenLoader<CDOMObject> loader =
-			new CDOMTokenLoader<CDOMObject>();
+	private static final CDOMPrimaryToken token = new ChooseLst();
+	private static final CDOMSecondaryToken subtoken = new SkillToken();
+	private static final CDOMLoader<CDOMObject> loader =
+			new CDOMTokenLoader<>();
 	private Skill s1, s2, s3;
 	private PCClass cl1;
 
-	private static final RanksToken RANKS_TOKEN = new RanksToken();
+	private static final LstToken RANKS_TOKEN = new RanksToken();
 
 	public RanksQualifierTokenTest()
 	{
@@ -105,7 +106,6 @@ public class RanksQualifierTokenTest extends
 	public void testGetSet() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|RANKS=3[ALL]"));
 		BuildUtilities
@@ -114,8 +114,8 @@ public class RanksQualifierTokenTest extends
 				BuildUtilities.createFact(primaryContext, "SpellType",
 					getTargetClass());
 		fd.setSelectable(true);
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		pc.classMap.put(cl1, 1);
@@ -136,11 +136,10 @@ public class RanksQualifierTokenTest extends
 	public void testGetSetFiltered() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|RANKS=2[TYPE=Masterful]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		pc.skillSet.put(s1, 1);
@@ -154,11 +153,10 @@ public class RanksQualifierTokenTest extends
 	public void testGetSetNegated() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|!RANKS=2[TYPE=Masterful]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		pc.skillSet.put(s1, 1);
@@ -172,11 +170,10 @@ public class RanksQualifierTokenTest extends
 	public void testGetSetMaxRank() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|RANKS=MAXRANK[TYPE=Masterful]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		pc.classMap.put(cl1, 1);
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);

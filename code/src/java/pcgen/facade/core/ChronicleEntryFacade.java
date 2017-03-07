@@ -23,14 +23,11 @@
 package pcgen.facade.core;
 
 /**
- * The Class <code>ChronicleEntryFacade</code> is ...
+ * The Class {@code ChronicleEntryFacade} is ...
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
+ * @author James Dempsey &lt;jdempsey@users.sourceforge.net&gt;
  */
 public interface ChronicleEntryFacade
 {

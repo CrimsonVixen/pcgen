@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 08/12/2007
  *
- * $Id$
  */
 
 package pcgen.core;
@@ -39,11 +37,7 @@ import pcgen.util.TestHelper;
  * <code>StatListTest</code> checks the function of the 
  * StatList class. 
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class StatListTest extends AbstractCharacterTestCase
 {

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 08/03/2011 7:18:51 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -26,7 +24,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.base.lang.StringUtil;
 import pcgen.cdom.content.CampaignURL;
@@ -48,22 +46,15 @@ import pcgen.persistence.lst.CampaignSourceEntry;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>Gui2CampaignInfoFactory</code> is responsible for producing 
+ * The Class {@code Gui2CampaignInfoFactory} is responsible for producing
  * HTML formatted information on campaigns for the new user interface.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getHTMLInfo(CampaignFacade campaign, List<CampaignFacade> testList)
 	{
@@ -78,7 +69,7 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 		PersistenceManager pman)
 	{
 		List<URI> oldList = pman.getChosenCampaignSourcefiles();
-		List<URI> uris = new ArrayList<URI>();
+		List<URI> uris = new ArrayList<>();
 		for (CampaignFacade campaignFacade : testList)
 		{
 			uris.add(((Campaign) campaignFacade).getSourceURI());
@@ -155,7 +146,7 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 			infoText.appendLineBreak();
 		}
 		
-		if (aCamp.getType().length() > 0)
+		if (!aCamp.getType().isEmpty())
 		{
 			infoText.appendI18nElement("in_infType", aCamp.getType()); //$NON-NLS-1$
 			infoText.appendSpacer();
@@ -163,7 +154,7 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 
 		infoText.appendI18nElement("in_infRank", String.valueOf(aCamp //$NON-NLS-1$
 			.getSafe(IntegerKey.CAMPAIGN_RANK)));
-		if (StringUtil.join(aCamp.getSafeListFor(ListKey.GAME_MODE), ", ").length() > 0)
+		if (!StringUtil.join(aCamp.getSafeListFor(ListKey.GAME_MODE), ", ").isEmpty())
 		{
 			infoText.appendSpacer();
 			infoText.appendI18nElement("in_infGame", //$NON-NLS-1$
@@ -189,7 +180,7 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 
 		String preString = PrerequisiteUtilities.preReqHTMLStringsForList(null,
 				null, aCamp.getPrerequisiteList(), false);
-		if (preString.length() > 0)
+		if (!preString.isEmpty())
 		{
 			infoText.appendI18nFormattedElement("in_InfoRequirements", preString); //$NON-NLS-1$
 		}
@@ -258,10 +249,6 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	
 	public String getHTMLInfo(SourceSelectionFacade selection)
 	{
 		if (selection.getCampaigns().getSize() == 1)
@@ -316,7 +303,7 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 	
 	public static List<CampaignURL> getUrlListForKind(Campaign c, URLKind kind)
 	{
-		List<CampaignURL> kindList = new ArrayList<CampaignURL>();
+		List<CampaignURL> kindList = new ArrayList<>();
 		for (CampaignURL url : c.getSafeListFor(ListKey.CAMPAIGN_URL))
 		{
 			if (url.getUrlKind() == kind)
@@ -327,9 +314,6 @@ public class Gui2CampaignInfoFactory implements CampaignInfoFactory
 		return kindList;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getRequirementsHTMLString(CampaignFacade campaign,
 		List<CampaignFacade> testList)

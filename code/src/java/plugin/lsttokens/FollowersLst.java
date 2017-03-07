@@ -17,15 +17,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Current Ver: $Revision$
- * Last Editor: $Author: $
- * Last Edited: $Date$
  */
 package plugin.lsttokens;
 
 import java.util.TreeSet;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.base.FormulaFactory;
@@ -34,7 +32,6 @@ import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.helper.FollowerLimit;
 import pcgen.cdom.list.CompanionList;
 import pcgen.cdom.reference.CDOMSingleRef;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
@@ -42,31 +39,30 @@ import pcgen.rules.persistence.token.ParseResult;
 
 /**
  * This class implements support for the FOLLOWERS LST token.
- * <p />
- * <b>Tag Name</b>: <code>FOLLOWERS</code>:x|y<br />
+ * <p>
+ * <b>Tag Name</b>: {@code FOLLOWERS}:x|y<br>
  * <b>Variables Used (x)</b>: Text (The type of companion the limit will apply
- * to).<br />
+ * to).<br>
  * <b>Variables Used (y)</b>: Number, variable or formula (Number of this type
  * of companion the master can have)
- * <p />
- * <b>What it does:</b><br/>
+ * <p>
+ * <b>What it does:</b><br>
  * <ul>
  * <li>Limits the number of the specified type of companion the master can
  * have.</li>
  * <li>Optional, if this tag is not present no limits are placed on the number
  * of companions the character can have.</li>
  * <li>If more than one tag is encountered the highest value is used.</li>
- * <li>The value can be adjusted with the <code>BONUS:FOLLOWERS</code> tag</li>
+ * <li>The value can be adjusted with the {@code BONUS:FOLLOWERS} tag</li>
  * </ul>
- * <b>Where it is used:</b><br />
+ * <b>Where it is used:</b><br>
  * Global tag, would most often be used in class and feat (ability) files,
  * should also be enabled for templates and Domains.
- * <p />
- * <b>Examples:</b><br />
- * <code>FOLLOWERS:Familiar|1</code><br />
+ * <p>
+ * <b>Examples:</b><br>
+ * {@code FOLLOWERS:Familiar|1}<br>
  * A character is allowed only 1 companion of type Familiar
  *
- * @author divaa01
  *
  */
 public class FollowersLst implements CDOMPrimaryToken<CDOMObject>
@@ -91,14 +87,17 @@ public class FollowersLst implements CDOMPrimaryToken<CDOMObject>
 				+ " on an Ungranted object type: "
 				+ obj.getClass().getSimpleName(), context);
 		}
-		if ((value == null) || (value.length() == 0))
+		if ((value == null) || value.isEmpty())
 		{
 			return new ParseResult.Fail("Argument in " + getTokenName()
 					+ " cannot be empty", context);
 		}
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String followerType = sep.next();
-		if (followerType.length() == 0)
+		if (followerType.isEmpty())
 		{
 			return new ParseResult.Fail("Follower Type in " + getTokenName()
 					+ " cannot be empty", context);
@@ -115,7 +114,7 @@ public class FollowersLst implements CDOMPrimaryToken<CDOMObject>
 					+ " has too many PIPE characters: "
 					+ "Must be of the form <follower type>|<formula", context);
 		}
-		if (followerNumber.length() == 0)
+		if (followerNumber.isEmpty())
 		{
 			return new ParseResult.Fail("Follower Count in " + getTokenName()
 					+ " cannot be empty", context);
@@ -142,7 +141,7 @@ public class FollowersLst implements CDOMPrimaryToken<CDOMObject>
 		{
 			return null;
 		}
-		TreeSet<String> returnSet = new TreeSet<String>();
+		TreeSet<String> returnSet = new TreeSet<>();
 		for (FollowerLimit fl : changes.getAdded())
 		{
 			String followerType = fl.getCompanionList().getLSTformat(false);

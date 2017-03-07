@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 07/01/2009 9:26:13 PM
  *
- * $Id$
  */
 package pcgen.core.term;
 
@@ -26,15 +24,11 @@ import pcgen.core.Equipment;
 import pcgen.core.PlayerCharacter;
 
 /**
- * The Class <code>EQHeadPlusTotalTermEvaluator</code> is responsible for producing 
+ * The Class {@code EQHeadPlusTotalTermEvaluator} is responsible for producing
  * the value of the HEADPLUSTOTAL token for use in equipment and eqmod cost formulas.
  * This is the total plus modifier for the current head.  
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class EQHeadPlusTotalTermEvaluator extends BaseEQTermEvaluator implements TermEvaluator
 {

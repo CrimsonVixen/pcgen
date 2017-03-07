@@ -1,5 +1,4 @@
 /*
- * Created on 02-Dec-2003
  *
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
@@ -37,7 +36,7 @@ public class PreDeityAlignTester extends AbstractDisplayPrereqTest implements Pr
 		//
 		int runningTotal = 0;
 
-		if (Globals.getGameModeAlignmentText().length() == 0)
+		if (Globals.getGameModeAlignmentText().isEmpty())
 		{
 			runningTotal = 1;
 		}
@@ -54,7 +53,7 @@ public class PreDeityAlignTester extends AbstractDisplayPrereqTest implements Pr
 				String desiredAlignIdentifier = prereq.getOperand();
 				PCAlignment desiredAlign = getPCAlignment(desiredAlignIdentifier);
 
-				if (desiredAlign.equals(deityAlign.resolvesTo()))
+				if (desiredAlign.equals(deityAlign.get()))
 				{
 					runningTotal = 1;
 				}
@@ -64,7 +63,7 @@ public class PreDeityAlignTester extends AbstractDisplayPrereqTest implements Pr
 		return countedTotal(prereq, runningTotal);
 	}
 
-	private PCAlignment getPCAlignment(String desiredAlignIdentifier)
+	private static PCAlignment getPCAlignment(String desiredAlignIdentifier)
 	{
 		PCAlignment desiredAlign =
 				Globals

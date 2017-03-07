@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 12/03/2012 1:54:05 PM
  *
- * $Id$
  */
 package pcgen.facade.core;
 
@@ -26,12 +24,8 @@ package pcgen.facade.core;
  * NoteFacade defines the interface used by the user interface to interact 
  * with a character note.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public interface NoteFacade

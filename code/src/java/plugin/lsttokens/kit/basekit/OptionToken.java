@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 3, 2006
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit.basekit;
@@ -31,11 +27,11 @@ import java.util.List;
 
 import pcgen.base.formula.Formula;
 import pcgen.base.lang.StringUtil;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.base.FormulaFactory;
 import pcgen.cdom.helper.OptionBound;
 import pcgen.core.kit.BaseKit;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
@@ -66,10 +62,13 @@ public class OptionToken extends AbstractNonEmptyToken<BaseKit> implements
 			String value)
 	{
 		ParsingSeparator pipeSep = new ParsingSeparator(value, '|');
+		pipeSep.addGroupingPair('[', ']');
+		pipeSep.addGroupingPair('(', ')');
+
 		while (pipeSep.hasNext())
 		{
 			String subTok = pipeSep.next();
-			if (subTok.length() == 0)
+			if (subTok.isEmpty())
 			{
 				return new ParseResult.Fail(getTokenName()
 						+ " arguments has invalid pipe separator: " + value, context);
@@ -80,6 +79,8 @@ public class OptionToken extends AbstractNonEmptyToken<BaseKit> implements
 				return pr;
 			}
 			ParsingSeparator commaSep = new ParsingSeparator(subTok, ',');
+			commaSep.addGroupingPair('[', ']');
+			commaSep.addGroupingPair('(', ')');
 			String minString = commaSep.next();
 			String maxString;
 			if (commaSep.hasNext())
@@ -119,7 +120,7 @@ public class OptionToken extends AbstractNonEmptyToken<BaseKit> implements
 		{
 			return null;
 		}
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (OptionBound bound : bounds)
 		{
 			Formula min = bound.getOptionMin();

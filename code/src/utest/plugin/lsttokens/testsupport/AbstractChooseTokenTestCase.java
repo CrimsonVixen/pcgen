@@ -39,12 +39,12 @@ import plugin.qualifier.pobject.AnyToken;
 import plugin.qualifier.pobject.QualifiedToken;
 
 public abstract class AbstractChooseTokenTestCase<T extends CDOMObject, TC extends CDOMObject>
-		extends AbstractTokenTestCase<T>
+		extends AbstractCDOMTokenTestCase<T>
 {
 
-	private static QualifierToken<CDOMObject> qual = new QualifiedToken<CDOMObject>();
+	private static QualifierToken<CDOMObject> qual = new QualifiedToken<>();
 
-	private static QualifierToken<CDOMObject> anyqualifier = new AnyToken<CDOMObject>();
+	private static QualifierToken<CDOMObject> anyqualifier = new AnyToken<>();
 
 	public abstract CDOMSecondaryToken<?> getSubToken();
 
@@ -77,8 +77,8 @@ public abstract class AbstractChooseTokenTestCase<T extends CDOMObject, TC exten
 		return construct(loadContext, getTargetClass(), one);
 	}
 
-	protected CDOMObject construct(LoadContext loadContext,
-			Class<? extends CDOMObject> cl, String one)
+	protected static CDOMObject construct(LoadContext loadContext,
+	                                      Class<? extends CDOMObject> cl, String one)
 	{
 		return loadContext.getReferenceContext().constructCDOMObject(cl, one);
 	}
@@ -1378,7 +1378,7 @@ public abstract class AbstractChooseTokenTestCase<T extends CDOMObject, TC exten
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<ChooseInformation<?>> getObjectKey()
+	private static ObjectKey<ChooseInformation<?>> getObjectKey()
 	{
 		return ObjectKey.CHOOSE_INFO;
 	}
@@ -1442,11 +1442,11 @@ public abstract class AbstractChooseTokenTestCase<T extends CDOMObject, TC exten
 
 	private void parseForUnparse(String value, boolean valid)
 	{
-		PrimitiveChoiceSet<TC> pcs = new CollectionToChoiceSet<TC>(
+		PrimitiveChoiceSet<TC> pcs = new CollectionToChoiceSet<>(
 				primaryContext.getChoiceSet(getManufacturer(), value));
 		assertNotNull(pcs);
 		assertEquals(valid, pcs.getGroupingState().isValid());
-		BasicChooseInformation<TC> cs = new BasicChooseInformation<TC>(getSubToken().getTokenName(), pcs);
+		BasicChooseInformation<TC> cs = new BasicChooseInformation<>(getSubToken().getTokenName(), pcs);
 		cs.setTitle(getChoiceTitle());
 		primaryProf.put(ObjectKey.CHOOSE_INFO, cs);
 	}

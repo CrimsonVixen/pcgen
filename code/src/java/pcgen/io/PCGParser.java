@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on September 07, 2002, 11:30 AM
  */
 package pcgen.io;
 
@@ -25,9 +24,7 @@ import java.util.List;
 import pcgen.facade.core.SourceSelectionFacade;
 
 /**
- * <code>PCGParser</code><br>
- * @author Thomas Behr 07-09-02
- * @version $Revision$
+ * {@code PCGParser}<br>
  */
 interface PCGParser
 {

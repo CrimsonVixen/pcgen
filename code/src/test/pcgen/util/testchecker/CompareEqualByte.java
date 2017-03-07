@@ -16,9 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package pcgen.util.testchecker;
@@ -44,7 +41,7 @@ public class CompareEqualByte extends TestChecker
     @Override
 	public boolean check(Object obj)
 	{
-		return obj.equals(Byte.valueOf(this.by));
+		return obj.equals(this.by);
 	}
 
     @Override

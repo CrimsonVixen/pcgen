@@ -17,12 +17,12 @@
  */
 package pcgen.cdom.content.fact;
 
+import pcgen.base.util.FormatManager;
 import pcgen.base.util.ObjectContainer;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.GroupDefinition;
 import pcgen.cdom.enumeration.GroupingState;
 import pcgen.rules.context.LoadContext;
-import pcgen.rules.types.FormatManager;
 
 /**
  * A FactGroupDefinition is a GroupDefinition built around a Fact, specifically
@@ -107,6 +107,6 @@ public class FactGroupDefinition<T extends CDOMObject, F> implements
 	@Override
 	public ObjectContainer<T> getPrimitive(LoadContext context, String value)
 	{
-		return new FactGroup<T, F>(context, def, value);
+		return new FactGroup<>(context, def, value);
 	}
 }

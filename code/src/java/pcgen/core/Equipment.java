@@ -19,8 +19,6 @@
  * Created on April 21, 2001, 2:15 PM
  *
  * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core;
@@ -45,15 +43,17 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.formula.base.VarScoped;
 import pcgen.base.lang.StringUtil;
 import pcgen.base.util.FixedStringList;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.base.PrereqObject;
 import pcgen.cdom.enumeration.AssociationListKey;
+import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.enumeration.EqModFormatCat;
 import pcgen.cdom.enumeration.EquipmentLocation;
 import pcgen.cdom.enumeration.FormulaKey;
@@ -62,12 +62,15 @@ import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.cdom.enumeration.StringKey;
 import pcgen.cdom.enumeration.Type;
+import pcgen.cdom.facet.FacetLibrary;
+import pcgen.cdom.facet.analysis.ResultFacet;
 import pcgen.cdom.helper.Capacity;
 import pcgen.cdom.inst.EqSizePenalty;
 import pcgen.cdom.inst.EquipmentHead;
 import pcgen.cdom.processor.ChangeArmorType;
 import pcgen.cdom.reference.CDOMDirectSingleRef;
 import pcgen.cdom.reference.CDOMSingleRef;
+import pcgen.cdom.util.CControl;
 import pcgen.core.analysis.BonusActivation;
 import pcgen.core.analysis.BonusCalc;
 import pcgen.core.analysis.EqModCost;
@@ -86,6 +89,7 @@ import pcgen.core.utils.MessageType;
 import pcgen.core.utils.ShowMessageDelegate;
 import pcgen.facade.core.EquipmentFacade;
 import pcgen.io.FileAccess;
+import pcgen.io.exporttoken.EqToken;
 import pcgen.rules.context.AbstractReferenceContext;
 import pcgen.util.BigDecimalHelper;
 import pcgen.util.JEPResourceChecker;
@@ -97,16 +101,16 @@ import pcgen.util.enumeration.View;
 import pcgen.util.enumeration.Visibility;
 
 /**
- * <code>Equipment</code>.
+ * {@code Equipment}.
  * 
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net> created December
+ * @author Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt; created December
  *         27
  * @author 2001
- * @version $Revision$
  */
 public final class Equipment extends PObject implements Serializable,
-		Comparable<Object>, VariableContainer, EquipmentFacade
+		Comparable<Object>, VariableContainer, EquipmentFacade, VarScoped
 {
+
 	private static final long serialVersionUID = 1;
 
 	private static final String EQMOD_WEIGHT = "_WEIGHTADD";
@@ -114,7 +118,7 @@ public final class Equipment extends PObject implements Serializable,
 	private static final String EQMOD_DAMAGE = "_DAMAGE";
 
 	private static final SortedSet<String> S_EQUIPMENT_TYPES =
-			new TreeSet<String>();
+            new TreeSet<>();
 
 	private AssociationSupport assocSupt = new AssociationSupport();
 
@@ -122,7 +126,7 @@ public final class Equipment extends PObject implements Serializable,
 
 	private Equipment d_parent;
 
-	private List<Equipment> d_containedEquipment = new ArrayList<Equipment>();
+	private List<Equipment> d_containedEquipment = new ArrayList<>();
 
 	private Float carried = (float) 0; // OwnedItem
 
@@ -132,7 +136,7 @@ public final class Equipment extends PObject implements Serializable,
 
 	private int numberEquipped;
 
-	private Map<String, Float> d_childTypes = new HashMap<String, Float>();
+	private Map<String, Float> d_childTypes = new HashMap<>();
 
 	private String containerCapacityString = null;
 
@@ -214,7 +218,7 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public String getAppliedName()
 	{
-		if (appliedBonusName.length() > 0)
+		if (!appliedBonusName.isEmpty())
 		{
 			final StringBuilder aString = new StringBuilder(100);
 			aString.append(" [").append(appliedBonusName).append("]");
@@ -556,7 +560,7 @@ public final class Equipment extends PObject implements Serializable,
 	@Override
 	public List<BonusObj> getActiveBonuses(final PlayerCharacter aPC)
 	{
-		final List<BonusObj> aList = new ArrayList<BonusObj>();
+		final List<BonusObj> aList = new ArrayList<>();
 
 		for (BonusObj bonus : getRawBonusList(aPC))
 		{
@@ -600,7 +604,7 @@ public final class Equipment extends PObject implements Serializable,
 		final String aType, final String aName, final boolean bPrimary)
 	{
 
-		final List<BonusObj> aList = new ArrayList<BonusObj>();
+		final List<BonusObj> aList = new ArrayList<>();
 
 		aList.addAll(BonusUtilities.getBonusFromList(getBonusList(pc), aType,
 			aName));
@@ -617,39 +621,6 @@ public final class Equipment extends PObject implements Serializable,
 	//
 	// Misc properties
 	//
-
-	/**
-	 * Returns the fumbleRange for this item.
-	 * 
-	 * Return the fumbleRange on the primary eqMod (if it exists) otherwise
-	 * return it for the secondary eqMod otherwise return the fumbleRange for
-	 * the item itself
-	 * 
-	 * @return the fumbleRange for this item.
-	 */
-	public String getFumbleRange()
-	{
-		for (EquipmentModifier eqMod : getEqModifierList(true))
-		{
-			String fr = eqMod.get(StringKey.FUMBLE_RANGE);
-			if (fr != null)
-			{
-				return fr;
-			}
-		}
-
-		for (EquipmentModifier eqMod : getEqModifierList(false))
-		{
-			String fr = eqMod.get(StringKey.FUMBLE_RANGE);
-			if (fr != null)
-			{
-				return fr;
-			}
-		}
-
-		String fr = get(StringKey.FUMBLE_RANGE);
-		return fr == null ? "" : fr;
-	}
 
 	public boolean isAutomatic()
 	{
@@ -678,7 +649,22 @@ public final class Equipment extends PObject implements Serializable,
 		{
 			return getKeyName();
 		}
-		return baseItem.resolvesTo().getDisplayName();
+		return baseItem.get().getDisplayName();
+	}
+
+	/**
+	 * Gets the keyName attribute of the base item of this Equipment object.
+	 * 
+	 * @return The base item's keyName value
+	 */
+	public String getBaseItemKeyName()
+	{
+		CDOMSingleRef<Equipment> baseItem = get(ObjectKey.BASE_ITEM);
+		if (baseItem == null)
+		{
+			return getKeyName();
+		}
+		return baseItem.get().getKeyName();
 	}
 
 	/**
@@ -714,7 +700,7 @@ public final class Equipment extends PObject implements Serializable,
 		}
 		BigDecimal itemCost = currentcost.add(c);
 
-		final List<BigDecimal> modifierCosts = new ArrayList<BigDecimal>();
+		final List<BigDecimal> modifierCosts = new ArrayList<>();
 
 		calculatingCost = true;
 		weightAlreadyUsed = false;
@@ -737,7 +723,7 @@ public final class Equipment extends PObject implements Serializable,
 		// any modifier costs and discard them if they do occur. These should be 
 		// applicable for weapons, which are the only dual headed items currently.
 		EquipmentHeadCostSummary altCostSum =
-				getPostSizingCostForHead(aPC, new ArrayList<BigDecimal>(),
+				getPostSizingCostForHead(aPC, new ArrayList<>(),
 					false);
 		nonDoubleCost = nonDoubleCost.add(altCostSum.nonDoubleCost);
 		c1 = c1.add(altCostSum.postSizeCost);
@@ -1098,7 +1084,7 @@ public final class Equipment extends PObject implements Serializable,
 		{
 			final String eqBonus = aBonus.toString();
 
-			if ((eqBonus.length() > 0) && !eqBonus.startsWith("EQM"))
+			if ((!eqBonus.isEmpty()) && !eqBonus.startsWith("EQM"))
 			{
 				if (s.length() != 0)
 				{
@@ -1128,7 +1114,7 @@ public final class Equipment extends PObject implements Serializable,
 		// }
 		// }
 		// }
-		if (t.length() != 0)
+		if (!t.isEmpty())
 		{
 			if (s.length() != 0)
 			{
@@ -1171,6 +1157,17 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public String getItemNameFromModifiers()
 	{
+		return getItemNameFromModifiers(getBaseItemName());
+	}
+
+	/**
+	 * Get the item name based off the modifiers
+	 * 
+	 * @param baseName base name of the object, may instead be the base key if generating a key
+	 * @return item name based off the modifiers
+	 */
+	public String getItemNameFromModifiers(String baseName)
+	{
 
 		CDOMSingleRef<Equipment> baseItem = get(ObjectKey.BASE_ITEM);
 		if (baseItem == null)
@@ -1201,13 +1198,13 @@ public final class Equipment extends PObject implements Serializable,
 		}
 
 		final List<EquipmentModifier> commonList =
-				new ArrayList<EquipmentModifier>();
+                new ArrayList<>();
 
 		final List<List<EquipmentModifier>> modListByFC = initSplitModList();
 		final List<List<EquipmentModifier>> altModListByFC = initSplitModList();
 		final List<List<EquipmentModifier>> commonListByFC = initSplitModList();
 
-		final Equipment baseEquipment = baseItem.resolvesTo();
+		final Equipment baseEquipment = baseItem.get();
 
 		// Remove any modifiers on the base item so they don't confuse the
 		// naming
@@ -1253,7 +1250,7 @@ public final class Equipment extends PObject implements Serializable,
 		}
 
 		// Add in the base name, less any modifiers
-		final String baseName = getBaseItemName().trim();
+		baseName = baseName.trim();
 		int idx = baseName.indexOf('(');
 		if (idx >= 0)
 		{
@@ -1270,7 +1267,7 @@ public final class Equipment extends PObject implements Serializable,
 				buildEqModDesc(commonListByFC.get(fcm), modListByFC.get(fcm),
 					altModListByFC.get(fcm));
 
-		if (eqmodDesc1.length() > 0)
+		if (!eqmodDesc1.isEmpty())
 		{
 			itemName.append(' ').append(eqmodDesc1);
 		}
@@ -1298,8 +1295,8 @@ public final class Equipment extends PObject implements Serializable,
 		//
 		// Put size in name if not the same as the base item
 		//
-		SizeAdjustment thisSize = getSafe(ObjectKey.SIZE).resolvesTo();
-		if (!getSafe(ObjectKey.BASESIZE).resolvesTo().equals(thisSize))
+		SizeAdjustment thisSize = getSafe(ObjectKey.SIZE).get();
+		if (!getSafe(ObjectKey.BASESIZE).get().equals(thisSize))
 		{
 			itemName.append(thisSize.getDisplayName());
 			itemName.append('/');
@@ -1409,12 +1406,12 @@ public final class Equipment extends PObject implements Serializable,
 		}
 		else
 		{
-			if (commonDesc.length() != 0)
+			if (!commonDesc.isEmpty())
 			{
 				desc.append(commonDesc).append(';');
 			}
 
-			if (modDesc.length() != 0)
+			if (!modDesc.isEmpty())
 			{
 				desc.append(modDesc);
 			}
@@ -1425,7 +1422,7 @@ public final class Equipment extends PObject implements Serializable,
 
 			desc.append(';');
 
-			if (altModDesc.length() != 0)
+			if (!altModDesc.isEmpty())
 			{
 				desc.append(altModDesc);
 			}
@@ -1482,31 +1479,6 @@ public final class Equipment extends PObject implements Serializable,
 		}
 
 		return 0;
-	}
-
-	/**
-	 * Gets the maxDex attribute of the Equipment object
-	 * 
-	 * @param aPC The PC with the Equipment
-	 * 
-	 * @return The maxDex value
-	 */
-	public Integer getMaxDex(final PlayerCharacter aPC)
-	{
-		Integer mdex = getSafe(IntegerKey.MAX_DEX);
-		mdex += (int) bonusTo(aPC, "EQMARMOR", "MAXDEX", true);
-
-		if (mdex > Constants.MAX_MAXDEX)
-		{
-			mdex = Constants.MAX_MAXDEX;
-		}
-
-		if (mdex < 0)
-		{
-			mdex = 0;
-		}
-
-		return mdex;
 	}
 
 	/**
@@ -1575,7 +1547,7 @@ public final class Equipment extends PObject implements Serializable,
 		final StringBuilder buffer = new StringBuilder(100);
 	
 		buffer.append(getDisplayName());
-		if (modifiedName.length() > 0)
+		if (!modifiedName.isEmpty())
 		{
 			buffer.append(" (").append(modifiedName).append(")");
 		}
@@ -1642,7 +1614,7 @@ public final class Equipment extends PObject implements Serializable,
 	/**
 	 * Set this item's output index, which controls the order in which the
 	 * equipment appears on a character sheet. Note: -1 means hidden and 0 means
-	 * not set <p/> <br>
+	 * not set <p> <br>
 	 * author: James Dempsey 17-Jun-02
 	 * 
 	 * @param newIndex
@@ -1657,7 +1629,7 @@ public final class Equipment extends PObject implements Serializable,
 	/**
 	 * Return the output index, which controls the order in which the equipment
 	 * appears on a character sheet. Note: -1 means hidden and 0 means not set
-	 * <p/> <br>
+	 * <p> <br>
 	 * author: James Dempsey 17-Jun-02
 	 * 
 	 * @return the output index for this equipment item (-1=hidden, 0=not set)
@@ -1671,7 +1643,7 @@ public final class Equipment extends PObject implements Serializable,
 	 * Set this item's output subindex, which controls the order in which
 	 * equipment with the same output index appears on a character sheet. This
 	 * basically applies to natural weapons only, since they have output index 0
-	 * <p/> <br>
+	 * <p> <br>
 	 * author: Stefan Radermacher 11-Feb-05
 	 * 
 	 * @param newSubindex
@@ -1685,7 +1657,7 @@ public final class Equipment extends PObject implements Serializable,
 	/**
 	 * Return the output subindex, which controls the order in which equipment
 	 * with the same output index appears on a character sheet. This basically
-	 * applies to natural weapons only, since they have output index 0 <p/> <br>
+	 * applies to natural weapons only, since they have output index 0 <p> <br>
 	 * author: Stefan Radermacher 11-Feb-05
 	 * 
 	 * @return the output subindex for this equipment item
@@ -1807,7 +1779,7 @@ public final class Equipment extends PObject implements Serializable,
 				tString = falsePart;
 			}
 
-			if (tString.length() == 0)
+			if (tString.isEmpty())
 			{
 				return true;
 			}
@@ -1899,14 +1871,16 @@ public final class Equipment extends PObject implements Serializable,
 	 * @param bPrimary
 	 *            True=Primary Head
 	 * @return The rawCritRange value
+	 * @deprecated due to CRITRANGE code control
 	 */
+	@Deprecated
 	public int getRawCritRange(final boolean bPrimary)
 	{
 		int range = getHeadInfo(bPrimary ? 1 : 2, IntegerKey.CRIT_RANGE);
 		if (range == 0)
 		{
 			String cr = getWeaponInfo("CRITRANGE", bPrimary);
-			if (cr.length() != 0)
+			if (!cr.isEmpty())
 			{
 				try
 				{
@@ -2000,12 +1974,12 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public String getSize()
 	{
-		return getSafe(ObjectKey.SIZE).resolvesTo().getKeyName();
+		return getSafe(ObjectKey.SIZE).get().getKeyName();
 	}
 
 	public SizeAdjustment getSizeAdjustment()
 	{
-		return getSafe(ObjectKey.SIZE).resolvesTo();
+		return getSafe(ObjectKey.SIZE).get();
 	}
 
 	/**
@@ -2077,7 +2051,7 @@ public final class Equipment extends PObject implements Serializable,
 		{
 			altModList = althead.getSafeListFor(ListKey.EQMOD);
 		}
-		final List<EquipmentModifier> comn = new ArrayList<EquipmentModifier>();
+		final List<EquipmentModifier> comn = new ArrayList<>();
 
 		extractListFromCommon(comn, modList);
 
@@ -2113,7 +2087,7 @@ public final class Equipment extends PObject implements Serializable,
 			}
 		}
 
-		if (common.length() != 0)
+		if (!common.isEmpty())
 		{
 			if (!first)
 			{
@@ -2124,7 +2098,7 @@ public final class Equipment extends PObject implements Serializable,
 			sp.append(common);
 		}
 
-		if (saList1.length() != 0)
+		if (!saList1.isEmpty())
 		{
 			if (!first)
 			{
@@ -2140,7 +2114,7 @@ public final class Equipment extends PObject implements Serializable,
 			sp.append(saList1);
 		}
 
-		if (isDouble() && (saList2.length() != 0))
+		if (isDouble() && (!saList2.isEmpty()))
 		{
 			if (!first)
 			{
@@ -2282,15 +2256,16 @@ public final class Equipment extends PObject implements Serializable,
 	 * 			  Is this for the main head (true), or the secondary one (false)?
 	 * @return The visible value
 	 */
-	public boolean isVisible(final EquipmentModifier eqMod,
-			boolean primaryHead, View v)	{
+	public boolean isVisible(PlayerCharacter pc, EquipmentModifier eqMod,
+		boolean primaryHead, View v)
+	{
 		Visibility vis = eqMod.getSafe(ObjectKey.VISIBILITY);
 
 		if (Visibility.QUALIFY.equals(vis))
 		{
 			bonusPrimary = primaryHead;
 			return PrereqHandler.passesAll(eqMod.getPrerequisiteList(),
-				this, null);
+				this, pc);
 		}
 
 		return vis.isVisibleTo(v);
@@ -2305,7 +2280,7 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public Float getWeight(final PlayerCharacter aPC)
 	{
-		if (this.isVirtual())
+		if (virtualItem)
 		{
 			return new Float(0.0);
 		}
@@ -2334,7 +2309,7 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public double getWeightAsDouble(final PlayerCharacter aPC)
 	{
-		if (this.isVirtual())
+		if (isVirtual())
 		{
 			return 0.0;
 		}
@@ -2378,8 +2353,10 @@ public final class Equipment extends PObject implements Serializable,
 	 * @param aPC The PC that has this Equipment
 	 * 
 	 * @return Description of the Return Value
+	 * @deprecated due to ACCHECK code control
 	 */
-	public Integer acCheck(final PlayerCharacter aPC)
+	@Deprecated
+	public Integer preFormulaAcCheck(final PlayerCharacter aPC)
 	{
 		return Math.min(getSafe(IntegerKey.AC_CHECK)
 			+ (int) bonusTo(aPC, "EQMARMOR", "ACCHECK", true), 0);
@@ -2452,7 +2429,7 @@ public final class Equipment extends PObject implements Serializable,
 
 			// only make a copy if we need to
 			// add qualifiers to modifier
-			if (eqMod.getSafe(StringKey.CHOICE_STRING).length() != 0)
+			if (!eqMod.getSafe(StringKey.CHOICE_STRING).isEmpty())
 			{
 				eqMod = eqMod.clone();
 			}
@@ -2461,7 +2438,7 @@ public final class Equipment extends PObject implements Serializable,
 		}
 
 		// Add the associated choices
-		if (eqMod.getSafe(StringKey.CHOICE_STRING).length() != 0)
+		if (!eqMod.getSafe(StringKey.CHOICE_STRING).isEmpty())
 		{
 			while (aTok.hasMoreTokens())
 			{
@@ -2529,7 +2506,7 @@ public final class Equipment extends PObject implements Serializable,
 			bImporting = true;
 		}
 
-		if (!bImporting && !canAddModifier(eqMod, bPrimary))
+		if (!bImporting && !canAddModifier(aPC, eqMod, bPrimary))
 		{
 			return;
 		}
@@ -2545,7 +2522,7 @@ public final class Equipment extends PObject implements Serializable,
 			//
 			for (CDOMSingleRef<EquipmentModifier> ref : replaces)
 			{
-				EquipmentModifier mod = ref.resolvesTo();
+				EquipmentModifier mod = ref.get();
 				String key = mod.getKeyName();
 				for (EquipmentModifier aMod : head
 					.getSafeListFor(ListKey.EQMOD))
@@ -2553,6 +2530,7 @@ public final class Equipment extends PObject implements Serializable,
 					if (key.equalsIgnoreCase(aMod.getKeyName()))
 					{
 						head.removeFromListFor(ListKey.EQMOD, aMod);
+						head.removeVarModifiers(aPC.getCharID(), aMod);
 						if (bPrimary)
 						{
 							usePrimaryCache = false;
@@ -2574,6 +2552,7 @@ public final class Equipment extends PObject implements Serializable,
 				if (aMod.isType("BaseMaterial"))
 				{
 					head.removeFromListFor(ListKey.EQMOD, aMod);
+					head.removeVarModifiers(aPC.getCharID(), aMod);
 					if (bPrimary)
 					{
 						usePrimaryCache = false;
@@ -2593,6 +2572,7 @@ public final class Equipment extends PObject implements Serializable,
 				if (aMod.isType("MagicalEnhancement"))
 				{
 					head.removeFromListFor(ListKey.EQMOD, aMod);
+					head.removeVarModifiers(aPC.getCharID(), aMod);
 					if (bPrimary)
 					{
 						usePrimaryCache = false;
@@ -2616,7 +2596,7 @@ public final class Equipment extends PObject implements Serializable,
 			//
 			// only make a copy if we need to add qualifiers to modifier
 			//
-			if (eqMod.getSafe(StringKey.CHOICE_STRING).length() != 0)
+			if (!eqMod.getSafe(StringKey.CHOICE_STRING).isEmpty())
 			{
 				aMod = eqMod.clone();
 
@@ -2631,6 +2611,7 @@ public final class Equipment extends PObject implements Serializable,
 			}
 
 			head.addToListFor(ListKey.EQMOD, aMod);
+			head.addVarModifiers(aPC.getCharID(), aMod);
 			if (bPrimary)
 			{
 				usePrimaryCache = false;
@@ -2649,7 +2630,7 @@ public final class Equipment extends PObject implements Serializable,
 		if (!bImporting)
 		{
 			boolean allRemoved = false;
-			if (selectedChoice != null && selectedChoice.length() > 0)
+			if (selectedChoice != null && !selectedChoice.isEmpty())
 			{
 				if (!eqMod.getSafe(StringKey.CHOICE_STRING).startsWith(
 					"EQBUILDER."))
@@ -2667,6 +2648,7 @@ public final class Equipment extends PObject implements Serializable,
 			if (allRemoved)
 			{
 				head.removeFromListFor(ListKey.EQMOD, aMod);
+				head.removeVarModifiers(aPC.getCharID(), aMod);
 				if (bPrimary)
 				{
 					usePrimaryCache = false;
@@ -2683,7 +2665,7 @@ public final class Equipment extends PObject implements Serializable,
 
 	/**
 	 * Add a list equipment modifiers and their associated information eg:
-	 * Bane|Vermin|Fey.Keen.Vorpal.ABILITYPLUS|CHA=+6 <p/> Adds a feature to the
+	 * Bane|Vermin|Fey.Keen.Vorpal.ABILITYPLUS|CHA=+6 <p> Adds a feature to the
 	 * EqModifiers attribute of the Equipment object
 	 * 
 	 * @param aString
@@ -2698,7 +2680,7 @@ public final class Equipment extends PObject implements Serializable,
 
 	/**
 	 * Add a list equipment modifiers and their associated information eg:
-	 * Bane|Vermin|Fey.Keen.Vorpal.ABILITYPLUS|CHA=+6 <p/> Adds a feature to the
+	 * Bane|Vermin|Fey.Keen.Vorpal.ABILITYPLUS|CHA=+6 <p> Adds a feature to the
 	 * EqModifiers attribute of the Equipment object
 	 * 
 	 * @param aString
@@ -2786,7 +2768,7 @@ public final class Equipment extends PObject implements Serializable,
 			BonusCalc.equipBonusTo(this, aType, aName, aPC);
 
 			// now do temp bonuses
-			final List<BonusObj> tbList = new ArrayList<BonusObj>();
+			final List<BonusObj> tbList = new ArrayList<>();
 
 			for (BonusObj aBonus : getTempBonusList())
 			{
@@ -2897,15 +2879,15 @@ public final class Equipment extends PObject implements Serializable,
 	 * 
 	 * @return True if eqMod is addable
 	 */
-	public boolean canAddModifier(final PrereqObject eqMod,
-		final boolean bPrimary)
+	public boolean canAddModifier(PlayerCharacter pc, PrereqObject eqMod,
+		boolean bPrimary)
 	{
 
 		// Make sure we are qualified
 		bonusPrimary = bPrimary;
 
 		return getSafe(ObjectKey.MOD_CONTROL).getModifiersAllowed()
-			&& PrereqHandler.passesAll(eqMod.getPrerequisiteList(), this, null);
+			&& PrereqHandler.passesAll(eqMod.getPrerequisiteList(), this, pc);
 	}
 
 	/**
@@ -2965,7 +2947,7 @@ public final class Equipment extends PObject implements Serializable,
 		{
 			eq = (Equipment) super.clone();
 
-			eq.heads = new ArrayList<EquipmentHead>();
+			eq.heads = new ArrayList<>();
 			for (EquipmentHead head : heads)
 			{
 				if (head == null)
@@ -2974,14 +2956,16 @@ public final class Equipment extends PObject implements Serializable,
 				}
 				else
 				{
-					eq.heads.add((EquipmentHead) head.clone());
+					EquipmentHead eh = new EquipmentHead(eq, head.getHeadIndex());
+					eh.overlayCDOMObject(head);
+					eq.heads.add(eh);
 				}
 			}
 
 			//
 			if (bonusMap != null)
 			{
-				eq.bonusMap = new HashMap<String, String>(bonusMap);
+				eq.bonusMap = new HashMap<>(bonusMap);
 			}
 			eq.setMoveString(moveString());
 
@@ -2994,10 +2978,10 @@ public final class Equipment extends PObject implements Serializable,
 			eq.qty = qty;
 			eq.outputIndex = outputIndex;
 
-			eq.d_childTypes = new HashMap<String, Float>(d_childTypes);
+			eq.d_childTypes = new HashMap<>(d_childTypes);
 
 			eq.d_containedEquipment =
-					new ArrayList<Equipment>(d_containedEquipment);
+                    new ArrayList<>(d_containedEquipment);
 
 			eq.assocSupt = assocSupt.clone();
 			eq.getEquipmentHead(1).removeListFor(ListKey.EQMOD);
@@ -3031,21 +3015,6 @@ public final class Equipment extends PObject implements Serializable,
 		return getName().compareToIgnoreCase(e.getName());
 	}
 
-	/**
-	 * DR for equipment
-	 * 
-	 * @param aPC The PC thta has the Equipment
-	 * @return Integer
-	 */
-	public Integer eDR(final PlayerCharacter aPC)
-	{
-		return Math.max(0, getSafe(IntegerKey.EDR)
-			+ (int) bonusTo(aPC, "EQMARMOR", "EDR", true));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -3114,7 +3083,7 @@ public final class Equipment extends PObject implements Serializable,
 		}
 		else
 		{
-			base = baseItem.resolvesTo();
+			base = baseItem.get();
 			sbuf.append(base.getKeyName());
 			sbuf.append(sep).append("NAME").append(endPart).append(
 				toString(false));
@@ -3130,8 +3099,8 @@ public final class Equipment extends PObject implements Serializable,
 				this.getKeyName());
 		}
 
-		SizeAdjustment thisSize = getSafe(ObjectKey.SIZE).resolvesTo();
-		if (!thisSize.equals(base.getSafe(ObjectKey.SIZE).resolvesTo()))
+		SizeAdjustment thisSize = getSafe(ObjectKey.SIZE).get();
+		if (!thisSize.equals(base.getSafe(ObjectKey.SIZE).get()))
 		{
 			sbuf.append(sep).append("SIZE").append(endPart).append(
 				thisSize.getKeyName());
@@ -3139,21 +3108,21 @@ public final class Equipment extends PObject implements Serializable,
 
 		String string1 = getEqModifierString(true); // key1.key2|assoc1|assoc2.key3.key4
 
-		if (string1.length() > 0)
+		if (!string1.isEmpty())
 		{
 			sbuf.append(sep).append("EQMOD").append(endPart).append(string1);
 		}
 
 		String string2 = getEqModifierString(false); // key1.key2|assoc1|assoc2.key3.key4
 
-		if (string2.length() > 0)
+		if (!string2.isEmpty())
 		{
 			sbuf.append(sep).append("ALTEQMOD").append(endPart).append(string2);
 		}
 
 		String string3 = getRawSpecialProperties();
 
-		if ((string3.length() > 0)
+		if ((!string3.isEmpty())
 			&& !string3.equals(base.getRawSpecialProperties()))
 		{
 			sbuf.append(sep).append("SPROP").append(endPart).append(string3);
@@ -3168,9 +3137,6 @@ public final class Equipment extends PObject implements Serializable,
 		return sbuf.toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
@@ -3358,7 +3324,7 @@ public final class Equipment extends PObject implements Serializable,
 		CDOMSingleRef<SizeAdjustment> csr = get(ObjectKey.CUSTOMSIZE);
 		if (csr != null)
 		{
-			SizeAdjustment customSize = csr.resolvesTo();
+			SizeAdjustment customSize = csr.get();
 			if (!getSafe(ObjectKey.SIZE).equals(customSize))
 			{
 				resizeItem(pc, customSize);
@@ -3407,7 +3373,7 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public String moveString()
 	{
-		if (moveString.length() > 0)
+		if (!moveString.isEmpty())
 		{
 			final Load eqLoad;
 
@@ -3490,12 +3456,16 @@ public final class Equipment extends PObject implements Serializable,
 	public String nameItemFromModifiers(final PlayerCharacter pc)
 	{
 
-		final String itemName = getItemNameFromModifiers();
+		final String itemName = getItemNameFromModifiers(getBaseItemName());
 		setDefaultCrit(pc);
 		setName(itemName);
+		String itemKey =
+				getItemNameFromModifiers(getBaseItemKeyName()).replaceAll(
+					"[^A-Za-z0-9/_() +-]", "_");
+		setKeyName(itemKey);
 		remove(StringKey.OUTPUT_NAME);
 
-		return getName();
+		return getKeyName();
 	}
 
 	/**
@@ -3597,6 +3567,7 @@ public final class Equipment extends PObject implements Serializable,
 		{
 			EquipmentHead head = getEquipmentHead(bPrimary ? 1 : 2);
 			head.removeFromListFor(ListKey.EQMOD, aMod);
+			head.removeVarModifiers(pc.getCharID(), aMod);
 			if (bPrimary)
 			{
 				usePrimaryCache = false;
@@ -3606,7 +3577,7 @@ public final class Equipment extends PObject implements Serializable,
 				useSecondaryCache = false;
 			}
 
-			restoreEqModsAfterRemove(eqMod, bPrimary, head);
+			restoreEqModsAfterRemove(pc, eqMod, bPrimary, head);
 			
 			setDirty(true);
 		}
@@ -3619,8 +3590,9 @@ public final class Equipment extends PObject implements Serializable,
 	 * @param bPrimary Which head is this for?
 	 * @param head The head being updated.
 	 */
-	private void restoreEqModsAfterRemove(final EquipmentModifier eqMod,
-		final boolean bPrimary, EquipmentHead head)
+	private void restoreEqModsAfterRemove(PlayerCharacter pc,
+		final EquipmentModifier eqMod, final boolean bPrimary,
+		EquipmentHead head)
 	{
 		CDOMSingleRef<Equipment> baseItem = get(ObjectKey.BASE_ITEM);
 		if (baseItem == null)
@@ -3637,15 +3609,16 @@ public final class Equipment extends PObject implements Serializable,
 			//
 			for (CDOMSingleRef<EquipmentModifier> ref : replaces)
 			{
-				EquipmentModifier mod = ref.resolvesTo();
+				EquipmentModifier mod = ref.get();
 				String key = mod.getKeyName();
-				for (EquipmentModifier baseMod : baseItem.resolvesTo()
+				for (EquipmentModifier baseMod : baseItem.get()
 					.getEquipmentHead(bPrimary ? 1 : 2)
 					.getSafeListFor(ListKey.EQMOD))
 				{
 					if (key.equalsIgnoreCase(baseMod.getKeyName()))
 					{
 						head.addToListFor(ListKey.EQMOD, baseMod);
+						head.addVarModifiers(pc.getCharID(), baseMod);
 					}
 				}
 			}
@@ -3653,25 +3626,27 @@ public final class Equipment extends PObject implements Serializable,
 
 		if (eqMod.isType("BaseMaterial"))
 		{
-			for (EquipmentModifier baseMod : baseItem.resolvesTo()
+			for (EquipmentModifier baseMod : baseItem.get()
 				.getEquipmentHead(bPrimary ? 1 : 2)
 				.getSafeListFor(ListKey.EQMOD))
 			{
 				if (baseMod.isType("BaseMaterial"))
 				{
 					head.addToListFor(ListKey.EQMOD, baseMod);
+					head.addVarModifiers(pc.getCharID(), baseMod);
 				}
 			}
 		}
 		else if (eqMod.isType("MagicalEnhancement"))
 		{
-			for (EquipmentModifier baseMod : baseItem.resolvesTo()
+			for (EquipmentModifier baseMod : baseItem.get()
 				.getEquipmentHead(bPrimary ? 1 : 2)
 				.getSafeListFor(ListKey.EQMOD))
 			{
 				if (baseMod.isType("MagicalEnhancement"))
 				{
 					head.addToListFor(ListKey.EQMOD, baseMod);
+					head.addVarModifiers(pc.getCharID(), baseMod);
 				}
 			}
 		}
@@ -3679,7 +3654,7 @@ public final class Equipment extends PObject implements Serializable,
 
 	/**
 	 * Remove a list equipment modifiers and their associated information eg:
-	 * Bane|Vermin|Fey.Keen.Vorpal.ABILITYPLUS|CHA=+6 <p/> Removes a feature
+	 * Bane|Vermin|Fey.Keen.Vorpal.ABILITYPLUS|CHA=+6 <p> Removes a feature
 	 * from the EqModifiers attribute of the Equipment object
 	 * 
 	 * @param aString
@@ -3733,19 +3708,19 @@ public final class Equipment extends PObject implements Serializable,
 			}
 			else
 			{
-				eq = baseItem.resolvesTo();
+				eq = baseItem.get();
 			}
 
 			put(ObjectKey.CURRENT_COST, eq.getCostAdjustedForSize(pc, newSize));
 			put(ObjectKey.WEIGHT, eq.getWeightAdjustedForSize(pc, newSize));
 			adjustACForSize(pc, eq, newSize);
 			String dam = eq.getDamageAdjustedForSize(newSize, true);
-			if (dam != null && dam.length() > 0)
+			if (dam != null && !dam.isEmpty())
 			{
 				getEquipmentHead(1).put(StringKey.DAMAGE, dam);
 			}
 			String adam = eq.getDamageAdjustedForSize(newSize, false);
-			if (adam != null && adam.length() > 0)
+			if (adam != null && !adam.isEmpty())
 			{
 				getEquipmentHead(2).put(StringKey.DAMAGE, adam);
 			}
@@ -3832,21 +3807,8 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public int sizeInt()
 	{
-		SizeAdjustment size = getSafe(ObjectKey.SIZE).resolvesTo();
+		SizeAdjustment size = getSafe(ObjectKey.SIZE).get();
 		return size.get(IntegerKey.SIZEORDER);
-	}
-
-	/**
-	 * Get the percentage chance of Spell failure while using this Equipment
-	 * 
-	 * @param pc The PC carrying the item
-	 * 
-	 * @return The Spell failure percentage
-	 */
-	public Integer spellFailure(final PlayerCharacter pc)
-	{
-		return Math.max(0, getSafe(IntegerKey.SPELL_FAILURE)
-			+ (int) bonusTo(pc, "EQMARMOR", "SPELLFAILURE", true));
 	}
 
 	/**
@@ -3887,7 +3849,7 @@ public final class Equipment extends PObject implements Serializable,
 				buffer.append(getDisplayName());
 			}
 
-			if (modifiedName.length() > 0)
+			if (!modifiedName.isEmpty())
 			{
 				buffer.append(" (").append(modifiedName).append(")");
 			}
@@ -4000,12 +3962,12 @@ public final class Equipment extends PObject implements Serializable,
 	/**
 	 * @param aPC The PC carrying the item
 	 */
-	private void setDefaultCrit(final PlayerCharacter aPC)
+	public void setDefaultCrit(final PlayerCharacter aPC)
 	{
 
 		if (isWeapon())
 		{
-			if (aPC != null && aPC.getCritRange(this, true) == 0)
+			if (aPC != null && EqToken.getOldBonusedCritRange(aPC, this, true) == 0)
 			{
 				getEquipmentHead(1).put(IntegerKey.CRIT_RANGE, 1);
 			}
@@ -4075,7 +4037,6 @@ public final class Equipment extends PObject implements Serializable,
 	/**
 	 * Sets the base attribute of the Equipment object
 	 * 
-	 * @param pc The PC carrying the item 
 	 * Todo remove the pc parameter, it is unused.
 	 */
 	public void setBase()
@@ -4101,7 +4062,7 @@ public final class Equipment extends PObject implements Serializable,
 			CDOMSingleRef<Equipment> baseItem = get(ObjectKey.BASE_ITEM);
 			if (baseItem != null)
 			{
-				Equipment eq = baseItem.resolvesTo();
+				Equipment eq = baseItem.get();
 				CDOMSingleRef<WeaponProf> wpRef = eq.get(ObjectKey.WEAPON_PROF);
 				if (wpRef != null)
 				{
@@ -4128,7 +4089,7 @@ public final class Equipment extends PObject implements Serializable,
 			CDOMSingleRef<WeaponProf> wpRef = get(ObjectKey.WEAPON_PROF);
 			if (wpRef != null)
 			{
-				return wpRef.resolvesTo().getKeyName();
+				return wpRef.get().getKeyName();
 			}
 		}
 		else if (isArmor())
@@ -4196,7 +4157,7 @@ public final class Equipment extends PObject implements Serializable,
 		//
 		// Scale everything to medium before conversion
 		//
-		SizeAdjustment saBase = getSafe(ObjectKey.BASESIZE).resolvesTo();
+		SizeAdjustment saBase = getSafe(ObjectKey.BASESIZE).get();
 
 		if (saSize == null)
 		{
@@ -4335,7 +4296,7 @@ public final class Equipment extends PObject implements Serializable,
 		// out the same reguardless of the order we've added the modifiers
 		//
 		final List<EquipmentModifier> eqList =
-				new ArrayList<EquipmentModifier>(eqModList);
+                new ArrayList<>(eqModList);
 		Globals.sortPObjectList(eqList);
 
 		final StringBuilder sMod = new StringBuilder(70);
@@ -4344,7 +4305,7 @@ public final class Equipment extends PObject implements Serializable,
 		{
 			final String modDesc =
 					eqMod.getSafe(ObjectKey.NAME_OPT).returnName(this, eqMod);
-			if (sMod.length() > 0 && modDesc.length() > 0)
+			if (sMod.length() > 0 && !modDesc.isEmpty())
 			{
 				sMod.append('/');
 			}
@@ -4368,7 +4329,7 @@ public final class Equipment extends PObject implements Serializable,
 		final Iterable<EquipmentModifier> eqModList, final PlayerCharacter pc)
 	{
 
-		final List<String> saList = new ArrayList<String>();
+		final List<String> saList = new ArrayList<>();
 
 		for (EquipmentModifier eqMod : eqModList)
 		{
@@ -4482,7 +4443,7 @@ public final class Equipment extends PObject implements Serializable,
 	}
 
 	/**
-	 * same as getSpecialAbilityList except if if you have the same ability
+	 * same as getSpecialAbilityList except if you have the same ability
 	 * twice, it only lists it once with (2) at the end.
 	 * 
 	 * @param abilityList The list of abilities
@@ -4492,7 +4453,7 @@ public final class Equipment extends PObject implements Serializable,
 		final List<String> abilityList)
 	{
 
-		final List<String> sortList = new ArrayList<String>();
+		final List<String> sortList = new ArrayList<>();
 		final int[] numTimes = new int[abilityList.size()];
 
 		for (int i = 0; i < abilityList.size(); i++)
@@ -4516,7 +4477,7 @@ public final class Equipment extends PObject implements Serializable,
 			}
 		}
 
-		final List<String> retList = new ArrayList<String>();
+		final List<String> retList = new ArrayList<>();
 		for (int i = 0; i < sortList.size(); i++)
 		{
 			String ability = sortList.get(i);
@@ -4546,7 +4507,7 @@ public final class Equipment extends PObject implements Serializable,
 			return BigDecimal.ZERO;
 		}
 
-		final SizeAdjustment currSA = getSafe(ObjectKey.SIZE).resolvesTo();
+		final SizeAdjustment currSA = getSafe(ObjectKey.SIZE).get();
 
 		BigDecimal weight = getBaseWeight();
 		if ((newSA == null) || (currSA == null))
@@ -4588,7 +4549,7 @@ public final class Equipment extends PObject implements Serializable,
 		if ((getRawBonusList(aPC) != null) && isArmor())
 		{
 			double mult = 1.0;
-			final SizeAdjustment currSA = baseEq.getSafe(ObjectKey.SIZE).resolvesTo();
+			final SizeAdjustment currSA = baseEq.getSafe(ObjectKey.SIZE).get();
 
 			if ((newSA != null) && aPC != null)
 			{
@@ -4713,13 +4674,13 @@ public final class Equipment extends PObject implements Serializable,
 	{
 
 		final List<EquipmentModifier> clonedList =
-				new ArrayList<EquipmentModifier>();
+                new ArrayList<>();
 
 		for (EquipmentModifier eqMod : getEqModifierList(primary))
 		{
 
 			// only make a copy if we need to add qualifiers to modifier
-			if (eqMod.getSafe(StringKey.CHOICE_STRING).length() != 0)
+			if (!eqMod.getSafe(StringKey.CHOICE_STRING).isEmpty())
 			{
 				EquipmentModifier newEqMod = eqMod.clone();
 				other.assocSupt.convertAssociations(eqMod, newEqMod);
@@ -4751,7 +4712,7 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	private SortedSet<String> eqTypeList()
 	{
-		return new TreeSet<String>(typeList());
+		return new TreeSet<>(typeList());
 	}
 
 	/**
@@ -4835,7 +4796,7 @@ public final class Equipment extends PObject implements Serializable,
 
 		if (getChildType("Total") == null)
 		{
-			setChildType("Total", 0f);
+			setChildType("Total", 0.0f);
 		}
 
 		String canContain = "";
@@ -4926,10 +4887,10 @@ public final class Equipment extends PObject implements Serializable,
 	{
 
 		List<List<EquipmentModifier>> modListArray =
-				new ArrayList<List<EquipmentModifier>>();
+                new ArrayList<>();
 		for (int i = 0; i < EqModFormatCat.values().length; i++)
 		{
-			modListArray.add(new ArrayList<EquipmentModifier>());
+			modListArray.add(new ArrayList<>());
 		}
 
 		return modListArray;
@@ -5041,10 +5002,10 @@ public final class Equipment extends PObject implements Serializable,
 		}
 		else if (!isDouble())
 		{
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 
-		Set<String> calculatedTypeList = new LinkedHashSet<String>();
+		Set<String> calculatedTypeList = new LinkedHashSet<>();
 		if (initializingList != null)
 		{
 			for (Type t : initializingList)
@@ -5052,7 +5013,7 @@ public final class Equipment extends PObject implements Serializable,
 				calculatedTypeList.add(t.getComparisonString());
 			}
 		}
-		final Collection<String> modTypeList = new ArrayList<String>();
+		final Collection<String> modTypeList = new ArrayList<>();
 
 		//
 		// Add in all type modfiers from "ADDTYPE" modifier
@@ -5091,12 +5052,12 @@ public final class Equipment extends PObject implements Serializable,
 			// not in the equipment modifier list
 			//
 			Set<String> newTypeList =
-					new LinkedHashSet<String>(calculatedTypeList);
+                    new LinkedHashSet<>(calculatedTypeList);
 			for (ChangeArmorType cat : eqMod.getSafeListFor(ListKey.ARMORTYPE))
 			{
 				List<String> tempTypeList = cat.applyProcessor(newTypeList);
 				LinkedHashSet<String> tempTypeSet =
-						new LinkedHashSet<String>(tempTypeList);
+                        new LinkedHashSet<>(tempTypeList);
 				boolean noMatch =
 						newTypeList.size() != tempTypeList.size()
 							|| newTypeList.equals(tempTypeSet);
@@ -5108,7 +5069,7 @@ public final class Equipment extends PObject implements Serializable,
 			}
 
 			Collection<String> removedTypeList =
-					new ArrayList<String>(calculatedTypeList);
+                    new ArrayList<>(calculatedTypeList);
 			removedTypeList.removeAll(newTypeList);
 			modTypeList.removeAll(removedTypeList);
 			calculatedTypeList = newTypeList;
@@ -5142,7 +5103,7 @@ public final class Equipment extends PObject implements Serializable,
 		// Make sure MAGIC tag is the 1st entry
 		//
 		List<String> resultingTypeList =
-				new ArrayList<String>(calculatedTypeList);
+                new ArrayList<>(calculatedTypeList);
 		final int idx = resultingTypeList.indexOf("MAGIC");
 
 		if (idx > 0)
@@ -5356,7 +5317,7 @@ public final class Equipment extends PObject implements Serializable,
 		String upName = thisName.toUpperCase();
 
 		// Get the full name of the current size
-		SizeAdjustment sa1 = getSafe(ObjectKey.SIZE).resolvesTo();
+		SizeAdjustment sa1 = getSafe(ObjectKey.SIZE).get();
 		String upThisSize = sa1.getDisplayName().toUpperCase();
 
 		int start = upName.indexOf(upThisSize);
@@ -5399,52 +5360,12 @@ public final class Equipment extends PObject implements Serializable,
 	}
 
 	/**
-	 * Gets the critMult attribute of the Equipment object
-	 * 
-	 * @return The critMult value
-	 */
-	public String getCritMult()
-	{
-		return multAsString(getCritMultiplier());
-	}
-
-	/**
-	 * Gets the altCritMult attribute of the Equipment object
-	 * 
-	 * @return The altCritMult value
-	 */
-	public String getAltCritMult()
-	{
-		return multAsString(getAltCritMultiplier());
-	}
-
-	/**
-	 * Converts the critical multiplier into a dispalyable string, i.e.
-	 * blank for zero, - for negative and puts an x before positive
-	 * numbers e.g. x3
-	 *
-	 * @param mult The critical multiplier
-	 * @return     The string to display
-	 */
-	private static String multAsString(final int mult)
-	{
-		if (mult == 0)
-		{
-			return "";
-		}
-		else if (mult < 0)
-		{
-			return "-";
-		}
-
-		return "x" + Integer.toString(mult);
-	}
-
-	/**
 	 * Gets the critMultiplier attribute of the Equipment object
 	 * 
 	 * @return The critMultiplier value
+	 * @deprecated due to CRITMULT code control
 	 */
+	@Deprecated
 	public int getCritMultiplier()
 	{
 		int mult = getHeadInfo(1, IntegerKey.CRIT_MULT);
@@ -5464,7 +5385,9 @@ public final class Equipment extends PObject implements Serializable,
 	 * Gets the altCritMultiplier attribute of the Equipment object
 	 * 
 	 * @return The altCritMultiplier value
+	 * @deprecated due to CRITMULT code control
 	 */
+	@Deprecated
 	public int getAltCritMultiplier()
 	{
 		int mult = getHeadInfo(2, IntegerKey.CRIT_MULT);
@@ -5480,6 +5403,10 @@ public final class Equipment extends PObject implements Serializable,
 		return mult;
 	}
 
+	/**
+	 * @deprecated due to CRITMULT and CRITRANGE code controls
+	 */
+	@Deprecated
 	private int getHeadInfo(int headnum, IntegerKey ik)
 	{
 		EquipmentHead head = getEquipmentHeadReference(headnum);
@@ -5603,7 +5530,7 @@ public final class Equipment extends PObject implements Serializable,
 	public WieldCategory getEffectiveWieldCategory(final PlayerCharacter aPC)
 	{
 		CDOMSingleRef<WeaponProf> ref = get(ObjectKey.WEAPON_PROF);
-		WeaponProf wp = ref == null ? null : ref.resolvesTo();
+		WeaponProf wp = ref == null ? null : ref.get();
 
 		WieldCategory wCat = get(ObjectKey.WIELD);
 		if (wCat != null && !Globals.checkRule(RuleConstants.SIZEOBJ))
@@ -5729,22 +5656,6 @@ public final class Equipment extends PObject implements Serializable,
 	// Protective Item Support
 	//
 	/**
-	 * Gets the AC attribute of the Equipment object
-	 * 
-	 * @param aPC The PC that has the Equipment
-	 * 
-	 * @return The acBonus value
-	 */
-	public Integer getACBonus(final PlayerCharacter aPC)
-	{
-		//TODO BONUS:EQMARMOR|ACBONUS|x should be documented.
-		int dbon = (int) bonusTo(aPC, "COMBAT", "AC", true);
-		dbon += (int) bonusTo(aPC, "EQMARMOR", "ACBONUS", true);
-
-		return dbon;
-	}
-
-	/**
 	 * Gets the acMod attribute of the Equipment object
 	 * 
 	 * @param aPC The PC that has the Equipment
@@ -5753,6 +5664,12 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public Integer getACMod(final PlayerCharacter aPC)
 	{
+		String acMod = aPC.getControl(CControl.EQACMOD);
+		if (acMod != null)
+		{
+			Object o = aPC.getLocal(this, acMod);
+			return ((Number) o).intValue();
+		}
 		//TODO This should be documented
 		return (int) bonusTo(aPC, "EQMARMOR", "AC", true)
 			+ (int) bonusTo(aPC, "COMBAT", "AC", true);
@@ -5956,7 +5873,7 @@ public final class Equipment extends PObject implements Serializable,
 	{
 
 		final List<Equipment> contents =
-				new ArrayList<Equipment>(getContents());
+                new ArrayList<>(getContents());
 
 		if (contents.size() > 0)
 		{
@@ -6105,7 +6022,7 @@ public final class Equipment extends PObject implements Serializable,
 	public Float getContainedWeight(final PlayerCharacter aPC,
 		final boolean effective)
 	{
-		Float total = 0f;
+		Float total = 0.0f;
 
 		if ((getSafe(ObjectKey.CONTAINER_CONSTANT_WEIGHT) && !effective)
 			|| (getChildCount() == 0))
@@ -6153,7 +6070,7 @@ public final class Equipment extends PObject implements Serializable,
 	{
 
 		final List<Equipment> contents =
-				new ArrayList<Equipment>(getContents());
+                new ArrayList<>(getContents());
 
 		// Separate the Type from the sequencer (Liquid from 3)
 		int numCharToRemove = 0;
@@ -6223,7 +6140,7 @@ public final class Equipment extends PObject implements Serializable,
 	}
 
 	/**
-	 * Convenience method. <p/> <br>
+	 * Convenience method. <p> <br>
 	 * author: Thomas Behr 27-03-02
 	 * 
 	 * @return a list with all Equipment objects this container holds; if this
@@ -6232,7 +6149,7 @@ public final class Equipment extends PObject implements Serializable,
 	public Collection<Equipment> getContents()
 	{
 
-		final Collection<Equipment> contents = new ArrayList<Equipment>();
+		final Collection<Equipment> contents = new ArrayList<>();
 
 		for (int it = 0; it < getContainedEquipmentCount(); ++it)
 		{
@@ -6263,7 +6180,7 @@ public final class Equipment extends PObject implements Serializable,
 	}
 
 	/**
-	 * Convenience method. <p/> <br>
+	 * Convenience method. <p> <br>
 	 * author: Thomas Behr 27-03-02
 	 * 
 	 * @return <code>true</code>, if this instance is a container;
@@ -6274,7 +6191,7 @@ public final class Equipment extends PObject implements Serializable,
 		return acceptsChildren();
 	}
 
-	List<EquipmentHead> heads = new ArrayList<EquipmentHead>();
+	List<EquipmentHead> heads = new ArrayList<>();
 
 	public EquipmentHead getEquipmentHead(int index)
 	{
@@ -6320,6 +6237,11 @@ public final class Equipment extends PObject implements Serializable,
 		}
 		return null;
 	}
+	
+	public List<EquipmentHead> getEquipmentHeads()
+	{
+		return new ArrayList<>(heads);
+	}
 
 	/**
 	 * Reduce/increase damage for modified size as per DMG p.162
@@ -6337,7 +6259,7 @@ public final class Equipment extends PObject implements Serializable,
 		if (!"special".equalsIgnoreCase(aDamage) && !"-".equals(aDamage))
 		{
 			return Globals
-				.adjustDamage(aDamage, getSafe(ObjectKey.SIZE).resolvesTo(), aSize);
+				.adjustDamage(aDamage, getSafe(ObjectKey.SIZE).get(), aSize);
 		}
 
 		return aDamage;
@@ -6374,64 +6296,7 @@ public final class Equipment extends PObject implements Serializable,
 		return adjustDamage(dam, aSize);
 	}
 
-	/**
-	 * Gets the range attribute of the Equipment object
-	 *
-	 * @param pc The PC that has this Equipment
-	 * 
-	 * @return The range value
-	 */
-	public Integer getRange(final PlayerCharacter pc)
-	{
-		int range = getSafe(IntegerKey.RANGE);
-
-		if (range == 0)
-		{
-			final String aRange = getWeaponInfo("RANGE", true);
-
-			if (aRange.length() != 0)
-			{
-				range = Integer.valueOf(aRange);
-			}
-		}
-
-		int r = range + (int) bonusTo(pc, "EQMWEAPON", "RANGEADD", true);
-		final int i = (int) bonusTo(pc, "EQMWEAPON", "RANGEMULT", true);
-		double rangeMult = 1.0;
-
-		if (i > 0)
-		{
-			rangeMult += (i - 1);
-		}
-
-		int postAdd = 0;
-
-		if (pc != null)
-		{
-			if (isThrown())
-			{
-				r += (int) pc.getTotalBonusTo("RANGEADD", "THROWN");
-				postAdd = (int) pc.getTotalBonusTo("POSTRANGEADD", "THROWN");
-				rangeMult +=
-						((int) pc.getTotalBonusTo("RANGEMULT", "THROWN") / 100.0);
-			}
-			else if (isProjectile())
-			{
-				r += (int) pc.getTotalBonusTo("RANGEADD", "PROJECTILE");
-				postAdd =
-						(int) pc.getTotalBonusTo("POSTRANGEADD", "PROJECTILE");
-				rangeMult +=
-						((int) pc.getTotalBonusTo("RANGEMULT", "PROJECTILE") / 100.0);
-			}
-		}
-
-		r *= rangeMult;
-		r += postAdd;
-
-		return r;
-	}
-
-	private String getWeaponInfo(final String infoType, final boolean bPrimary)
+	public String getWeaponInfo(final String infoType, final boolean bPrimary)
 	{
 		final String it = infoType + "|";
 		final EquipmentModifier eqMod =
@@ -6474,7 +6339,7 @@ public final class Equipment extends PObject implements Serializable,
 			}
 			else
 			{
-				return ref.resolvesTo();
+				return ref.get();
 			}
 		}
 		return null;
@@ -6503,7 +6368,7 @@ public final class Equipment extends PObject implements Serializable,
 			}
 			else
 			{
-				return ref.resolvesTo();
+				return ref.get();
 			}
 		}
 		return null;
@@ -6545,7 +6410,7 @@ public final class Equipment extends PObject implements Serializable,
 
 	public List<String> getAssociationList(CDOMObject obj)
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		List<FixedStringList> assocList =
 				assocSupt.getAssocList(obj, AssociationListKey.CHOICES);
 		if (assocList != null)
@@ -6598,7 +6463,7 @@ public final class Equipment extends PObject implements Serializable,
 	{
 		if (bonusMap == null)
 		{
-			bonusMap = new HashMap<String, String>();
+			bonusMap = new HashMap<>();
 		}
 
 		return bonusMap;
@@ -6762,7 +6627,7 @@ public final class Equipment extends PObject implements Serializable,
 	 */
 	public void addWeaponToLocation(Float num, EquipmentLocation eLoc, PlayerCharacter aPC)
 	{
-		Float numEquipped = (eLoc == EquipmentLocation.EQUIPPED_TWO_HANDS) ? 2f : num;
+		Float numEquipped = (eLoc == EquipmentLocation.EQUIPPED_TWO_HANDS) ? 2.0f : num;
 		setNumberEquipped(numEquipped.intValue());
 
 		setLocation(eLoc);
@@ -6792,7 +6657,7 @@ public final class Equipment extends PObject implements Serializable,
 		setQty(num);
 		setIsEquipped(equip, aPC);
 
-		Float numCarried = (eLoc == EquipmentLocation.NOT_CARRIED) ? 0f : num;
+		Float numCarried = (eLoc == EquipmentLocation.NOT_CARRIED) ? 0.0f : num;
 
 		setNumberCarried(numCarried);
 	}
@@ -6843,17 +6708,18 @@ public final class Equipment extends PObject implements Serializable,
 		removeListFor(ListKey.TEMP_BONUS);
 	}
 
-	/**
-	 * Get the list of bonuses as a String
-	 * @param pc TODO
-	 * @param aString
-	 * @return the list of bonuses as a String
-	 */
-	public boolean hasBonusWithInfo(PlayerCharacter pc, final String aString)
+	public boolean altersAC(PlayerCharacter pc)
 	{
+		String alterAC = pc.getControl(CControl.ALTERSAC);
+		if (alterAC != null)
+		{
+			Object o = pc.getLocal(this, alterAC);
+			return ((Boolean) o).booleanValue();
+		}
+
 		for (BonusObj bonus : getRawBonusList(pc))
 		{
-			if (bonus.getBonusInfo().equalsIgnoreCase(aString))
+			if (bonus.getBonusInfo().equalsIgnoreCase("AC"))
 			{
 				return true;
 			}
@@ -6869,14 +6735,11 @@ public final class Equipment extends PObject implements Serializable,
 		return type.split("\\.");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-    @Override
+	@Override
 	public List<String> getTypesForDisplay()
 	{
 		List<Type> trueTypeList = getTrueTypeList(true);
-		List<String> result = new ArrayList<String>(trueTypeList.size());
+		List<String> result = new ArrayList<>(trueTypeList.size());
 		for (Type type : trueTypeList)
 		{
 			result.add(type.toString());
@@ -6935,6 +6798,21 @@ public final class Equipment extends PObject implements Serializable,
 		// No icon can be found
 		return null; 
 	}
-	
 
+    public boolean isTestingPrimary()
+    {
+    	return bonusPrimary;
+    }
+
+	@Override
+	public String getLocalScopeName()
+	{
+		return "EQUIPMENT";
+	}
+
+	public Object getLocalVariable(CharID id, String varName)
+	{
+		ResultFacet resultFacet = FacetLibrary.getFacet(ResultFacet.class);
+		return resultFacet.getLocalVariable(id, this, varName);
+	}
 }

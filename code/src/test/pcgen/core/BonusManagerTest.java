@@ -16,15 +16,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 31/03/2013 10:09:50 PM
  *
- * $Id$
  */
 package pcgen.core;
 
-
-import org.junit.Before;
-import org.junit.Test;
 
 import pcgen.AbstractCharacterTestCase;
 import pcgen.cdom.enumeration.ListKey;
@@ -33,25 +28,22 @@ import pcgen.core.bonus.BonusObj;
 import pcgen.rules.context.LoadContext;
 import pcgen.util.TestHelper;
 
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * Test class for BonusManager.
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class BonusManagerTest extends AbstractCharacterTestCase
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	@Before
-	protected void setUp() throws Exception
+	public void setUp() throws Exception
 	{
 		super.setUp();
 	}

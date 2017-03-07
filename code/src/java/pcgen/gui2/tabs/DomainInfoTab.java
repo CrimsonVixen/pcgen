@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Aug 8, 2010, 4:29:55 PM
  */
 package pcgen.gui2.tabs;
 
@@ -48,7 +47,6 @@ import pcgen.facade.core.InfoFacade;
 import pcgen.facade.core.InfoFactory;
 import pcgen.facade.util.DefaultListFacade;
 import pcgen.facade.util.ListFacade;
-import pcgen.facade.util.ListFacades;
 import pcgen.facade.util.ReferenceFacade;
 import pcgen.facade.util.event.ListEvent;
 import pcgen.facade.util.event.ListListener;
@@ -84,7 +82,6 @@ import pcgen.util.enumeration.Tab;
 /**
  * This component handles diety and domain selection for a character.
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 @SuppressWarnings("serial")
 public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab, TodoHandler
@@ -100,13 +97,14 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 	private final InfoPane domainInfo;
 	private DisplayableFilter<CharacterFacade, DomainFacade> domainFilter;
 	private static final Object COLUMN_ID = new Object();
-	private final FilterButton<Object, DomainFacade> qFilterButton;
+	private final FilterButton<Object, DeityFacade> qDeityButton;
+	private final FilterButton<Object, DomainFacade> qDomainButton;
 	private final QualifiedTreeCellRenderer qualifiedRenderer;
 
 	public DomainInfoTab()
 	{
 		super("Domain");
-		this.deityTable = new FilteredTreeViewTable<Object, DeityFacade>();
+		this.deityTable = new FilteredTreeViewTable<>();
 		this.domainTable = new JDynamicTable();
 		this.domainRowHeaderTable = TableUtils.createDefaultTable();
 		this.selectedDeity = new JLabel();
@@ -114,7 +112,8 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		this.selectedDomain = new JLabel();
 		this.deityInfo = new InfoPane("in_deityInfo"); //$NON-NLS-1$
 		this.domainInfo = new InfoPane("in_domainInfo"); //$NON-NLS-1$
-		this.qFilterButton = new FilterButton<Object, DomainFacade>("DomainQualified");
+		this.qDeityButton = new FilterButton<>("DeityQualified");
+		this.qDomainButton = new FilterButton<>("DomainQualified");
 		this.qualifiedRenderer = new QualifiedTreeCellRenderer();
 		initComponents();
 	}
@@ -125,8 +124,10 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 
 		deityTable.setTreeCellRenderer(qualifiedRenderer);
 		JPanel panel = new JPanel(new BorderLayout());
-		FilterBar<Object, DeityFacade> bar = new FilterBar<Object, DeityFacade>();
+		FilterBar<Object, DeityFacade> bar = new FilterBar<>();
 		bar.addDisplayableFilter(new SearchFilterPanel());
+		qDeityButton.setText(LanguageBundle.getString("in_igQualFilter")); //$NON-NLS-1$
+		bar.addDisplayableFilter(qDeityButton);
 		deityTable.setDisplayableFilter(bar);
 		panel.add(bar, BorderLayout.NORTH);
 
@@ -148,10 +149,10 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		splitPane.setLeftComponent(panel);
 
 		panel = new JPanel(new BorderLayout());
-		FilterBar<CharacterFacade, DomainFacade> dbar = new FilterBar<CharacterFacade, DomainFacade>();
+		FilterBar<CharacterFacade, DomainFacade> dbar = new FilterBar<>();
 		dbar.addDisplayableFilter(new SearchFilterPanel());
-		qFilterButton.setText(LanguageBundle.getString("in_igQualFilter")); //$NON-NLS-1$
-		dbar.addDisplayableFilter(qFilterButton);
+		qDomainButton.setText(LanguageBundle.getString("in_igQualFilter")); //$NON-NLS-1$
+		dbar.addDisplayableFilter(qDomainButton);
 		domainFilter = dbar;
 		panel.add(dbar, BorderLayout.NORTH);
 
@@ -159,6 +160,7 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		domainTable.setAutoCreateColumnsFromModel(false);
 		domainTable.setColumnModel(createDomainColumnModel());
+
 		JScrollPane scrollPane = TableUtils.createCheckBoxSelectionPane(domainTable, domainRowHeaderTable);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -177,7 +179,7 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		splitPane.setLeftComponent(deityInfo);
 		splitPane.setRightComponent(domainInfo);
 		setBottomComponent(splitPane);
-		setResizeWeight(.65);
+		setResizeWeight(0.65);
 	}
 
 	public DynamicTableColumnModel createDomainColumnModel()
@@ -187,6 +189,9 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		column.setHeaderValue(LanguageBundle.getString("in_domains")); //$NON-NLS-1$
 		model.addColumn(column, true, 150);
 		column = new TableColumn(1);
+		column.setHeaderValue(LanguageBundle.getString("in_descrip")); //$NON-NLS-1$
+		model.addColumn(column, false, 150);
+		column = new TableColumn(2);
 		column.setHeaderValue(LanguageBundle.getString("in_source")); //$NON-NLS-1$
 		model.addColumn(column, true, 150);
 		return model;
@@ -243,9 +248,6 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		return new TabTitle(Tab.DOMAINS);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void adviseTodo(String fieldName)
 	{
@@ -376,6 +378,10 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		{
 			if (!e.getValueIsAdjusting())
 			{
+				if (domainRowHeaderTable.isEditing())
+				{
+					domainRowHeaderTable.getCellEditor().cancelCellEditing();
+				}
 				int selectedRow = domainTable.getSelectedRow();
 				DomainFacade domain = null;
 				if (selectedRow != -1)
@@ -433,10 +439,19 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 	private class QualifiedFilterHandler
 	{
 
-		private final Filter<Object, DomainFacade> qFilter = new Filter<Object, DomainFacade>()
+		private final Filter<Object, DomainFacade> domainFilter = new Filter<Object, DomainFacade>()
 		{
 			@Override
 			public boolean accept(Object context, DomainFacade element)
+			{
+				return character.isQualifiedFor(element);
+			}
+
+		};
+		private final Filter<Object, DeityFacade> deityFilter = new Filter<Object, DeityFacade>()
+		{
+			@Override
+			public boolean accept(Object context, DeityFacade element)
 			{
 				return character.isQualifiedFor(element);
 			}
@@ -451,7 +466,8 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 
 		public void install()
 		{
-			qFilterButton.setFilter(qFilter);
+			qDomainButton.setFilter(domainFilter);
+			qDeityButton.setFilter(deityFilter);
 		}
 
 	}
@@ -512,9 +528,9 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 
 		public void install()
 		{
-			if (ref.getReference() != null)
+			if (ref.get() != null)
 			{
-				label.setText(ref.getReference().toString());
+				label.setText(ref.get().toString());
 			}
 			ref.addReferenceListener(this);
 		}
@@ -547,10 +563,10 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		public void install()
 		{
 			label.setFont(FontManipulation.plain(label.getFont()));
-			if (ref.getReference() != null)
+			if (ref.get() != null)
 			{
-				label.setText(ref.getReference().toString());
-				if (ref.getReference().isNamePI())
+				label.setText(ref.get().toString());
+				if (ref.get().isNamePI())
 				{
 					label.setFont(FontManipulation.bold_italic(label.getFont()));
 				}
@@ -583,21 +599,19 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 			@Override
 			public void elementAdded(ListEvent<DomainFacade> e)
 			{
-				int index = ListFacades.wrap(sortedList).indexOf(e.getElement());
-				DomainTableModel.this.fireTableCellUpdated(index, -1);
+				elementsChanged(e);
 			}
 
 			@Override
 			public void elementRemoved(ListEvent<DomainFacade> e)
 			{
-				int index = ListFacades.wrap(sortedList).indexOf(e.getElement());
-				DomainTableModel.this.fireTableCellUpdated(index, -1);
+				elementsChanged(e);
 			}
 
 			@Override
 			public void elementsChanged(ListEvent<DomainFacade> e)
 			{
-				DomainTableModel.this.fireTableRowsUpdated(0, sortedList.getSize() - 1);
+				fireTableRowsUpdated(0, sortedList.getSize() - 1);
 			}
 
 			@Override
@@ -634,6 +648,8 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 				case 0:
 					return element;
 				case 1:
+					return character.getInfoFactory().getDescription(element);
+				case 2:
 					return element.getSource();
 				default:
 					return null;
@@ -643,7 +659,7 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		@Override
 		public int getColumnCount()
 		{
-			return 2;
+			return 3;
 		}
 
 		@Override
@@ -653,7 +669,7 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 			{
 				return false;
 			}
-			if (character.getRemainingDomainSelectionsRef().getReference() > 0)
+			if (character.getRemainingDomainSelectionsRef().get() > 0)
 			{
 				return true;
 			}
@@ -682,9 +698,10 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 	{
 
 		private static final ListFacade<TreeView<DeityFacade>> views
-				= new DefaultListFacade<TreeView<DeityFacade>>(Arrays.asList(DeityTreeView.values()));
+				= new DefaultListFacade<>(Arrays.asList(DeityTreeView.values()));
 		private final List<DefaultDataViewColumn> columns = Arrays.asList(new DefaultDataViewColumn("in_alignLabel", Object.class), //$NON-NLS-1$
 				new DefaultDataViewColumn("in_domains", String.class), //$NON-NLS-1$
+				new DefaultDataViewColumn("in_descrip", String.class), //$NON-NLS-1$
 				new DefaultDataViewColumn("in_pantheon", String.class), //$NON-NLS-1$
 				new DefaultDataViewColumn("in_favoredWeapon", String.class), //$NON-NLS-1$
 				new DefaultDataViewColumn("in_sourceLabel", String.class)); //$NON-NLS-1$
@@ -722,12 +739,29 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		}
 
 		@Override
-		public List<?> getData(DeityFacade obj)
+		public Object getData(DeityFacade obj, int column)
 		{
-			return Arrays.asList(obj.getAlignment(),
-					infoFactory.getDomains(obj), infoFactory.getPantheons(obj),
-					infoFactory.getFavoredWeapons(obj),
-					obj.getSource());
+			switch(column){
+				case 0:
+					return obj.getAlignment();
+				case 1:
+					return infoFactory.getDomains(obj);
+				case 2:
+					return infoFactory.getDescription(obj);
+				case 3:
+					return infoFactory.getPantheons(obj);
+				case 4:
+					return infoFactory.getFavoredWeapons(obj);
+				case 5:
+					return obj.getSource();
+				default:
+					return null;
+			}
+		}
+
+		@Override
+		public void setData(Object value, DeityFacade element, int column)
+		{
 		}
 
 		@Override
@@ -736,9 +770,6 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 			return columns;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getPrefsKey()
 		{
@@ -755,7 +786,7 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		DOMAIN_NAME("in_domainDeity"), //$NON-NLS-1$
 		PANTHEON_NAME("in_pantheonDeity"), //$NON-NLS-1$
 		SOURCE_NAME("in_sourceDeity"); //$NON-NLS-1$
-		private String name;
+		private final String name;
 
 		private DeityTreeView(String name)
 		{
@@ -771,29 +802,29 @@ public class DomainInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		@Override
 		public List<TreeViewPath<DeityFacade>> getPaths(DeityFacade pobj)
 		{
-			List<TreeViewPath<DeityFacade>> paths = new ArrayList<TreeViewPath<DeityFacade>>();
+			List<TreeViewPath<DeityFacade>> paths = new ArrayList<>();
 			switch (this)
 			{
 				case NAME:
-					return Collections.singletonList(new TreeViewPath<DeityFacade>(pobj));
+					return Collections.singletonList(new TreeViewPath<>(pobj));
 				case DOMAIN_NAME:
 					for (String domain : pobj.getDomainNames())
 					{
-						paths.add(new TreeViewPath<DeityFacade>(pobj, domain));
+						paths.add(new TreeViewPath<>(pobj, domain));
 					}
 					return paths;
 				case ALIGNMENT_NAME:
-					return Collections.singletonList(new TreeViewPath<DeityFacade>(pobj,
-							pobj.getAlignment()));
+					return Collections.singletonList(new TreeViewPath<>(pobj,
+                            pobj.getAlignment()));
 				case PANTHEON_NAME:
 					for (String pantheon : pobj.getPantheons())
 					{
-						paths.add(new TreeViewPath<DeityFacade>(pobj, pantheon));
+						paths.add(new TreeViewPath<>(pobj, pantheon));
 					}
 					return paths;
 				case SOURCE_NAME:
-					return Collections.singletonList(new TreeViewPath<DeityFacade>(pobj,
-							pobj.getSourceForNodeDisplay()));
+					return Collections.singletonList(new TreeViewPath<>(pobj,
+                            pobj.getSourceForNodeDisplay()));
 				default:
 					throw new InternalError();
 			}

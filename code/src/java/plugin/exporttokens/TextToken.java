@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on October 15, 2003, 10:23 PM
  *
- * Current Ver: $Revision: 199 $
- * Last Editor: $Author: nuance $
- * Last Edited: $Date: 2006-03-15 10:11:06 +1100 (Wed, 15 Mar 2006) $
  *
  */
 package plugin.exporttokens;
@@ -39,7 +35,7 @@ import pcgen.io.exporttoken.Token;
 import pcgen.util.Logging;
 
 /**
- * <code>TextToken</code> produces the output for the output token TEXT.
+ * {@code TextToken} produces the output for the output token TEXT.
  * 
  * Possible tag formats are:<pre>
  * TEXT.x.y
@@ -202,7 +198,7 @@ public class TextToken extends Token
 			{
 				res.append(".");
 			}
-			if (sentence[i].trim().length() > 0)
+			if (!sentence[i].trim().isEmpty())
 			{
 				Matcher m = p.matcher(sentence[i]);
 				int pos = 0;

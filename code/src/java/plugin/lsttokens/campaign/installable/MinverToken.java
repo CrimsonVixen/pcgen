@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 27/12/2007
  *
- * $Id$
  */
 package plugin.lsttokens.campaign.installable;
 
@@ -31,13 +29,9 @@ import pcgen.persistence.lst.InstallLstToken;
 import pcgen.util.Logging;
 
 /**
- * <code>MinverToken</code> parses MINVER tokens in installable campaigns.
+ * {@code MinverToken} parses MINVER tokens in installable campaigns.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class MinverToken implements InstallLstToken
 {

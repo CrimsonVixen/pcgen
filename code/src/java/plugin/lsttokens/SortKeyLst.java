@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 28/05/2010 10:02:14 PM
  *
- * $Id$
  */
 package plugin.lsttokens;
 
@@ -38,15 +36,11 @@ import pcgen.rules.persistence.token.PostValidationToken;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>SortKeyLst</code> implements the global SORTKEY tag, which 
+ * The Class {@code SortKeyLst} implements the global SORTKEY tag, which
  * allows items to be sorted in a custom manner.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class SortKeyLst extends AbstractStringToken<CDOMObject> implements
 		CDOMPrimaryToken<CDOMObject>, PostValidationToken<CDOMObject>

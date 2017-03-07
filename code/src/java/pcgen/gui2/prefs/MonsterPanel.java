@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/07/2008 13:23:43
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
@@ -37,15 +35,11 @@ import pcgen.gui2.tools.Utility;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>MonsterPanel</code> is responsible for 
+ * The Class {@code MonsterPanel} is responsible for
  * displaying monster related preferences and allowing the 
  * preferences to be edited by the user.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public class MonsterPanel extends PCGenPrefsPanel

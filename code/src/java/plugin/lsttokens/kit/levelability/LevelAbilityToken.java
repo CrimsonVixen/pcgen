@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 6, 2006
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit.levelability;
@@ -76,7 +72,7 @@ public class LevelAbilityToken extends AbstractNonEmptyToken<KitLevelAbility>
 					+ value, context);
 		}
 		String className = value.substring(0, equalLoc);
-		if (className.length() == 0)
+		if (className.isEmpty())
 		{
 			return new ParseResult.Fail(getTokenName()
 					+ " requires a class name before =: " + value, context);

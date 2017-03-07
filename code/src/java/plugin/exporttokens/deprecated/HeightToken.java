@@ -16,16 +16,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens.deprecated;
 
 import pcgen.cdom.enumeration.BiographyField;
+import pcgen.core.Globals;
 import pcgen.core.display.CharacterDisplay;
 import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.AbstractExportToken;
@@ -61,16 +58,46 @@ public class HeightToken extends AbstractExportToken
 		{
 			if ("HEIGHT".equals(tokenSource))
 			{
-				retString = display.getHeightString();
+				retString = getHeightString(display);
 			}
 			else if ("HEIGHT.FOOTPART".equals(tokenSource))
 			{
-				retString = display.getCharacterHeightFootPart();
+				retString = getHeightFootPart(display);
 			}
 			else if ("HEIGHT.INCHPART".equals(tokenSource))
 			{
-				retString = display.getCharacterHeightInchPart();
+				retString = getHeightInchPart(display);
 			}
+		}
+		
+		return retString;
+	}
+
+	private String getHeightInchPart(CharacterDisplay display)
+	{
+		return Integer.toString(display.getHeight() % 12);
+	}
+
+	private String getHeightFootPart(CharacterDisplay display)
+	{
+		return Integer.toString(display.getHeight() / 12);
+	}
+
+	private String getHeightString(CharacterDisplay display)
+	{
+		String retString;
+		
+		if ("ftin".equals(Globals.getGameModeUnitSet().getHeightUnit()))
+		{
+			retString =
+					Integer.toString(display.getHeight() / 12) + "' " + Integer.toString(display.getHeight() % 12) + "\"";
+		}
+		else
+		{
+			retString =
+					Globals.getGameModeUnitSet().displayHeightInUnitSet(
+						display.getHeight())
+						+ " " + Globals.getGameModeUnitSet().getHeightUnit();
 		}
 		
 		return retString;

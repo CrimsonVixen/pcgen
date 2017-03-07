@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on January 28, 2003, 11:18 PM
  *
- * @(#) $Id$
  */
 package pcgen.util;
 
@@ -38,10 +36,8 @@ import pcgen.persistence.lst.LstUtils;
 import pcgen.system.PluginLoader;
 
 /**
- * <code>PJEP</code>
+ * {@code PJEP}
  *
- * @author  Greg Bingleman <byngl@hotmail.com>
- * @version $Revision$
  *
  * Provides a common interface setup for Singular Systems' Java Mathematical Expression Parser.
  *
@@ -57,8 +53,8 @@ public final class PJEP extends JEP
 	private Object parent;
 	private String variableSource;
 	private static List<Class<PCGenCommand>> commandList =
-			new ArrayList<Class<PCGenCommand>>();
-	private List<PCGenCommand> localCommandList = new ArrayList<PCGenCommand>();
+            new ArrayList<>();
+	private List<PCGenCommand> localCommandList = new ArrayList<>();
 
 	public static void addCommand(Class<PCGenCommand> clazz)
 	{
@@ -83,7 +79,6 @@ public final class PJEP extends JEP
 							PCGenCommand.class
 						};
 			}
-
 		};
 	}
 	public PJEP()
@@ -100,11 +95,7 @@ public final class PJEP extends JEP
 				addFunction(com.getFunctionName().toLowerCase(), com);
 				addFunction(com.getFunctionName().toUpperCase(), com);
 			}
-			catch (InstantiationException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IllegalAccessException e)
+			catch (InstantiationException | IllegalAccessException e)
 			{
 				e.printStackTrace();
 			}
@@ -198,8 +189,8 @@ public final class PJEP extends JEP
 
 		/**
 		 * Runs classlevel on the inStack. The parameter is popped
-		 * off the <code>inStack</code>, and the variable's value is
-		 * pushed back to the top of <code>inStack</code>.
+		 * off the {@code inStack}, and the variable's value is
+		 * pushed back to the top of {@code inStack}.
 		 * 
 		 * @param inStack The stack to process
 		 * 
@@ -330,4 +321,5 @@ public final class PJEP extends JEP
 			com.setParent(parent);
 		}
 	}
+
 }

@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Mar 15, 2011, 2:23:13 AM
  */
 package pcgen.system;
 
@@ -27,7 +26,6 @@ import java.util.logging.LogRecord;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class LoggingRecorder extends FileHandler
 {
@@ -36,14 +34,13 @@ public class LoggingRecorder extends FileHandler
 
 	public LoggingRecorder() throws IOException
 	{
-		super();
 	}
 
 	@Override
 	public synchronized void publish(LogRecord record)
 	{
 		super.publish(record);
-		writer.write(getFormatter().format(record));
+		LoggingRecorder.writer.write(getFormatter().format(record));
 	}
 
 	public static String getLogs()

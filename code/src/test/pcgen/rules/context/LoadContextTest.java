@@ -16,15 +16,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 28/06/2010 3:33:01 PM
  *
- * $Id$
  */
 package pcgen.rules.context;
 
 import java.util.Collection;
-
 import junit.framework.TestCase;
+import pcgen.base.format.StringManager;
 import pcgen.cdom.base.AssociatedPrereqObject;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.MasterListInterface;
@@ -33,20 +31,16 @@ import pcgen.cdom.enumeration.FactKey;
 import pcgen.cdom.list.ClassSpellList;
 import pcgen.core.Globals;
 import pcgen.core.PCClass;
+import pcgen.core.SettingsHandler;
 import pcgen.core.spell.Spell;
 import pcgen.rules.persistence.TokenUtilities;
 import pcgen.util.TestHelper;
-import plugin.format.StringManager;
 
 /**
  * The Class <code>LoadContextTest</code> checks the fucntion fo the LoadCOntext class.
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class LoadContextTest extends TestCase
 {
@@ -91,7 +85,7 @@ public class LoadContextTest extends TestCase
 		assertEquals("New spell name incorrect", "New Spell", newSpell.getDisplayName());
 		
 		// Check associations
-		MasterListInterface masterLists = Globals.getMasterLists();
+		MasterListInterface masterLists = SettingsHandler.getGame().getMasterLists();
 		Collection<AssociatedPrereqObject> assoc =
 				masterLists.getAssociations(ref, testSpell);
 		assertEquals("Incorrect size of assoc list for orig spell", 1, assoc.size());

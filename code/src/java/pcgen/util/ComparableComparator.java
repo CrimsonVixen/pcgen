@@ -17,7 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * Created on August 1, 2003, 8:34 AM
  */
 package pcgen.util;
 
@@ -25,26 +24,21 @@ import java.util.Comparator;
 import java.io.Serializable;
 
 /**
- * A <code>Comparator</code> to compare objects as
- * <code>Comparable</code>s.  This is particularly useful for
- * applications such as maintaining a sorted <code>JComboBoxEx</code>
+ * A {@code Comparator} to compare objects as
+ * {@code Comparable}s.  This is particularly useful for
+ * applications such as maintaining a sorted {@code JComboBoxEx}
  * and the like.
  *
- * @author <a href="mailto:binkley@alumni.rice.edu">B. K. Oxley (binkley)</a>
- * @version $Revision$
  */
 public final class ComparableComparator<T extends Comparable<T>> implements Comparator<T>, Serializable
 {
-	/** Constructs a <code>ComparableComparator</code>. */
+	/** Constructs a {@code ComparableComparator}. */
 	public ComparableComparator()
 	{
 		// TODO: Exception needs to be handled
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-    @Override
+	@Override
 	public int compare(T o1, T o2)
 	{
 		return o1.compareTo(o2);

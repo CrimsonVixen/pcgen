@@ -18,9 +18,6 @@
  *
  * Created 03-Aug-2008 22:55:01
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
@@ -70,7 +67,7 @@ public class PCBaseSpellStatTermEvaluator
 		CDOMSingleRef<PCStat> ssref = pcClass.get(ObjectKey.SPELL_STAT);
 		if (ssref != null)
 		{
-			PCStat ss = ssref.resolvesTo();
+			PCStat ss = ssref.get();
 			baseSpellStat = pc.getTotalStatFor(ss);
 			baseSpellStat += (int) pc.getTotalBonusTo("STAT", "BASESPELLSTAT");
 			baseSpellStat += (int) pc.getTotalBonusTo("STAT", "BASESPELLSTAT;CLASS=" + pcClass.getKeyName());

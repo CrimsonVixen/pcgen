@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 1, 2001, 1:00 AM
  */
 package pcgen.io;
 
@@ -24,10 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <code>FORNode</code>.
+ * {@code FORNode}.
  *
- * @author Mark Hulsman <mark_hulsman@users.sourceforge.net>
- * @version $Revision$
  */
 final class FORNode
 {
@@ -49,7 +46,7 @@ final class FORNode
 	 */
 	FORNode(String _var, String _min, String _max, String _step, boolean _exists)
 	{
-		children = new ArrayList<Object>();
+		children = new ArrayList<>();
 		var = _var;
 		min = _min;
 		max = _max;

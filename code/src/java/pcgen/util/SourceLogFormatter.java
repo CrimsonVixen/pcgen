@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 17/06/2007
  *
- * $Id$
  */
 package pcgen.util;
 
@@ -30,14 +28,10 @@ import java.util.logging.*;
 import java.util.regex.Pattern;
 
 /**
- * <code>SourceLogFormatter</code> is a log formater for the Java
+ * {@code SourceLogFormatter} is a log formater for the Java
  * Loggings API that ignores the call from the PCGen logging class.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public final class SourceLogFormatter extends Formatter
 {

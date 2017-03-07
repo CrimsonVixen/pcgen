@@ -1,5 +1,4 @@
 /*
- * Created on 02-Dec-2003
  *
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
@@ -9,7 +8,7 @@ package plugin.pretokens.test;
 import java.util.Set;
 
 import pcgen.base.util.CaseInsensitiveMap;
-import pcgen.base.util.ObjectContainer;
+import pcgen.base.util.Indirect;
 import pcgen.base.util.WrappedMapSet;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.enumeration.FactSetKey;
@@ -23,7 +22,6 @@ import pcgen.core.prereq.PrerequisiteTest;
 import pcgen.system.LanguageBundle;
 
 /**
- * @author wardc
  *
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
@@ -47,13 +45,13 @@ public class PreDeityTester extends AbstractDisplayPrereqTest implements Prerequ
 				String pantheon = prereq.getKey().substring(9);
 				Deity deity = display.getDeity();
 				Set<String> charDeityPantheon =
-						new WrappedMapSet<String>(CaseInsensitiveMap.class);
+						new WrappedMapSet<>(CaseInsensitiveMap.class);
 				if (deity != null)
 				{
 					FactSetKey<String> fk = FactSetKey.valueOf("Pantheon");
-					for (ObjectContainer<String> oc : deity.getSafeSetFor(fk))
+					for (Indirect<String> indirect : deity.getSafeSetFor(fk))
 					{
-						charDeityPantheon.addAll(oc.getContainedObjects());
+						charDeityPantheon.add(indirect.get());
 					}
 				}
 				if (prereq.getOperator().equals(PrerequisiteOperator.EQ)

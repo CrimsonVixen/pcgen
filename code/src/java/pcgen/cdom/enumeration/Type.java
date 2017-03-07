@@ -25,7 +25,6 @@ import pcgen.base.util.CaseInsensitiveMap;
 import pcgen.cdom.base.Constants;
 
 /**
- * @author Tom Parker (thpr [at] yahoo.com)
  * 
  * This Class is a Type Safe Constant. It is designed to hold Types in a
  * type-safe fashion, so that they can be quickly compared and use less memory
@@ -36,7 +35,7 @@ public final class Type implements TypeSafeConstant, Comparable<Type>
 	/**
 	 * This Map contains the mappings from Strings to the Type Safe Constant
 	 */
-	private static CaseInsensitiveMap<Type> typeMap = new CaseInsensitiveMap<Type>();
+	private static CaseInsensitiveMap<Type> typeMap = new CaseInsensitiveMap<>();
 
 	public static final Type NATURAL = getConstant("Natural");
 

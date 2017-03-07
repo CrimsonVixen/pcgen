@@ -28,17 +28,17 @@ import pcgen.core.Skill;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 import plugin.lsttokens.testsupport.TokenRegistration;
 import plugin.pretokens.parser.PreClassParser;
 
-public class ClassesTokenTest extends AbstractTokenTestCase<Skill>
+public class ClassesTokenTest extends AbstractCDOMTokenTestCase<Skill>
 {
 
 	static ClassesToken token = new ClassesToken();
-	static CDOMTokenLoader<Skill> loader = new CDOMTokenLoader<Skill>();
+	static CDOMTokenLoader<Skill> loader = new CDOMTokenLoader<>();
 
 	private static boolean classSetUpFired = false;
 
@@ -282,14 +282,6 @@ public class ClassesTokenTest extends AbstractTokenTestCase<Skill>
 	@Override
 	protected ConsolidationRule getConsolidationRule()
 	{
-		return new ConsolidationRule()
-		{
-
-            @Override
-			public String[] getAnswer(String... strings)
-			{
-				return new String[]{"Bard|Sorcerer|Wizard"};
-			}
-		};
+		return strings -> new String[]{"Bard|Sorcerer|Wizard"};
 	}
 }

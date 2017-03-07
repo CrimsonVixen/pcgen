@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on May 15, 2010, 5:41:26 PM
  */
 package pcgen.gui2.filter;
 
@@ -37,23 +36,27 @@ import javax.swing.JPanel;
 import javax.swing.SizeRequirements;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This class represents the highest level DisplayableFilter in the filter hierarchy. A FilterBar
  * is a filter which contains a set of other DisplayableFilters. At the bottom of a FilterBar is a
  * region of space with an arrow at the center. When this is clicked all of the children filters will
  * be hidden from view.
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class FilterBar<C, E> extends JPanel implements DisplayableFilter<C, E>
 {
 
 	private JPanel filterPanel = new JPanel(new FilterLayout());
-	private List<DisplayableFilter<? super C, ? super E>> filters = new ArrayList<DisplayableFilter<? super C, ? super E>>();
+	private List<DisplayableFilter<? super C, ? super E>> filters = new ArrayList<>();
 	private FilterHandler filterHandler;
 
 	public FilterBar()
+	{
+		this(true);
+	}
+
+	public FilterBar(boolean collapsable)
 	{
 		setLayout(new BorderLayout());
 		add(filterPanel, BorderLayout.CENTER);
@@ -72,7 +75,10 @@ public class FilterBar<C, E> extends JPanel implements DisplayableFilter<C, E>
 					}
 
 				});
-		add(arrowbutton, BorderLayout.SOUTH);
+		if (collapsable)
+		{
+			add(arrowbutton, BorderLayout.SOUTH);
+		}
 	}
 
 	public void addDisplayableFilter(DisplayableFilter<? super C, ? super E> filter)

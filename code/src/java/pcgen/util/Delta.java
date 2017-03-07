@@ -17,34 +17,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * Created on April 28, 2001, 8:34 AM
  */
 package pcgen.util;
 
 /**
- * A helper for <code>java.lang.Integer</code> which understands a
+ * A helper for {@code java.lang.Integer} which understands a
  * leading plus sign for string conversion.
  *
- * @author <a href="mailto:binkley@alumni.rice.edu">B. K. Oxley (binkley)</a>
- * @version $Revision$
  * @see java.lang.Integer
  */
 public final class Delta
 {
 	private Delta()
 	{
-		super();
 	}
 
 	/**
 	 * Construct a @see java.lang.Integer and strip a leading plus
-	 * sign since <code>Integer</code> does not understand it.
+	 * sign since {@code Integer} does not understand it.
 	 * @param s
 	 * @return Integer
 	 */
 	public static Integer decode(String s)
 	{
-		if ((s.length() != 0) && (s.charAt(0) == '+'))
+		if ((!s.isEmpty()) && (s.charAt(0) == '+'))
 		{
 			s = s.substring(1);
 		}
@@ -136,6 +132,6 @@ public final class Delta
 			return "+" + v;
 		}
 
-		return v + "";
+		return Float.toString(v);
 	}
 }

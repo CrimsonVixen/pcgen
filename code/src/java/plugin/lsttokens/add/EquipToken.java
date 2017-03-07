@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.ChoiceSet;
@@ -38,7 +39,6 @@ import pcgen.cdom.choiceset.ReferenceChoiceSet;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.core.Equipment;
 import pcgen.core.PlayerCharacter;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.TokenUtilities;
@@ -74,6 +74,9 @@ public class EquipToken extends AbstractNonEmptyToken<CDOMObject> implements
 		CDOMObject obj, String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String activeValue = sep.next();
 		Formula count;
 		if (!sep.hasNext())
@@ -106,7 +109,7 @@ public class EquipToken extends AbstractNonEmptyToken<CDOMObject> implements
 			return pr;
 		}
 
-		List<CDOMReference<Equipment>> refs = new ArrayList<CDOMReference<Equipment>>();
+		List<CDOMReference<Equipment>> refs = new ArrayList<>();
 		StringTokenizer tok = new StringTokenizer(activeValue, Constants.COMMA);
 		while (tok.hasMoreTokens())
 		{
@@ -122,12 +125,12 @@ public class EquipToken extends AbstractNonEmptyToken<CDOMObject> implements
 			refs.add(lang);
 		}
 
-		ReferenceChoiceSet<Equipment> rcs = new ReferenceChoiceSet<Equipment>(
+		ReferenceChoiceSet<Equipment> rcs = new ReferenceChoiceSet<>(
 				refs);
-		ChoiceSet<Equipment> cs = new ChoiceSet<Equipment>(getTokenName(),
-				new QualifiedDecorator<Equipment>(rcs));
+		ChoiceSet<Equipment> cs = new ChoiceSet<>(getTokenName(),
+				new QualifiedDecorator<>(rcs));
 		cs.setTitle("Equipment Choice");
-		PersistentTransitionChoice<Equipment> tc = new ConcretePersistentTransitionChoice<Equipment>(
+		PersistentTransitionChoice<Equipment> tc = new ConcretePersistentTransitionChoice<>(
 				cs, count);
 		context.getObjectContext().addToList(obj, ListKey.ADD, tc);
 		tc.setChoiceActor(this);
@@ -146,7 +149,7 @@ public class EquipToken extends AbstractNonEmptyToken<CDOMObject> implements
 			// Zero indicates no Token
 			return null;
 		}
-		List<String> addStrings = new ArrayList<String>();
+		List<String> addStrings = new ArrayList<>();
 		for (TransitionChoice<?> container : addedItems)
 		{
 			SelectableSet<?> cs = container.getChoices();

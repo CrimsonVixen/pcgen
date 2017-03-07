@@ -38,7 +38,6 @@ import java.awt.Font;
  * <li>x-small
  * <li>xx-small
  * </ul>
- * @author Vincent Lhote
  */
 public class FontManipulation
 {
@@ -62,9 +61,9 @@ public class FontManipulation
 	}
 
 	/**
-	 * For extra extra large font.
+	 * For extra large font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font xxlarge(Font f)
@@ -73,7 +72,7 @@ public class FontManipulation
 	}
 
 	/**
-	 * For extra extra large font.
+	 * For extra large font.
 	 * 
 	 * @param container
 	 *            element to change the font of
@@ -87,7 +86,7 @@ public class FontManipulation
 	/**
 	 * For extra large font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font xlarge(Font f)
@@ -110,7 +109,7 @@ public class FontManipulation
 	/**
 	 * For large font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font large(Font f)
@@ -133,7 +132,7 @@ public class FontManipulation
 	/**
 	 * For a bit smaller font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font small(Font f)
@@ -157,7 +156,7 @@ public class FontManipulation
 	/**
 	 * For extra smaller font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font xsmall(Font f)
@@ -168,8 +167,8 @@ public class FontManipulation
 	/**
 	 * For extra smaller font.
 	 * 
-	 * @param font
-	 *            base font
+	 * @param container
+	 *            element to change the font of
 	 */
 	public static void xsmall(Container container)
 	{
@@ -180,8 +179,8 @@ public class FontManipulation
 	/**
 	 * For less important text, like grayed out italic.
 	 * 
-	 * @param container
-	 *            element to change the font of
+	 * @param f
+	 *            base font
 	 */
 	public static Font less(Font f)
 	{
@@ -191,7 +190,7 @@ public class FontManipulation
 	/**
 	 * For plain font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font plain(Font f)
@@ -202,7 +201,7 @@ public class FontManipulation
 	/**
 	 * For bold font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font bold(Font f)
@@ -213,7 +212,7 @@ public class FontManipulation
 	/**
 	 * For italic font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font italic(Font f)
@@ -224,7 +223,7 @@ public class FontManipulation
 	/**
 	 * For bold italic font.
 	 * 
-	 * @param font
+	 * @param f
 	 *            base font
 	 */
 	public static Font bold_italic(Font f)

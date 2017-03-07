@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on October 3, 2005, 5:55 PM
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -59,7 +57,7 @@ public class KitDeity extends BaseKit
 	{
 		if (theDomains == null)
 		{
-			theDomains = new ArrayList<CDOMSingleRef<Domain>>(3);
+			theDomains = new ArrayList<>(3);
 		}
 		theDomains.add(ref);
 	}
@@ -85,7 +83,7 @@ public class KitDeity extends BaseKit
 
 		buf.append(theDeityRef.getLSTformat(false));
 
-		if (theDomains != null && theDomains.size() > 0)
+		if (theDomains != null && !theDomains.isEmpty())
 		{
 			buf.append(" (");
 			if (choiceCount != null)
@@ -114,7 +112,7 @@ public class KitDeity extends BaseKit
 	{
 		domainsToAdd = null;
 
-		theDeity = theDeityRef.resolvesTo();
+		theDeity = theDeityRef.get();
 
 		if (!aPC.canSelectDeity(theDeity))
 		{
@@ -124,7 +122,7 @@ public class KitDeity extends BaseKit
 		}
 		aPC.setDeity(theDeity);
 
-		if (theDomains == null || theDomains.size() == 0)
+		if (theDomains == null || theDomains.isEmpty())
 		{
 			// nothing else to do.
 			return true;
@@ -174,10 +172,10 @@ public class KitDeity extends BaseKit
 			{
 				xs =
 						Globals.getChoiceFromList("Choose Domains", theDomains,
-							new ArrayList<CDOMSingleRef<Domain>>(),
+                                new ArrayList<>(),
 							numberOfChoices, aPC);
 
-				if (xs.size() != 0)
+				if (!xs.isEmpty())
 				{
 					break;
 				}
@@ -188,7 +186,7 @@ public class KitDeity extends BaseKit
 		//
 		for (CDOMSingleRef<Domain> ref : xs)
 		{
-			Domain domain = ref.resolvesTo();
+			Domain domain = ref.get();
 			if (!domain.qualifies(aPC, domain))
 			{
 				warnings.add("DEITY: Not qualified for domain \""
@@ -212,7 +210,7 @@ public class KitDeity extends BaseKit
 			}
 			if (domainsToAdd == null)
 			{
-				domainsToAdd = new ArrayList<Domain>();
+				domainsToAdd = new ArrayList<>();
 			}
 			domainsToAdd.add(domain);
 

@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jan 29, 2011, 1:57:14 PM
  */
 package pcgen.gui2.tabs.equip;
 
@@ -36,10 +35,10 @@ import pcgen.facade.core.EquipmentSetFacade;
 import pcgen.facade.core.EquipmentSetFacade.EquipNode;
 import pcgen.facade.core.EquipmentSetFacade.EquipmentTreeEvent;
 import pcgen.facade.core.EquipmentSetFacade.EquipmentTreeListener;
+import pcgen.facade.util.ListFacade;
 import pcgen.facade.util.event.ListEvent;
 import pcgen.facade.util.event.ListListener;
-import pcgen.facade.util.ListFacade;
-import pcgen.gui2.util.treetable.SortableTreeTableModel;
+import pcgen.gui2.util.treetable.TreeTableModel;
 import pcgen.gui2.util.treetable.TreeTableNode;
 import pcgen.util.CollectionMaps;
 import pcgen.util.ListMap;
@@ -49,14 +48,10 @@ import pcgen.util.ListMap;
  * tree structure showing the equipment by its equipped location for a 
  * particular character and equipment set.
  * 
- * <br/>
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
+ * <br>
  *  
- * @author Connor Petty <cpmeister@users.sourceforge.net>
- * @version $Revision:  $
  */
-public class EquipmentTreeTableModel implements SortableTreeTableModel, ListListener<EquipNode>, EquipmentTreeListener
+public class EquipmentTreeTableModel implements TreeTableModel, ListListener<EquipNode>, EquipmentTreeListener
 {
 
 	private EventListenerList listenerList = new EventListenerList();
@@ -72,7 +67,7 @@ public class EquipmentTreeTableModel implements SortableTreeTableModel, ListList
 		this.character = character;
 		this.equipSet = equipSet;
 		pathMap = CollectionMaps.createListMap(HashMap.class, ArrayList.class);
-		bodySlotNodes = new ArrayList<EquipNode>();
+		bodySlotNodes = new ArrayList<>();
 		initPathMap();
 		equipSet.getNodes().addListListener(this);
 		equipSet.addEquipmentTreeListener(this);
@@ -260,11 +255,6 @@ public class EquipmentTreeTableModel implements SortableTreeTableModel, ListList
 	public void removeTreeModelListener(TreeModelListener l)
 	{
 		listenerList.remove(TreeModelListener.class, l);
-	}
-
-	@Override
-	public void sortModel(Comparator<List<?>> comparator)
-	{
 	}
 
 	private void addBodyNode(EquipNode bodyNode)

@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pcgen.cdom.base.CDOMObject;
+import pcgen.cdom.base.Loadable;
 import pcgen.core.AbilityCategory;
 import pcgen.core.Campaign;
 import pcgen.core.bonus.BonusObj;
@@ -45,7 +45,7 @@ import pcgen.rules.persistence.token.ParseResult;
 import pcgen.util.Logging;
 
 @SuppressWarnings("nls")
-public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
+public abstract class AbstractTokenTestCase<T extends Loadable> extends
 		TestCase
 {
 	protected LoadContext primaryContext;
@@ -82,11 +82,10 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 	protected void resetContext()
 	{
 		URI testURI = testCampaign.getURI();
-		primaryContext = new RuntimeLoadContext(new RuntimeReferenceContext(),
-				new ConsolidatedListCommitStrategy());
-		secondaryContext = new RuntimeLoadContext(
-				new RuntimeReferenceContext(),
-				new ConsolidatedListCommitStrategy());
+		primaryContext = getPrimaryContext();
+		secondaryContext =
+				new RuntimeLoadContext(new RuntimeReferenceContext(),
+					new ConsolidatedListCommitStrategy());
 		primaryContext.setSourceURI(testURI);
 		primaryContext.setExtractURI(testURI);
 		secondaryContext.setSourceURI(testURI);
@@ -97,6 +96,12 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 		primaryProf.setSourceURI(testCampaign.getURI());
 		secondaryProf = getSecondary("TestObj");
 		secondaryProf.setSourceURI(testCampaign.getURI());
+	}
+
+	protected LoadContext getPrimaryContext()
+	{
+		return new RuntimeLoadContext(new RuntimeReferenceContext(),
+				new ConsolidatedListCommitStrategy());
 	}
 
 	protected T getSecondary(String name)
@@ -122,11 +127,7 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 		{
 			TokenLibrary.addBonusClass(clazz);
 		}
-		catch (InstantiationException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e)
+		catch (InstantiationException | IllegalAccessException e)
 		{
 			e.printStackTrace();
 		}
@@ -228,10 +229,7 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 		return unparsed;
 	}
 
-	public void isCDOMEqual(T cdo1, T cdo2)
-	{
-		assertTrue("Not equal " + cdo1 + " and " + cdo2, cdo1.isCDOMEqual(cdo2));
-	}
+	public abstract void isCDOMEqual(T cdo1, T cdo2);
 
 	public void assertNoSideEffects()
 	{
@@ -239,7 +237,7 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 		assertFalse(primaryContext.getListContext().hasMasterLists());
 	}
 
-	public boolean parse(String str) throws PersistenceLayerException
+	public boolean parse(String str)
 	{
 		ParseResult pr;
 		try
@@ -269,7 +267,7 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 		return pr.passed();
 	}
 
-	public boolean parseSecondary(String str) throws PersistenceLayerException
+	public boolean parseSecondary(String str)
 	{
 		ParseResult pr = getToken()
 				.parseToken(secondaryContext, secondaryProf, str);
@@ -321,7 +319,7 @@ public abstract class AbstractTokenTestCase<T extends CDOMObject> extends
 
 	protected abstract ConsolidationRule getConsolidationRule();
 
-	protected void expectSingle(String[] unparsed, String expected)
+	protected static void expectSingle(String[] unparsed, String expected)
 	{
 		assertNotNull(unparsed);
 		assertEquals(1, unparsed.length);

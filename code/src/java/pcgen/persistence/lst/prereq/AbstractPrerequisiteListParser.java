@@ -17,16 +17,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.persistence.lst.prereq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.core.prereq.Prerequisite;
 import pcgen.core.prereq.PrerequisiteOperator;
@@ -189,7 +189,7 @@ public abstract class AbstractPrerequisiteListParser
 
 		// Token now contains all of the possible matches,
 		// min contains the target number (if there is one)
-		// number contains the number of 'tokens' that be be at least 'min'
+		// number contains the number of 'tokens' that be at least 'min'
 		if (elementsLength > 2)
 		{
 			// we have more than one option, so use a group
@@ -218,17 +218,19 @@ public abstract class AbstractPrerequisiteListParser
 					String[] tokens = thisElement.split("=");
 					try
 					{
-						min = Integer.parseInt(tokens[1]);
+						int valueIndx = tokens.length-1;
+						min = Integer.parseInt(tokens[valueIndx]);
 						subreq.setOperand(Integer.toString(min));
-						subreq.setKey(tokens[0]);
+						String requirementKey = getRequirementKey(tokens);
+						subreq.setKey(requirementKey);
 						// now back fill all of the previous prereqs with this minimum
-						for (Prerequisite p : new ArrayList<Prerequisite>(prereq.getPrerequisites()))
+						for (Prerequisite p : new ArrayList<>(prereq.getPrerequisites()))
 						{
 							if (p.getOperand().equals("-99"))
 							{
 								p.setOperand(Integer.toString(min));
 								// If this requirement has already been added, we don't want to repeat it.
-								if (p.getKey().equals(tokens[0]))
+								if (p.getKey().equals(requirementKey))
 								{
 									prereq.removePrerequisite(p);
 								}
@@ -317,10 +319,11 @@ public abstract class AbstractPrerequisiteListParser
 					{
 						// i.e. TYPE=ItemCreation or Reflex=7
 						String[] tokens = elements[i].split("=");
+						int valueIdx = tokens.length-1;
 						try
 						{
 							// i.e. Reflex=7 or TYPE.Craft=5
-							int iOper = Integer.parseInt(tokens[1]);
+							int iOper = Integer.parseInt(tokens[valueIdx]);
 							if (numRequired != 1)
 							{
 								//
@@ -336,16 +339,17 @@ public abstract class AbstractPrerequisiteListParser
 								subreq.setCountMultiples(true);
 							}
 							subreq.setOperand(Integer.toString(iOper));
-							subreq.setKey(tokens[0]);
+							String requirementKey = getRequirementKey(tokens);
+							subreq.setKey(requirementKey);
 						}
 						catch (NumberFormatException nfe)
 						{
-							if (tokens[1].equals("ANY"))
+							if (tokens[valueIdx].equals("ANY"))
 							{
 								if (isAnyLegal())
 								{
-									subreq.setOperand(tokens[1]);
-									subreq.setKey(tokens[0]);
+									subreq.setOperand(tokens[valueIdx]);
+									subreq.setKey(getRequirementKey(tokens));
 								}
 								else
 								{
@@ -396,6 +400,23 @@ public abstract class AbstractPrerequisiteListParser
 			subreq.setKind(kind.toLowerCase());
 			subreq.setOperator(PrerequisiteOperator.GTEQ);
 		}
+	}
+
+	private String getRequirementKey(String[] tokens)
+	{
+		String reqKey;
+		if (tokens.length == 2)
+		{
+			reqKey = tokens[0];
+		}
+		else
+		{
+			List<String> parts = new ArrayList<>();
+			parts.addAll(Arrays.asList(tokens));
+			parts.remove(parts.size()-1);
+			reqKey = StringUtils.join(parts, "=");
+		}
+		return reqKey;
 	}
 
 	protected boolean isNoWarnElement(String thisElement)

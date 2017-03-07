@@ -16,15 +16,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 13, 2002, 9:19 AM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.bonustokens;
 
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.bonus.MultiTagBonusObj;
 import pcgen.rules.context.LoadContext;
 import pcgen.util.Logging;
@@ -35,7 +33,7 @@ import pcgen.util.Logging;
 public final class Combat extends MultiTagBonusObj
 {
 	private static final String[] BONUS_TAGS =
-			{"AC", "ATTACKS", "ATTACKS-SECONDARY", "BAB", "DAMAGE",
+			{"AC", "ATTACKS", "ATTACKS-SECONDARY", "DAMAGE",
 				"DAMAGESIZE", "DAMAGE-PRIMARY", "DAMAGE-SECONDARY",
 				"DAMAGE-SHORTRANGE", "DEFENSE", "INITIATIVE", "RANGEPENALTY", 
 				"REACH", "TOHIT", "TOHIT-PRIMARY", "TOHIT-SECONDARY", 
@@ -46,10 +44,41 @@ public final class Combat extends MultiTagBonusObj
 	{
 		if ("BAB".equalsIgnoreCase(token))
 		{
-			Logging.deprecationPrint("BONUS:COMBAT|BAB is deprecated due to "
+			Logging.errorPrint("BONUS:COMBAT|BAB has been removed due to "
 				+ "unusual behavior around epic class levels.  "
 				+ "Please use BONUS:COMBAT|BASEAB or BONUS:COMBAT|EPICAB",
 				context);
+			return false;
+		}
+		if (ControlUtilities.hasControlToken(context, CControl.ACVARTOTAL))
+		{
+			if ("AC".equals(token))
+			{
+				Logging.errorPrint(
+					"BONUS:COMBAT|AC is deprecated when ACVARTOTAL control is used: "
+							+ token, context);
+					return false;
+				}
+			}
+		if (ControlUtilities.hasControlToken(context, CControl.INITIATIVE))
+		{
+			if ("INITIATIVE".equals(token))
+			{
+				Logging.errorPrint(
+					"BONUS:COMBAT|INITIATIVE is disabled when INITIATIVE control is used: "
+						+ token, context);
+				return false;
+			}
+		}
+		if (ControlUtilities.hasControlToken(context, CControl.PCREACH))
+		{
+			if ("REACH".equals(token))
+			{
+				Logging.errorPrint("BONUS:COMBAT|REACH"
+						+ " is disabled when PCREACH control is used: " + token,
+						context);
+					return false;
+			}
 		}
 		return super.parseToken(context, token);
 	}

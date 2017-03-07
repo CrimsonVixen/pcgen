@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens.deprecated;
@@ -32,7 +28,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import pcgen.base.lang.StringUtil;
-import pcgen.base.util.ObjectContainer;
+import pcgen.base.util.Indirect;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.enumeration.BiographyField;
@@ -134,7 +130,7 @@ public class DeityToken extends Token
 			else if ("ALIGNMENT".equals(subTag))
 			{
 				CDOMSingleRef<PCAlignment> al = deity.get(ObjectKey.ALIGNMENT);
-				retString = al == null ? "" : al.resolvesTo().getKeyName();
+				retString = al == null ? "" : al.get().getKeyName();
 			}
 			else if ("APPEARANCE".equals(subTag))
 			{
@@ -161,10 +157,10 @@ public class DeityToken extends Token
 			else if ("PANTHEONLIST".equals(subTag))
 			{
 				FactSetKey<String> fk = FactSetKey.valueOf("Pantheon");
-				Set<String> pset = new TreeSet<String>();
-				for (ObjectContainer<String> oc : deity.getSafeSetFor(fk))
+				Set<String> pset = new TreeSet<>();
+				for (Indirect<String> indirect : deity.getSafeSetFor(fk))
 				{
-					pset.addAll(oc.getContainedObjects());
+					pset.add(indirect.get());
 				}
 				retString = StringUtil.join(pset, ", ");
 			}
@@ -212,7 +208,7 @@ public class DeityToken extends Token
 	 */
 	public static String getSAToken(Deity deity, CharacterDisplay display)
 	{
-		final List<SpecialAbility> saList = new ArrayList<SpecialAbility>();
+		final List<SpecialAbility> saList = new ArrayList<>();
 		saList.addAll(display.getResolvedUserSpecialAbilities(deity));
 		saList.addAll(display.getResolvedSpecialAbilities(deity));
 

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 04/01/2009 11:40:53 AM
  *
- * $Id: $
  */
 
 package pcgen.core.analysis;
@@ -48,11 +46,7 @@ import pcgen.util.TestHelper;
 /**
  * The Class <code>SpellLevelTest</code> checks the SpellLevel class.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class SpellLevelTest extends AbstractCharacterTestCase
 {
@@ -111,7 +105,7 @@ public class SpellLevelTest extends AbstractCharacterTestCase
 		// Now for the tests
 		levels = listManagerFacet.getScopes2(aPC.getCharID(), pcc.get(ObjectKey.CLASS_SPELLLIST));
 		assertEquals("Incorrect number of spell levels returned", 1, levels.size());
-		assertEquals("Incorrect spell level returned", new Integer(3), levels.iterator().next());
+		assertEquals("Incorrect spell level returned", Integer.valueOf(3), levels.iterator().next());
 		Collection<Spell> result = listManagerFacet.getSet(aPC.getCharID(), pcc.get(ObjectKey.CLASS_SPELLLIST), 3);
 		assertEquals("Incorrect number of spells returned", 1, result.size());
 		assertEquals("Incorrect spell returned", spell, result.iterator().next());

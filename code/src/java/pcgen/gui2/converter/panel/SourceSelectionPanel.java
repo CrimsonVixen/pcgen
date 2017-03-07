@@ -42,14 +42,10 @@ import pcgen.system.ConfigurationSettings;
 import pcgen.system.PCGenSettings;
 
 /**
- * The Class <code>SourceSelectionPanel</code> gathers the source 
+ * The Class {@code SourceSelectionPanel} gathers the source
  * folder for the conversion process from the user.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class SourceSelectionPanel extends ConvertSubPanel
 {

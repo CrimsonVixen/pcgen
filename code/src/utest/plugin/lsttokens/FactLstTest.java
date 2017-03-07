@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
+import pcgen.base.format.StringManager;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.content.fact.FactDefinition;
 import pcgen.cdom.list.ClassSkillList;
@@ -31,7 +32,6 @@ import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.util.enumeration.Visibility;
-import plugin.format.StringManager;
 import plugin.lsttokens.testsupport.AbstractGlobalTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
@@ -40,14 +40,13 @@ import plugin.lsttokens.testsupport.TokenRegistration;
 public class FactLstTest extends AbstractGlobalTokenTestCase
 {
 	private static FactLst token = new FactLst();
-	private static CDOMTokenLoader<Domain> loader = new CDOMTokenLoader<Domain>();
+	private static CDOMTokenLoader<Domain> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public void setUp() throws PersistenceLayerException, URISyntaxException
 	{
 		TokenRegistration.clearTokens();
 		super.setUp();
-		TokenRegistration.register(new StringManager());
 		FactDefinition fd = new FactDefinition();
 		fd.setName("DOMAIN.Possibility");
 		fd.setFactName("Possibility");

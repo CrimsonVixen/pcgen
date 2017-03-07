@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Mar 17, 2012, 8:54:27 PM
  */
 package pcgen.facade.util;
 
@@ -27,7 +26,6 @@ import java.util.Set;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class DefaultMapFacade<K, V> extends AbstractMapFacade<K, V>
 {
@@ -36,12 +34,12 @@ public class DefaultMapFacade<K, V> extends AbstractMapFacade<K, V>
 
 	public DefaultMapFacade()
 	{
-		this.map = new HashMap<K, V>();
+		this.map = new HashMap<>();
 	}
 
 	public DefaultMapFacade(Map<? extends K, ? extends V> map)
 	{
-		this.map =  new HashMap<K, V>(map);
+		this.map = new HashMap<>(map);
 	}
 
 	@Override
@@ -92,9 +90,6 @@ public class DefaultMapFacade<K, V> extends AbstractMapFacade<K, V>
 		fireKeysChanged(this);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

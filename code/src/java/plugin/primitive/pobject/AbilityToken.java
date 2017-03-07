@@ -111,10 +111,11 @@ public class AbilityToken<T> implements PrimitiveToken<T>
 	private <R> List<R> getList(PlayerCharacter pc, Ability a)
 	{
 		// workaround for cloning issue
-		List<R> availableList = new ArrayList<R>();
+		List<R> availableList = new ArrayList<>();
 		List<CNAbility> theFeats = pc.getMatchingCNAbilities(a);
 		for (CNAbility ability : theFeats)
 		{
+			@SuppressWarnings("unchecked")
 			List<? extends R> list =
 					(List<? extends R>) pc.getDetailedAssociations(ability);
 			if (list != null)
@@ -164,12 +165,12 @@ public class AbilityToken<T> implements PrimitiveToken<T>
 		 * In theory the converter can be ignored here, since an equivalent
 		 * would exist within the ChooseInformation
 		 */
-		List<R> currentItems = getList(pc, ref.resolvesTo());
+		List<R> currentItems = getList(pc, ref.get());
 		if (currentItems == null)
 		{
 			return Collections.emptySet();
 		}
-		return new HashSet<R>(currentItems);
+		return new HashSet<>(currentItems);
 	}
 
 }

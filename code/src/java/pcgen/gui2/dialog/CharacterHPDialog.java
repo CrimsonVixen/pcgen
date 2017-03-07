@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on May 30, 2010, 10:18:59 PM
  */
 package pcgen.gui2.dialog;
 
@@ -43,7 +42,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import pcgen.core.RollingMethods;
 import pcgen.facade.core.CharacterFacade;
@@ -60,9 +59,8 @@ import pcgen.gui2.util.table.IntegerEditor;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
-public class CharacterHPDialog extends JDialog implements ActionListener
+public final class CharacterHPDialog extends JDialog implements ActionListener
 {
 
 	private final CharacterFacade character;
@@ -85,7 +83,7 @@ public class CharacterHPDialog extends JDialog implements ActionListener
 	{
 		Frame frame = JOptionPane.getFrameForComponent(parent);
 		CharacterHPDialog dialog = new CharacterHPDialog(frame, character);
-		Utility.setDialogRelativeLocation(frame, dialog);
+		Utility.setComponentRelativeLocation(frame, dialog);
 		dialog.setVisible(true);
 	}
 
@@ -139,7 +137,7 @@ public class CharacterHPDialog extends JDialog implements ActionListener
 
 		};
 		ReferenceFacade<Integer> hpRef = character.getTotalHPRef();
-		totalHp.setText(hpRef.getReference().toString());
+		totalHp.setText(hpRef.get().toString());
 		hpRef.addReferenceListener(hpListener);
 		box.add(totalHp);
 		box.add(Box.createHorizontalStrut(5));

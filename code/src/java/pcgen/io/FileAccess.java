@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on April 21, 2001, 2:15 PM
  */
 package pcgen.io;
 
@@ -32,10 +31,8 @@ import pcgen.io.filters.OutputFilter;
 import pcgen.io.filters.PatternFilter;
 
 /**
- * <code>FileAccess</code>.
+ * {@code FileAccess}.
  *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
  */
 public final class FileAccess
 {

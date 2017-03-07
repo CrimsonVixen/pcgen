@@ -28,18 +28,15 @@ import java.util.EventObject;
 import pcgen.facade.util.ListFacade;
 
 /**
- * <code>EquipmentSetFacade</code>defines the interface layer between the UI 
+ * {@code EquipmentSetFacade}defines the interface layer between the UI
  * and the pcgen core for managing how equipment is worn or placed (t.e. 
  * equipped). There can be multiple instance of this facade per character,
  * each representing a configuration of equipped gear (e.g. dungeon, boat, 
  * camp).
  *
- * <br/>
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
+ * <br>
  *  
- * @author Connor Petty <cpmeister@users.sourceforge.net>
- * @version $Revision: $
+ * @author Connor Petty &lt;cpmeister@users.sourceforge.net&gt;
  */
 public interface EquipmentSetFacade
 {

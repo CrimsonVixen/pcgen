@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 8 September, 2013
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit.startpack;
@@ -29,13 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.base.FormulaFactory;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.core.Kit;
 import pcgen.core.QualifiedObject;
 import pcgen.core.prereq.Prerequisite;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
@@ -70,6 +66,9 @@ public class TotalCostToken extends AbstractNonEmptyToken<Kit> implements
 			String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String activeValue = sep.next();
 		if (looksLikeAPrerequisite(activeValue))
 		{
@@ -82,7 +81,7 @@ public class TotalCostToken extends AbstractNonEmptyToken<Kit> implements
 			return new ParseResult.Fail("Formula in " + getTokenName()
 					+ " was not valid: " + f.toString(), context);
 		}
-		List<Prerequisite> prereqs = new ArrayList<Prerequisite>();
+		List<Prerequisite> prereqs = new ArrayList<>();
 
 		while (sep.hasNext())
 		{
@@ -95,7 +94,7 @@ public class TotalCostToken extends AbstractNonEmptyToken<Kit> implements
 			}
 			prereqs.add(prereq);
 		}
-		kit.put(ObjectKey.KIT_TOTAL_COST, new QualifiedObject<Formula>(f, prereqs));
+		kit.put(ObjectKey.KIT_TOTAL_COST, new QualifiedObject<>(f, prereqs));
 		return ParseResult.SUCCESS;
 	}
 

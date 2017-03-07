@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 04/03/2012 4:24:46 PM
  *
- * $Id$
  */
 package pcgen.gui2.tabs.bio;
 
@@ -48,12 +46,8 @@ import pcgen.system.LanguageBundle;
  * The NoteInfoPane displays a named text area that the user can fill in for her
  * character. This allows the creation of custom notes about the character.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public class NoteInfoPane extends JPanel implements CharacterInfoTab

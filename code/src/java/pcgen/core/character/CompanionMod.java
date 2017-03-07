@@ -18,12 +18,7 @@
  *
  *************************************************************************
  *
- * @author Jayme Cox <jaymecox@users.sourceforge.net>
- * @Created on July 10th, 2002, 3:55 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  *************************************************************************/
 package pcgen.core.character;
@@ -42,10 +37,8 @@ import pcgen.core.PObject;
 import pcgen.core.Race;
 
 /**
- * <code>CompanionMod</code>.
+ * {@code CompanionMod}.
  *
- * @author Jayme Cox <jaymecox@users.sourceforge.net>
- * @version $Revision$
  */
 public final class CompanionMod extends PObject implements
 		Categorized<CompanionMod>
@@ -76,7 +69,7 @@ public final class CompanionMod extends PObject implements
 		{
 			for (CDOMSingleRef<Race> ref : list)
 			{
-				Race race = ref.resolvesTo();
+				Race race = ref.get();
 				if (race.equals(r))
 				{
 					return true;
@@ -97,7 +90,7 @@ public final class CompanionMod extends PObject implements
 			for (Map.Entry<CDOMSingleRef<? extends PCClass>, Integer> me : ac
 					.entrySet())
 			{
-				PCClass pcclass = me.getKey().resolvesTo();
+				PCClass pcclass = me.getKey().get();
 				if (pcclass.getKeyName().equalsIgnoreCase(cl.getKeyName()))
 				{
 					result = me.getValue();

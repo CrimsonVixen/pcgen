@@ -30,16 +30,16 @@ import pcgen.core.Skill;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.BuildUtilities;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class KeystatTokenTest extends AbstractTokenTestCase<Skill>
+public class KeystatTokenTest extends AbstractCDOMTokenTestCase<Skill>
 {
 
 	static KeystatToken token = new KeystatToken();
-	static CDOMTokenLoader<Skill> loader = new CDOMTokenLoader<Skill>();
+	static CDOMTokenLoader<Skill> loader = new CDOMTokenLoader<>();
 	private PCStat ps;
 
 	@Override
@@ -152,7 +152,7 @@ public class KeystatTokenTest extends AbstractTokenTestCase<Skill>
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<CDOMSingleRef<PCStat>> getObjectKey()
+	private static ObjectKey<CDOMSingleRef<PCStat>> getObjectKey()
 	{
 		return ObjectKey.KEY_STAT;
 	}

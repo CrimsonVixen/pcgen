@@ -11,6 +11,8 @@ code/comp-manifest
 code/manifest
 
 hs_err_*.log
+checkstyle-cachefile
+config.ini.junit
 
 code/build.eclipse/
 code/manifest-tests
@@ -41,3 +43,8 @@ pcgen-batch-convert.jar
 
 data/customsources/*
 !data/customsources/readme-customsources.txt
+/.nb-gradle/
+/jre/
+/installers/win-installer/project.nsh
+/installers/win-installer/includes/constants.nsh
+/.checkstyle

@@ -26,10 +26,9 @@ import java.util.StringTokenizer;
 import pcgen.cdom.base.CDOMObject;
 
 /**
- * <code>TextProperty</code>.
+ * {@code TextProperty}.
  *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
+ * @author Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt;
  */
 public abstract class TextProperty extends PObject implements Serializable, Comparable<Object>
 {

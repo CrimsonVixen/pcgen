@@ -1,3 +1,22 @@
+/*
+ * StatCalcFacet.java
+ * Missing License Header, Copyright 2016 (C) Andrew Maitland <amaitland@users.sourceforge.net>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ */
 package pcgen.cdom.facet;
 
 import pcgen.cdom.enumeration.CharID;
@@ -83,7 +102,7 @@ public class StatCalcFacet
 			}
 		}
 
-		y += bonusCheckingFacet.getBonus(id, "STAT", stat.getKeyName());
+		y = (int) (y + bonusCheckingFacet.getBonus(id, "STAT", stat.getKeyName()));
 
 		y = Math.min(maxStatValue, y);
 		return Math.max(minStatValue, y);
@@ -134,8 +153,8 @@ public class StatCalcFacet
 			z = Math.min(maxStatValue, z);
 			return Math.max(minStatValue, z);
 		}
-		Integer score = statValueFacet.get(id, stat);
-		int base = Math.min(maxStatValue, score == null ? 0 : score);
+		Number score = statValueFacet.get(id, stat);
+		int base = Math.min(maxStatValue, score == null ? 0 : score.intValue());
 		return Math.max(minStatValue, base);
 	}
 
@@ -151,6 +170,36 @@ public class StatCalcFacet
 		return variableCheckingFacet.getVariableValue(id,
 			stat.getSafe(FormulaKey.STAT_MOD).toString(),
 			Integer.toString(aNum)).intValue();
+	}
+
+	/**
+	 * Retrieve the value of the stat with just the included bonuses. This may exclude things such as temporary or equipment bonuses at the caller's discretion.
+	 * 
+	 * @param stat
+	 *            The stat to calculate the bonus for.
+	 * @param id
+	 *            The id of the character being processed.
+	 * @param partialStatBonus
+	 *            The precalculated bonuses to be included.
+	 * @return The stat value.
+	 */
+	public int getPartialStatFor(CharID id, PCStat stat, int partialStatBonus)
+	{
+		int statValue = getBaseStatFor(id, stat);
+
+		statValue += partialStatBonus;
+		Number val = statMinValueFacet.getStatMinValue(id, stat);
+		if (val != null)
+		{
+			statValue = Math.max(val.intValue(), statValue);
+		}
+
+		val = statMaxValueFacet.getStatMaxValue(id, stat);
+		if (val != null)
+		{
+			statValue = Math.min(val.intValue(), statValue);
+		}
+		return statValue;
 	}
 
 }

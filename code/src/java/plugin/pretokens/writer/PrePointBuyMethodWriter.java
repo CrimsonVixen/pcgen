@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on September 16, 2005
  *
- * $Id$
  */
 package plugin.pretokens.writer;
 
@@ -32,10 +30,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <code>PrerequisitePointBuyMethodWriter</code>.
+ * {@code PrerequisitePointBuyMethodWriter}.
  *
- * @author Greg Bingleman <byngl@hotmail.com>
- * @version $Revision$
  */
 public class PrePointBuyMethodWriter extends AbstractPrerequisiteWriter
 		implements PrerequisiteWriterInterface

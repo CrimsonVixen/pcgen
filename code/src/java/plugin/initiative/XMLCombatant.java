@@ -18,7 +18,6 @@
  *
  *  XMLCombatant.java
  *
- *  Created on January 24, 2002, 11:15 AM
  */
 package plugin.initiative;
 
@@ -31,15 +30,12 @@ import gmgen.plugin.SystemInitiative;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.math.Fraction;
-import org.jdom.Element;
+import org.apache.commons.lang3.math.Fraction;
+import org.jdom2.Element;
 
 import pcgen.util.Logging;
 
 /**
- *@author     devon
- *@since    March 20, 2003
- *@version $Revision$
  */
 public class XMLCombatant extends Combatant
 {
@@ -786,7 +782,7 @@ public class XMLCombatant extends Combatant
 
 			statBuf.append("<br>");
 
-			List<SystemAttribute> statList = new ArrayList<SystemAttribute>();
+			List<SystemAttribute> statList = new ArrayList<>();
 			statList.add(new SystemAttribute("Str", getAttribute("Strength")));
 			statList.add(new SystemAttribute("Con",
 				getAttribute("Constitution")));

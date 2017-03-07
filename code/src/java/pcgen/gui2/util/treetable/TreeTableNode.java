@@ -16,20 +16,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Feb 20, 2008, 3:47:33 PM
  */
 package pcgen.gui2.util.treetable;
 
-import java.util.List;
-import javax.swing.tree.MutableTreeNode;
+import java.util.Enumeration;
+import javax.swing.tree.TreeNode;
+import pcgen.gui2.util.table.Row;
 
 /**
  *
- * @author Connor Petty <mistercpp2000@gmail.com>
  */
-public interface TreeTableNode extends MutableTreeNode
+public interface TreeTableNode extends TreeNode, Row
 {
-    public List<Object> getValues();
-    public Object getValueAt(int column);
+	@Override
+	public Enumeration<TreeTableNode> children();
+	@Override
+	public TreeTableNode getChildAt(int childIndex);
     public void setValueAt(Object value, int column);
+	@Override
+	public TreeTableNode getParent();
 }

@@ -33,15 +33,14 @@ import pcgen.persistence.lst.output.prereq.PrerequisiteWriterInterface;
 import pcgen.persistence.lst.prereq.PreParserFactory;
 import pcgen.persistence.lst.prereq.PrerequisiteParserInterface;
 import pcgen.rules.persistence.TokenLibrary;
+import pcgen.rules.persistence.token.ModifierFactory;
 import pcgen.rules.persistence.token.PrimitiveToken;
 import pcgen.rules.persistence.token.QualifierToken;
-import pcgen.rules.types.FormatManager;
-import pcgen.rules.types.FormatManagerLibrary;
 
 public class TokenRegistration
 {
 
-	public static Set<String> ppiSet = new HashSet<String>();
+	public static Set<String> ppiSet = new HashSet<>();
 
 	public static void register(PrerequisiteParserInterface ppi)
 		throws PersistenceLayerException
@@ -60,10 +59,9 @@ public class TokenRegistration
 		}
 	}
 
-	public static Set<LstToken> tokenSet = new HashSet<LstToken>();
+	public static Set<LstToken> tokenSet = new HashSet<>();
 
 	public static void register(LstToken token)
-		throws PersistenceLayerException
 	{
 		if (!tokenSet.contains(token))
 		{
@@ -81,10 +79,9 @@ public class TokenRegistration
 		}
 	}
 
-	public static Set<Token> exportSet = new HashSet<Token>();
+	public static Set<Token> exportSet = new HashSet<>();
 
 	public static void register(Token token)
-		throws PersistenceLayerException
 	{
 		if (!exportSet.contains(token))
 		{
@@ -100,10 +97,9 @@ public class TokenRegistration
 		tokenSet.clear();
 		ppiSet.clear();
 		PreParserFactory.clear();
-		FormatManagerLibrary.reset();
 	}
 
-	public static Set<String> pwSet = new HashSet<String>();
+	public static Set<String> pwSet = new HashSet<>();
 
 	public static void register(PrerequisiteWriterInterface writer)
 		throws PersistenceLayerException
@@ -114,11 +110,6 @@ public class TokenRegistration
 			PrerequisiteWriterFactory.register(writer);
 			pwSet.add(s);
 		}
-	}
-
-	public static void register(FormatManager<?> manager)
-	{
-		FormatManagerLibrary.addFormatManager(manager);
 	}
 
 	public static void register(Class<? extends BonusObj> cl)
@@ -134,6 +125,17 @@ public class TokenRegistration
 		catch (IllegalAccessException e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public static Set<ModifierFactory<?>> mSet = new HashSet<>();
+
+	public static void register(ModifierFactory<?> m)
+	{
+		if (!mSet.contains(m))
+		{
+			TokenLibrary.addToModifierMap(m);
+			mSet.add(m);
 		}
 	}
 }

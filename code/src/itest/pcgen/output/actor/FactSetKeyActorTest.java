@@ -17,7 +17,8 @@
  */
 package pcgen.output.actor;
 
-import pcgen.base.util.BasicObjectContainer;
+import pcgen.base.format.StringManager;
+import pcgen.base.util.BasicIndirect;
 import pcgen.cdom.enumeration.FactSetKey;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.facet.model.DeityFacet;
@@ -25,7 +26,6 @@ import pcgen.core.Deity;
 import pcgen.output.publish.OutputDB;
 import pcgen.output.testsupport.AbstractOutputTestCase;
 import pcgen.output.wrapper.CDOMObjectWrapper;
-import plugin.format.StringManager;
 
 public class FactSetKeyActorTest extends AbstractOutputTestCase
 {
@@ -43,7 +43,6 @@ public class FactSetKeyActorTest extends AbstractOutputTestCase
 			classSetUp();
 			classSetUpRun = true;
 		}
-		CDOMObjectWrapper.getInstance().clear();
 	}
 
 	private void classSetUp()
@@ -63,10 +62,10 @@ public class FactSetKeyActorTest extends AbstractOutputTestCase
 		d.addToListFor(ListKey.BOOK_TYPE, expectedResult2);
 		StringManager mgr = new StringManager();
 		FactSetKey<String> fsk = FactSetKey.getConstant("booktype", mgr);
-		d.addToSetFor(fsk, new BasicObjectContainer<>(mgr, expectedResult1));
-		d.addToSetFor(fsk, new BasicObjectContainer<>(mgr, expectedResult2));
+		d.addToSetFor(fsk, new BasicIndirect<>(mgr, expectedResult1));
+		d.addToSetFor(fsk, new BasicIndirect<>(mgr, expectedResult2));
 		FactSetKeyActor<?> lka = new FactSetKeyActor<>(fsk);
-		CDOMObjectWrapper.getInstance().load(d.getClass(), "booktype", lka);
+		CDOMObjectWrapper.load(dsid, d.getClass(), "booktype", lka);
 		processThroughFreeMarker("${deity.booktype[0]}", expectedResult1);
 		processThroughFreeMarker("${deity.booktype[1]}", expectedResult2);
 	}
@@ -83,10 +82,10 @@ public class FactSetKeyActorTest extends AbstractOutputTestCase
 		d.addToListFor(ListKey.BOOK_TYPE, expectedResult2);
 		StringManager mgr = new StringManager();
 		FactSetKey<String> fsk = FactSetKey.getConstant("booktype", mgr);
-		d.addToSetFor(fsk, new BasicObjectContainer<>(mgr, expectedResult1));
-		d.addToSetFor(fsk, new BasicObjectContainer<>(mgr, expectedResult2));
+		d.addToSetFor(fsk, new BasicIndirect<>(mgr, expectedResult1));
+		d.addToSetFor(fsk, new BasicIndirect<>(mgr, expectedResult2));
 		FactSetKeyActor<?> lka = new FactSetKeyActor<>(fsk);
-		CDOMObjectWrapper.getInstance().load(d.getClass(), "booktype", lka);
+		CDOMObjectWrapper.load(dsid, d.getClass(), "booktype", lka);
 		processThroughFreeMarker("${deity.booktype?join(\", \")!}", "Magical, Long");
 	}
 }

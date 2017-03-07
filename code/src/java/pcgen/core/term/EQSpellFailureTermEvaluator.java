@@ -18,17 +18,16 @@
  *
  * Created 03-Oct-2008 02:42:03
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
 package pcgen.core.term;
 
+import pcgen.cdom.enumeration.IntegerKey;
+import pcgen.cdom.util.CControl;
 import pcgen.core.Equipment;
 import pcgen.core.PlayerCharacter;
-import pcgen.cdom.enumeration.IntegerKey;
+import pcgen.util.Logging;
 
 public class EQSpellFailureTermEvaluator extends BaseEQTermEvaluator implements TermEvaluator
 {
@@ -51,6 +50,11 @@ public class EQSpellFailureTermEvaluator extends BaseEQTermEvaluator implements 
 			Equipment eq,
 			boolean primary,
 			PlayerCharacter pc) {
+		if (pc.hasControl(CControl.EQSPELLFAILURE))
+		{
+			Logging.errorPrint("EQSPELLFAIL term is disabled "
+				+ "when EQSPELLFAILURE control is used");
+		}
 		return String.valueOf(eq.getSafe(IntegerKey.SPELL_FAILURE));
 	}
 

@@ -30,16 +30,16 @@ import pcgen.core.PCStat;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.BuildUtilities;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class SpellStatTokenTest extends AbstractTokenTestCase<PCClass>
+public class SpellStatTokenTest extends AbstractCDOMTokenTestCase<PCClass>
 {
 
 	static SpellstatToken token = new SpellstatToken();
-	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<PCClass>();
+	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<>();
 	private PCStat ps;
 
 	@Override
@@ -230,7 +230,7 @@ public class SpellStatTokenTest extends AbstractTokenTestCase<PCClass>
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<CDOMSingleRef<PCStat>> getObjectKey()
+	private static ObjectKey<CDOMSingleRef<PCStat>> getObjectKey()
 	{
 		return ObjectKey.SPELL_STAT;
 	}

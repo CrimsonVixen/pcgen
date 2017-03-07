@@ -45,10 +45,9 @@ import pcgen.core.utils.LastGroupSeparator.GroupingMismatchException;
 /**
  * General utilities related to the Ability class.
  *
- * @author   Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version  $Revision$
+ * @author   Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt;
  */
-public class AbilityUtilities
+public final class AbilityUtilities
 {
 	private AbilityUtilities ()
 	{
@@ -244,7 +243,7 @@ public class AbilityUtilities
 		}
 		AbilityCategory category = (AbilityCategory) cna.getAbilityCategory();
 		// how many sub-choices to make
-		ArrayList<String> reservedList = new ArrayList<String>();
+		ArrayList<String> reservedList = new ArrayList<>();
 
 		ChoiceManagerList<?> aMan =
 				ChooserUtilities.getConfiguredController(cna, pc, category,
@@ -260,19 +259,19 @@ public class AbilityUtilities
 	private static <T> void processSelection(
 		PlayerCharacter pc, CNAbility cna, ChoiceManagerList<T> aMan, boolean toAdd)
 	{
-		ArrayList<T> availableList = new ArrayList<T>();
-		ArrayList<T> selectedList = new ArrayList<T>();
+		ArrayList<T> availableList = new ArrayList<>();
+		ArrayList<T> selectedList = new ArrayList<>();
 		aMan.getChoices(pc, availableList, selectedList);
 
-		if (availableList.size() == 0 && selectedList.size() == 0)
+		if (availableList.isEmpty() && selectedList.isEmpty())
 		{
 			//TODO Log error? (ignored choice?)
 			return;
 		}
 
-		List<T> origSelections = new ArrayList<T>(selectedList);
-		List<T> removedSelections = new ArrayList<T>(selectedList);
-		ArrayList<String> reservedList = new ArrayList<String>();
+		List<T> origSelections = new ArrayList<>(selectedList);
+		List<T> removedSelections = new ArrayList<>(selectedList);
+		ArrayList<String> reservedList = new ArrayList<>();
 
 		List<T> newSelections;
 		if (toAdd)

@@ -53,11 +53,7 @@ import plugin.primitive.spell.SubSchoolToken;
  * unparsing of the CHOOSE:SPELLS subtoken.
  *
  * <br/>
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
  * 
- * @author Tom Parker
- * @version $Revision:  $
  */
 public class SpellsTokenTest extends
 		AbstractChooseTokenTestCase<CDOMObject, Spell>
@@ -65,7 +61,7 @@ public class SpellsTokenTest extends
 
 	static ChooseLst token = new ChooseLst();
 	static SpellsToken subtoken = new SpellsToken();
-	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<CDOMObject>();
+	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public void setUp() throws PersistenceLayerException, URISyntaxException
@@ -105,12 +101,6 @@ public class SpellsTokenTest extends
 	public Class<Spell> getTargetClass()
 	{
 		return Spell.class;
-	}
-
-	@Test
-	public void testEmpty()
-	{
-		// Just to get Eclipse to recognize this as a JUnit 4.0 Test Case
 	}
 
 	@Override

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 29/09/2010 7:16:42 PM
  *
- * $Id: SpellsInfoTab.java 13208 2010-09-29 12:59:43Z jdempsey $
  */
 package pcgen.gui2.tabs;
 
@@ -32,14 +30,10 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.enumeration.Tab;
 
 /**
- * The Class <code>SpellsInfoTab</code> is a placeholder for the yet
+ * The Class {@code SpellsInfoTab} is a placeholder for the yet
  * to be implemented Seplls tab.
- * <br/>
- * Last Editor: $Author: jdempsey $
- * Last Edited: $Date: 2010-09-29 05:59:43 -0700 (Wed, 29 Sep 2010) $
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: 13208 $
  */
 @SuppressWarnings("serial")
 public class SpellsInfoTab extends JTabbedPane implements CharacterInfoTab, TodoHandler
@@ -109,9 +103,6 @@ public class SpellsInfoTab extends JTabbedPane implements CharacterInfoTab, Todo
 		return tabTitle;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void adviseTodo(String fieldName)
 	{

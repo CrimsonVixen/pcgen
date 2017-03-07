@@ -30,16 +30,16 @@ import pcgen.core.PCStat;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.BuildUtilities;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class BonusSpellStatTokenTest extends AbstractTokenTestCase<PCClass>
+public class BonusSpellStatTokenTest extends AbstractCDOMTokenTestCase<PCClass>
 {
 
 	static BonusspellstatToken token = new BonusspellstatToken();
-	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<PCClass>();
+	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<>();
 	private PCStat ps;
 
 	@Override
@@ -184,7 +184,7 @@ public class BonusSpellStatTokenTest extends AbstractTokenTestCase<PCClass>
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<CDOMSingleRef<PCStat>> getObjectKey()
+	private static ObjectKey<CDOMSingleRef<PCStat>> getObjectKey()
 	{
 		return ObjectKey.BONUS_SPELL_STAT;
 	}

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 18/01/2009 9:35:28 AM
  *
- * $Id$
  */
 
 package pcgen.gui2.converter.panel;
@@ -44,14 +42,10 @@ import pcgen.gui2.tools.Utility;
 import pcgen.gui2.util.FontManipulation;
 
 /**
- * The Class <code>SummaryPanel</code> presents a summary of the user's 
+ * The Class {@code SummaryPanel} presents a summary of the user's
  * choices for confirmation before running a conversion process.
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class SummaryPanel extends ConvertSubPanel
 {

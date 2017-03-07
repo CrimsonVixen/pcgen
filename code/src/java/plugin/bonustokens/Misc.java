@@ -16,16 +16,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 13, 2002, 9:19 AM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.bonustokens;
 
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.bonus.MultiTagBonusObj;
+import pcgen.rules.context.LoadContext;
+import pcgen.util.Logging;
 
 /**MISC
  * Handles the BONUS:MISC token.
@@ -67,4 +67,38 @@ public final class Misc extends MultiTagBonusObj
 	{
 		return BONUS_TAGS.length;
 	}
+
+	@Override
+	protected boolean parseToken(LoadContext context, String token)
+	{
+		if (ControlUtilities.hasControlToken(context, CControl.PCSPELLFAILURE))
+		{
+			if ("SPELLFAILURE".equals(token))
+			{
+				Logging.errorPrint("BONUS:MISC|SPELLFAILURE is disabled "
+					+ "when PCSPELLFAILURE control is used: " + token, context);
+				return false;
+			}
+		}
+		if (ControlUtilities.hasControlToken(context, CControl.PCMAXDEX))
+		{
+			if ("MAXDEX".equals(token))
+			{
+				Logging.errorPrint("BONUS:MISC|MAXDEX is disabled "
+					+ "when PCMAXDEX control is used: " + token, context);
+				return false;
+			}
+		}
+		if (ControlUtilities.hasControlToken(context, CControl.PCACCHECK))
+		{
+			if ("ACCHECK".equals(token))
+			{
+				Logging.errorPrint("BONUS:MISC|ACCHECK is disabled "
+					+ "when PCACCHECK control is used: " + token, context);
+				return false;
+			}
+		}
+		return super.parseToken(context, token);
+	}
+	
 }

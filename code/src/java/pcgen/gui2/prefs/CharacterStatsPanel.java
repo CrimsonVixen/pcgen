@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 26/10/2008 14:38:01
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
@@ -53,14 +51,10 @@ import pcgen.system.LanguageBundle;
 
 
 /**
- * The Class <code>CharacterStatsPanel</code> is responsible for managing 
+ * The Class {@code CharacterStatsPanel} is responsible for managing
  * the character stats preferences.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public class CharacterStatsPanel extends PCGenPrefsPanel
@@ -79,7 +73,6 @@ public class CharacterStatsPanel extends PCGenPrefsPanel
 	private JComboBoxEx abilityPurchaseModeCombo;
 	private JComboBoxEx abilityRolledModeCombo = null;
 	private JComboBoxEx abilityScoreCombo;
-	private JButton purchaseModeButton;
 	private PurchaseModeFrame pmsFrame = null;
 
 	private ActionListener rolledModeListener;
@@ -234,9 +227,8 @@ public class CharacterStatsPanel extends PCGenPrefsPanel
 		gridbag.setConstraints(label, c);
 		this.add(label);
 		Utility.buildConstraints(c, 1, row++, 3, 1, 0, 0);
-		purchaseModeButton =
-				new JButton(LanguageBundle
-					.getString("in_Prefs_purchaseModeConfig"));
+		JButton purchaseModeButton = new JButton(LanguageBundle
+				.getString("in_Prefs_purchaseModeConfig"));
 		gridbag.setConstraints(purchaseModeButton, c);
 		this.add(purchaseModeButton);
 		purchaseModeButton.addActionListener(new PurchaseModeButtonListener());
@@ -405,7 +397,7 @@ public class CharacterStatsPanel extends PCGenPrefsPanel
 			});
 		}
 
-		Utility.centerDialog(pmsFrame);
+		Utility.centerComponent(pmsFrame);
 
 		// ensure the frame is visible (in case user selects menu item again).
 		pmsFrame.setVisible(true);
@@ -416,32 +408,11 @@ public class CharacterStatsPanel extends PCGenPrefsPanel
 	 */
 	private void addAbilitiesPanelListeners()
 	{
-		scoreListener = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				abilitiesAllSameButton.setSelected(true);
-			}
-		};
+		scoreListener = evt -> abilitiesAllSameButton.setSelected(true);
 
-		purchaseModeListener = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				abilitiesPurchasedButton.setSelected(true);
-			}
-		};
+		purchaseModeListener = evt -> abilitiesPurchasedButton.setSelected(true);
 
-		rolledModeListener = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				abilitiesRolledButton.setSelected(true);
-			}
-		};
+		rolledModeListener = evt -> abilitiesRolledButton.setSelected(true);
 
 		startListeners();
 	}

@@ -18,11 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.test;
@@ -46,7 +42,7 @@ import pcgen.core.prereq.PrerequisiteTest;
 
 /**
  * @author	wardc
- * @author	byngl <byngl@hotmail.com>
+ * @author	byngl &lt;byngl@hotmail.com&gt;
  *
  */
 public class PreRaceTester extends AbstractDisplayPrereqTest implements PrerequisiteTest
@@ -220,7 +216,7 @@ public class PreRaceTester extends AbstractDisplayPrereqTest implements Prerequi
 	
 	private Set<Race> getRacesImitatedBy(Race pcRace)
 	{
-		Set<Race> servesAs = new HashSet<Race>();
+		Set<Race> servesAs = new HashSet<>();
 		if (pcRace != null)
 		{
 			for(CDOMReference<Race> ref: pcRace.getSafeListFor(ListKey.SERVES_AS_RACE))

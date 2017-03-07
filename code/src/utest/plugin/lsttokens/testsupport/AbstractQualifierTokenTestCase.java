@@ -31,6 +31,7 @@ import pcgen.cdom.enumeration.VariableKey;
 import pcgen.cdom.reference.ReferenceManufacturer;
 import pcgen.core.GameMode;
 import pcgen.core.Globals;
+import pcgen.core.Language;
 import pcgen.core.PCAlignment;
 import pcgen.core.PCStat;
 import pcgen.core.SettingsHandler;
@@ -51,10 +52,10 @@ import plugin.primitive.language.LangBonusToken;
 import plugin.qualifier.pobject.QualifiedToken;
 
 public abstract class AbstractQualifierTokenTestCase<T extends CDOMObject, TC extends CDOMObject>
-		extends AbstractTokenTestCase<T>
+		extends AbstractCDOMTokenTestCase<T>
 {
 
-	private static QualifierToken<CDOMObject> qt = new QualifiedToken<CDOMObject>();
+	private static QualifierToken<CDOMObject> qt = new QualifiedToken<>();
 
 	public abstract CDOMSecondaryToken<?> getSubToken();
 
@@ -74,6 +75,14 @@ public abstract class AbstractQualifierTokenTestCase<T extends CDOMObject, TC ex
 		{
 			qualifier = token + "=" + target;
 		}
+	}
+
+	@Override
+	protected LoadContext getPrimaryContext()
+	{
+		GameMode game = SettingsHandler.getGame();
+		game.clearLoadContext();
+		return game.getContext();
 	}
 
 	public String getSubTokenName()
@@ -1067,7 +1076,7 @@ public abstract class AbstractQualifierTokenTestCase<T extends CDOMObject, TC ex
 	public void testInvalidInputJoinedDotNotQualifierAlone()
 			throws PersistenceLayerException
 	{
-		boolean parse = parse(getSubTokenName() + '|' + "PC.!" + qualifier + "");
+		boolean parse = parse(getSubTokenName() + '|' + "PC.!" + qualifier);
 		if (parse)
 		{
 			assertConstructionError();
@@ -1957,6 +1966,7 @@ public abstract class AbstractQualifierTokenTestCase<T extends CDOMObject, TC ex
 		Globals.createEmptyRace();
 		Globals.setUseGUI(false);
 		Globals.emptyLists();
+		resetContext();
 		GameMode gamemode = SettingsHandler.getGame();
 		
 		str = BuildUtilities.createStat("Strength", "STR");
@@ -2014,6 +2024,7 @@ public abstract class AbstractQualifierTokenTestCase<T extends CDOMObject, TC ex
 		colossal = BuildUtilities.createSize("Colossal", 8);
 
 		SourceFileLoader.createLangBonusObject(Globals.getContext());
+		ref.constructNowIfNecessary(Language.class, "DummyLanguage");
 	}
 
 	public void testEmptyIdentity() throws InstantiationException,
@@ -2021,7 +2032,7 @@ public abstract class AbstractQualifierTokenTestCase<T extends CDOMObject, TC ex
 	{
 		QualifierToken<?> one = getQualifierClass().newInstance();
 		QualifierToken<?> two = getQualifierClass().newInstance();
-		assertTrue(one.equals(two));
+		assertEquals(one, two);
 	}
 
 	protected abstract Class<? extends QualifierToken> getQualifierClass();

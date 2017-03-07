@@ -24,17 +24,16 @@ package gmgen.plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.jdom.Element;
 
 import pcgen.base.lang.StringUtil;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.enumeration.ObjectKey;
+import pcgen.cdom.enumeration.PCAttribute;
 import pcgen.cdom.enumeration.StringKey;
 import pcgen.cdom.reference.CDOMSingleRef;
 import pcgen.core.Domain;
@@ -58,17 +57,18 @@ import pcgen.pluginmgr.messages.RequestOpenPlayerCharacterMessage;
 import pcgen.util.Logging;
 import pcgen.util.enumeration.View;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jdom2.Element;
+
 /**
  *@author     devon
- *@since    March 20, 2003
- *@version $Revision$
  */
 public class PcgCombatant extends Combatant
 {
 	protected PlayerCharacter pc;
 	private CharacterDisplay display;
 	protected PcRenderer renderer;
-	protected float crAdj = 0;
+	private float crAdj = 0;
 	private final PCGenMessageHandler messageHandler;
 
 	/**
@@ -231,7 +231,7 @@ public class PcgCombatant extends Combatant
 	 */
 	public void setPlayer(String player)
 	{
-		pc.setPlayersName(player);
+		pc.setPCAttribute(PCAttribute.PLAYERSNAME, player);
 	}
 
 	/**
@@ -316,61 +316,66 @@ public class PcgCombatant extends Combatant
 		String strData = String.valueOf(data);
 
 		//Determine which row was edited
-		if (columnName.equals("Name"))
+		switch (columnName)
 		{
-			// Character's Name
-			setName(strData);
-		}
-		else if (columnName.equals("Player"))
-		{
-			// Player's Name
-			setPlayer(strData);
-		}
-		else if (columnName.equals("Status"))
-		{
-			// XML Combatant's Status
-			setStatus(State.getStateLocalised(strData));
-		}
-		else if (columnName.equals("+"))
-		{
-			// Initative bonus
-			Integer intData = Integer.valueOf(strData);
-			init.setBonus(intData.intValue());
-		}
-		else if (columnName.equals("Init"))
-		{
-			// Initative
-			Integer intData = Integer.valueOf(strData);
-			init.setCurrentInitiative(intData.intValue());
-		}
-		else if (columnName.equals("#"))
-		{
-			// Number (for tokens)
-			Integer intData = Integer.valueOf(strData);
-			setNumber(intData.intValue());
-		}
-		else if (columnName.equals("HP"))
-		{
-			// Current Hit Points
-			Integer intData = Integer.valueOf(strData);
-			hitPoints.setCurrent(intData.intValue());
-		}
-		else if (columnName.equals("HP Max"))
-		{
-			// Maximum Hit Points
-			Integer intData = Integer.valueOf(strData);
-			hitPoints.setMax(intData.intValue());
-		}
-		else if (columnName.equals("Dur"))
-		{
-			// Duration
-			Integer intData = Integer.valueOf(strData);
-			setDuration(intData.intValue());
-		}
-		else if (columnName.equals("Type"))
-		{
-			// Type
-			setCombatantType(strData);
+			case "Name":
+				// Character's Name
+				setName(strData);
+				break;
+			case "Player":
+				// Player's Name
+				setPlayer(strData);
+				break;
+			case "Status":
+				// XML Combatant's Status
+				setStatus(State.getStateLocalised(strData));
+				break;
+			case "+":
+			{
+				// Initative bonus
+				Integer intData = Integer.valueOf(strData);
+				init.setBonus(intData.intValue());
+				break;
+			}
+			case "Init":
+			{
+				// Initative
+				Integer intData = Integer.valueOf(strData);
+				init.setCurrentInitiative(intData.intValue());
+				break;
+			}
+			case "#":
+			{
+				// Number (for tokens)
+				Integer intData = Integer.valueOf(strData);
+				setNumber(intData.intValue());
+				break;
+			}
+			case "HP":
+			{
+				// Current Hit Points
+				Integer intData = Integer.valueOf(strData);
+				hitPoints.setCurrent(intData.intValue());
+				break;
+			}
+			case "HP Max":
+			{
+				// Maximum Hit Points
+				Integer intData = Integer.valueOf(strData);
+				hitPoints.setMax(intData.intValue());
+				break;
+			}
+			case "Dur":
+			{
+				// Duration
+				Integer intData = Integer.valueOf(strData);
+				setDuration(intData.intValue());
+				break;
+			}
+			case "Type":
+				// Type
+				setCombatantType(strData);
+				break;
 		}
 	}
 
@@ -398,7 +403,7 @@ public class PcgCombatant extends Combatant
 		 * <p>
 		 * This sets the text of the JTextPane for the specified PC. It uses an
 		 * output sheet template, specified by the templateName option; it uses
-		 * <code>pcgen.io.ExportHandler</code> to transform the template file
+		 * {@code pcgen.io.ExportHandler} to transform the template file
 		 * into an StringWriter, and then sets the text of the text pane as html.
 		 * This allows us easy access to changing the content or format of the stat
 		 * block, and also allows us to easily use a different output format if
@@ -688,7 +693,7 @@ public class PcgCombatant extends Combatant
 			statBuf.append(" ");
 
 			statBuf.append("<font class='type'>AL:</font> ");
-			statBuf.append(pcOut.getAlignmentShort()); //|ALIGNMENT.SHORT|
+			statBuf.append(pcOut.getAlignment()); //|ALIGNMENT.SHORT|
 			statBuf.append("; ");
 
 			statBuf
@@ -787,7 +792,7 @@ public class PcgCombatant extends Combatant
 			return statBuf.toString();
 		}
 
-		protected String getStatBlockLineSkills()
+		String getStatBlockLineSkills()
 		{
 			StringBuilder statBuf = new StringBuilder();
 			PlayerCharacterOutput pcOut = new PlayerCharacterOutput(pc);
@@ -817,7 +822,7 @@ public class PcgCombatant extends Combatant
 				{
 					modSkill =
 							SkillModifier.modifier(skill, pc).intValue()
-								- pc.getStatModFor(keyStat.resolvesTo());
+								- pc.getStatModFor(keyStat.get());
 					Logging.debugPrint("modSkill: " + modSkill);
 				}
 
@@ -1029,10 +1034,10 @@ public class PcgCombatant extends Combatant
 				 <!-- End Prepared Spells -->
 			 */
 			ArrayList<PObject> classList =
-					new ArrayList<PObject>(display.getClassSet());
+                    new ArrayList<>(display.getClassSet());
 			classList.add(display.getRace());
 
-			Set<String> bookList = new HashSet<String>(pc.getDisplay().getSpellBookNames());
+			Set<String> bookList = new HashSet<>(pc.getDisplay().getSpellBookNames());
 			bookList.add(Globals.getDefaultSpellBook());
 			for (String book : bookList)
 			{
@@ -1042,9 +1047,9 @@ public class PcgCombatant extends Combatant
 			return statBuf.toString();
 		}
 
-		protected void statBlockLineSpellBook(PlayerCharacter aPC, StringBuilder statBuf, ArrayList<PObject> classList, String spellBookName)
+		protected void statBlockLineSpellBook(PlayerCharacter aPC, StringBuilder statBuf, Collection<PObject> classList, String spellBookName)
 		{
-			Set<PObject> classes = new HashSet<PObject>();
+			Set<PObject> classes = new HashSet<>();
 			classes.addAll(classList);
 			
 			for ( PObject pObj : classes )
@@ -1110,7 +1115,7 @@ public class PcgCombatant extends Combatant
 			}
 		}
 
-		protected String getStatBlockTitle()
+		String getStatBlockTitle()
 		{
 			StringBuilder statBuf = new StringBuilder();
 			PlayerCharacterOutput pcOut = new PlayerCharacterOutput(pc);
@@ -1125,8 +1130,8 @@ public class PcgCombatant extends Combatant
 
 			String region = pcOut.getRegion(); //|REGION|.|%|
 
-			if (!"".equals(region) && (region != null)
-				&& !"None".equals(region))
+			if ((region != null) && !region.isEmpty()
+					&& !"None".equals(region))
 			{
 				statBuf.append(" From " + region + " ");
 			}

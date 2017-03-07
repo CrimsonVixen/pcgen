@@ -6,41 +6,30 @@ PCGen currently supports the d20 RPG system and includes data sets based upon ga
 The project's current focus is on gaming material released under Wizards of the Coast's Open Gaming License (OGL) and sources supporting the Pathfinder RPG by Paizo, but the PCGen team also works with publishers to get permission to include limited Closed Content as well.
 PCGen runs on Windows, Mac OS X and Unix/Linux using Java
 
-# What's new for v6.5.4
+# What's new for v6.07.01
 
-PCGen v6.5.4 is an alpha release from our development branch to allow 
-experimentation and testing of our latest work.
-Please give it a shot and let us know how it works for you. 
+PCGen v6.07.01 is 
+an alpha development release from our development branch to allow testing of our latest work.
+Please give it a shot and let us know how it works for you.
 Some notable changes in this release are listed below.
 		 
 ## Notable Changes
 
-* Update to PFS rules to Additional Resources Guide version January 9, 2015
-* Reworking of the Pathfinder archetype system
-* Conversion of many output tokens to Freemarker objects
-* Update documentation for FEAT and UDAM tags
+* 120+ Data Fixes
+* 5+ Code Fixes and UI Improvements
+* Formula Parser Implemented
 
 
+For full details of the new changes in this release, see the release notes.
 
-## New Sources
+*Andrew Maitland* for the PCGEN Team -- January 14th, 2017.
 
-The following new sources were added in 6.5.4
+SHA-256 digest for pcgen-6.07.01-full.zip:
+3a6747f29509f401a31d627394776033e1fececbeeabe5f9b84cc25e8a91acef
 
+SHA-256 digest for pcgen-6.07.01-sources.jar:
+7f5be2c3320f4acd1a63ff7f41f3598ef0f97874aeb2012aaf1b33ad16c1dc05
 
-* [Everyman Gaming] Dragon Companion Handbook
+SHA-256 digest for pcgen60701_win_install.exe:
+25b705a92e00ead78df76da315dc3b6185d319a8c242f933603e2d1c5c067830
 
-
-
-For full details of the new changes in this release, see the 
-[Release Notes](http://sourceforge.net/projects/pcgen/files/PCGen%20Unstable/6.05.04/pcgen-release-notes-60504.html/download) in the list above.
-
-*James Dempsey* for the PCGEN Team -- 13 September, 2015.
-
-SHA-256 digest for pcgen-6.05.04-full.zip:
-5bb8e997879b85eb7066e15a17db1c5754576096a3ab37f481dcf11f21bd9f01
-
-SHA-256 digest for pcgen-6.05.04-sources.jar:
-b45e06e388af39a75d750ba9357f97771989d9da152cb08b683d00bbebfa92fb
-
-SHA-256 digest for pcgen60504_win_install.exe:
-eb2e3fd2426ccd573f78c51ab36966006921ad4ac7d385418dc66478f0bb01ea

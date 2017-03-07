@@ -33,12 +33,6 @@ public class AbstractCNASEnforcingFacet extends
 		AbstractDataFacet<CharID, CNAbilitySelection> implements
 		DataFacetChangeListener<CharID, CNAbilitySelection>
 {
-	public int size(CharID id)
-	{
-		List<List<SourcedCNAS>> list = getList(id);
-		return (list == null) ? 0 : list.size();
-	}
-
 	public boolean isEmpty(CharID id)
 	{
 		List<List<SourcedCNAS>> list = getList(id);
@@ -66,7 +60,7 @@ public class AbstractCNASEnforcingFacet extends
 				return false;
 			}
 		}
-		ArrayList<SourcedCNAS> newList = new ArrayList<SourcedCNAS>(1);
+		List<SourcedCNAS> newList = new ArrayList<>(1);
 		newList.add(new SourcedCNAS(cnas, source));
 		list.add(newList);
 		fireDataFacetChangeEvent(id, cnas, DataFacetChangeEvent.DATA_ADDED);
@@ -136,7 +130,7 @@ public class AbstractCNASEnforcingFacet extends
 		{
 			return Collections.emptyList();
 		}
-		List<CNAbilitySelection> returnList = new ArrayList<CNAbilitySelection>();
+		List<CNAbilitySelection> returnList = new ArrayList<>();
 		for (List<SourcedCNAS> array : list)
 		{
 			returnList.add(array.get(0).cnas);
@@ -154,7 +148,7 @@ public class AbstractCNASEnforcingFacet extends
 		List<List<SourcedCNAS>> list = getList(id);
 		if (list == null)
 		{
-			list = new ArrayList<List<SourcedCNAS>>();
+			list = new ArrayList<>();
 			setCache(id, list);
 		}
 		return list;
@@ -170,8 +164,8 @@ public class AbstractCNASEnforcingFacet extends
 			for (List<SourcedCNAS> orig : list)
 			{
 				List<SourcedCNAS> newCnasList =
-						new ArrayList<AbstractCNASEnforcingFacet.SourcedCNAS>(
-							orig);
+                        new ArrayList<>(
+                                orig);
 				constructingList.add(newCnasList);
 			}
 		}
@@ -180,15 +174,7 @@ public class AbstractCNASEnforcingFacet extends
 	public int getCount(CharID id)
 	{
 		List<List<SourcedCNAS>> list = getList(id);
-		int count = 0;
-		if (list != null)
-		{
-			for (List<SourcedCNAS> orig : list)
-			{
-				count += orig.size();
-			}
-		}
-		return count;
+		return (list == null) ? 0 : list.size();
 	}
 
 	@Override
@@ -204,7 +190,7 @@ public class AbstractCNASEnforcingFacet extends
 		remove(dfce.getCharID(), dfce.getCDOMObject(), dfce.getSource());
 	}
 
-	protected class SourcedCNAS
+	protected static class SourcedCNAS
 	{
 		public final CNAbilitySelection cnas;
 		public final Object source;

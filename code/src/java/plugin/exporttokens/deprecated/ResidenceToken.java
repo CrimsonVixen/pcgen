@@ -16,15 +16,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens.deprecated;
 
+import pcgen.cdom.enumeration.PCStringKey;
 import pcgen.core.display.CharacterDisplay;
 import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.AbstractExportToken;
@@ -49,6 +46,6 @@ public class ResidenceToken extends AbstractExportToken
 	public String getToken(String tokenSource, CharacterDisplay display,
 		ExportHandler eh)
 	{
-		return display.getResidence();
+		return display.getSafeStringFor(PCStringKey.RESIDENCE);
 	}
 }

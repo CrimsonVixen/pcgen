@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 3, 2006
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit.basekit;
@@ -30,10 +26,10 @@ import java.util.Collection;
 import java.util.List;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.base.util.NamedFormula;
 import pcgen.cdom.base.FormulaFactory;
 import pcgen.core.kit.KitGear;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractToken;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
@@ -66,6 +62,9 @@ public class LookupToken extends AbstractToken implements
 	public ParseResult parseToken(LoadContext context, KitGear kitGear, String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, ',');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String first = sep.next();
 		if (!sep.hasNext())
 		{
@@ -94,7 +93,7 @@ public class LookupToken extends AbstractToken implements
 		{
 			return null;
 		}
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (NamedFormula nf : lookups)
 		{
 			list.add(nf.getName() + "," + nf.getFormula().toString());

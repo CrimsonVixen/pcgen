@@ -23,11 +23,11 @@ package pcgen.gui2.util.treetable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.tree.TreeNode;
+import pcgen.gui2.util.table.Row;
 
 /**
  *
- * @author Connor Petty <mistercpp2000@gmail.com>
+ * @author Connor Petty &lt;mistercpp2000@gmail.com&gt;
  */
 public class DefaultSortableTreeTableNode extends DefaultTreeTableNode
         implements SortableTreeTableNode
@@ -43,27 +43,27 @@ public class DefaultSortableTreeTableNode extends DefaultTreeTableNode
         setValues(data);
     }
 
-    public DefaultSortableTreeTableNode(TreeNode node)
-    {
-        this();
-        if (node instanceof TreeTableNode)
-        {
-            TreeTableNode treeTableNode = (TreeTableNode) node;
-            setValues(treeTableNode.getValues());
-        }
-        for (int x = 0; x < node.getChildCount(); x++)
-        {
-            add(new DefaultSortableTreeTableNode(node.getChildAt(x)));
-        }
-    }
+//    public DefaultSortableTreeTableNode(TreeNode node)
+//    {
+//        this();
+//        if (node instanceof TreeTableNode)
+//        {
+//            TreeTableNode treeTableNode = (TreeTableNode) node;
+//            setValues(treeTableNode.getValues());
+//        }
+//        for (int x = 0; x < node.getChildCount(); x++)
+//        {
+//            add(new DefaultSortableTreeTableNode(node.getChildAt(x)));
+//        }
+//    }
 
 	@Override
     @SuppressWarnings("unchecked")
-    public void sortChildren(Comparator<TreeTableNode> comparator)
+    public void sortChildren(Comparator<Row> comparator)
     {
         if (children != null)
         {
-            Collections.sort(children, comparator);
+            children.sort(comparator);
             for (int x = 0; x < children.size(); x++)
             {
                 SortableTreeTableNode child = (SortableTreeTableNode) children.get(x);

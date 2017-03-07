@@ -16,18 +16,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on February 16, 2006, 11:43 AM
  *
- * $Id$
  */
 package pcgen.core.kit;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import pcgen.base.lang.StringUtil;
 import pcgen.cdom.enumeration.Gender;
+import pcgen.cdom.enumeration.NumericPCAttribute;
+import pcgen.cdom.enumeration.PCAttribute;
 import pcgen.core.Globals;
 import pcgen.core.Kit;
 import pcgen.core.PlayerCharacter;
@@ -35,8 +34,6 @@ import pcgen.core.PlayerCharacter;
 /**
  * Code to represent a bio setting choices for a Kit.
  *
- * @author Aaron Divinsky <boomer70@yahoo.com>
- * @version $Revision$
  */
 public class KitBio extends BaseKit
 {
@@ -84,11 +81,11 @@ public class KitBio extends BaseKit
 	{
 		if (theCharacterName != null)
 		{
-			aPC.setName(theCharacterName);
+			aPC.setPCAttribute(PCAttribute.NAME, theCharacterName);
 		}
 		if (theCharacterAge != null)
 		{
-			aPC.setAge(theCharacterAge);
+			aPC.setPCAttribute(NumericPCAttribute.AGE, theCharacterAge);
 		}
 		if (selectedGender != null)
 		{
@@ -110,7 +107,7 @@ public class KitBio extends BaseKit
 	/**
 	 * Try and apply the selected gender to the character.  Any problems
 	 * encountered should be logged as a string in the
-	 * <code>warnings</code> list.
+	 * {@code warnings} list.
 	 *
 	 * @param aKit The owning kit for this item
 	 * @param aPC The character the kit is being applied to
@@ -127,7 +124,7 @@ public class KitBio extends BaseKit
 		{
 			if (theGenders.size() > 1)
 			{
-				List<Gender> selList = new ArrayList<Gender>(1);
+				List<Gender> selList = new ArrayList<>(1);
 				selList = Globals.getChoiceFromList("Choose Gender", theGenders, selList,
 					1, aPC);
 				if (selList.size() == 1)
@@ -170,7 +167,7 @@ public class KitBio extends BaseKit
 	{
 		if (theGenders == null)
 		{
-			theGenders = new ArrayList<Gender>();
+			theGenders = new ArrayList<>();
 		}
 		if (theGenders.contains(gender))
 		{

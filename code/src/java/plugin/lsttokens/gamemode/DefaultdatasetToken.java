@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 12/07/2008 18:44:57
  *
- * $Id: $
  */
 package plugin.lsttokens.gamemode;
 
@@ -29,14 +27,10 @@ import pcgen.core.GameMode;
 import pcgen.persistence.lst.GameModeLstToken;
 
 /**
- * The Class <code>DefaultdatasetToken</code> is responsible for parsing
+ * The Class {@code DefaultdatasetToken} is responsible for parsing
  * the value of the DEFAULTDATASET tag and processing it against the game mode..
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class DefaultdatasetToken implements GameModeLstToken
 {

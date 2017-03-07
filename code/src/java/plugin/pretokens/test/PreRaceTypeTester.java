@@ -18,14 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision: 7951 $
- * Last Editor: $Author: thpr $
- * Last Edited: $Date: 2008-10-05 15:21:21 -0400 (Sun, 05 Oct 2008) $
  *
  */
 package plugin.pretokens.test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import pcgen.cdom.base.CDOMObject;
 import pcgen.core.PCTemplate;
@@ -33,14 +32,13 @@ import pcgen.core.Race;
 import pcgen.core.display.CharacterDisplay;
 import pcgen.core.prereq.AbstractDisplayPrereqTest;
 import pcgen.core.prereq.Prerequisite;
-import pcgen.core.prereq.PrerequisiteTest;
 
 /**
  * @author	wardc
- * @author	byngl <byngl@hotmail.com>
+ * @author	byngl &lt;byngl@hotmail.com&gt;
  *
  */
-public class PreRaceTypeTester extends AbstractDisplayPrereqTest implements PrerequisiteTest
+public class PreRaceTypeTester extends AbstractDisplayPrereqTest
 {
 
 	/*
@@ -67,7 +65,7 @@ public class PreRaceTypeTester extends AbstractDisplayPrereqTest implements Prer
 		{
 			//Can't match
 		}
-		if (getCritterType(display).indexOf(requiredRaceType) >= 0)
+		if (getCritterTypes(display).contains(requiredRaceType))
 		{
 			runningTotal++;
 		}
@@ -86,36 +84,36 @@ public class PreRaceTypeTester extends AbstractDisplayPrereqTest implements Prer
 	}
 
 	/**
-	 * Get a pipe separated list of creature types for this PC (defaults to humanoid).
+	 * Get ArrayList populated with creature types for this PC (defaults to humanoid).
 	 * @return the list of types
 	 */
     @Deprecated
-	public static String getCritterType(CharacterDisplay display)
+	public static List<String> getCritterTypes(CharacterDisplay display)
 	{
-		final StringBuilder critterType = new StringBuilder(50);
+		ArrayList<String> critterTypes = new ArrayList<>();
 	
 		// Not too sure about this if, but that's what the previous code
 		// implied...
 		Race race = display.getRace();
 		if (race != null)
 		{
-			critterType.append(race.getType());
+			critterTypes.add(race.getType());
 		} else
 		{
-			critterType.append("Humanoid");
+			critterTypes.add("Humanoid");
 		}
 	
 		for (PCTemplate t : display.getTemplateSet())
 		{
 			final String aType = t.getType();
 	
-			if (!"".equals(aType))
+			if (aType != null && !aType.isEmpty())
 			{
-				critterType.append('|').append(aType);
+				critterTypes.add(aType);
 			}
 		}
 	
-		return critterType.toString();
+		return critterTypes;
 	}
 
 }

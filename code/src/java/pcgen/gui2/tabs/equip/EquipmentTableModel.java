@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Jan 25, 2011, 1:52:17 PM
  */
 package pcgen.gui2.tabs.equip;
 
@@ -34,12 +33,8 @@ import pcgen.gui2.filter.FilteredListFacadeTableModel;
  * is either equipped, unequipped or of all gear owned. Each instance relates to 
  * one type of view.
  * 
- * <br/>
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
+ * <br>
  * 
- * @author Connor Petty <cpmeister@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class EquipmentTableModel extends FilteredListFacadeTableModel<EquipmentFacade> implements EquipmentListListener
 {
@@ -92,6 +87,8 @@ public class EquipmentTableModel extends FilteredListFacadeTableModel<EquipmentF
 				return Integer.class;
 			case 4:
 				return Float.class;
+			case 5:
+				return String.class;
 			default:
 				return Object.class;
 		}
@@ -130,6 +127,8 @@ public class EquipmentTableModel extends FilteredListFacadeTableModel<EquipmentF
 				return equipmentList.getQuantity(equipment);
 			case 4:
 				return character.getInfoFactory().getWeight(equipment);
+			case 5:
+				return character.getInfoFactory().getDescription(equipment);
 			default:
 				return null;
 		}

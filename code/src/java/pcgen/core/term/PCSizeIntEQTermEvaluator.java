@@ -19,8 +19,6 @@
  * Created 05-Oct-2008 20:57:45
  *
  * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
@@ -56,7 +54,7 @@ public class PCSizeIntEQTermEvaluator
 
 			if (ref != null)
 			{
-				String profName = ref.resolvesTo().getKeyName();
+				String profName = ref.get().getKeyName();
 				StringBuilder sB = new StringBuilder("WEAPONPROF=");
 				sB.append(profName);
 

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 21 Nov 2006
  *
- * $$Id: $$
  */
 
 package plugin.exporttokens;
@@ -36,14 +34,10 @@ import pcgen.core.SettingsHandler;
 import pcgen.io.exporttoken.AbilityToken;
 
 /**
- * <code>VAbilityToken</code> deals with the VABILITY output 
+ * {@code VAbilityToken} deals with the VABILITY output
  * token.
  *
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: $
  */
 public class VAbilityToken extends AbilityToken
 {
@@ -63,7 +57,7 @@ public class VAbilityToken extends AbilityToken
 	protected MapToList<Ability, CNAbility> getAbilityList(PlayerCharacter pc,
 		final AbilityCategory aCategory)
 	{
-		final MapToList<Ability, CNAbility> listOfAbilities = new HashMapToList<Ability, CNAbility>();
+		final MapToList<Ability, CNAbility> listOfAbilities = new HashMapToList<>();
 		Collection<AbilityCategory> allCats =
 				SettingsHandler.getGame().getAllAbilityCategories();
 		for (AbilityCategory aCat : allCats)
@@ -79,9 +73,6 @@ public class VAbilityToken extends AbilityToken
 		return listOfAbilities;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected Nature getTargetNature()
 	{

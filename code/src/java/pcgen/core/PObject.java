@@ -18,8 +18,6 @@
  * Created on April 21, 2001, 2:15 PM
  *
  * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core;
@@ -34,7 +32,6 @@ import pcgen.base.lang.StringUtil;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.QualifyingObject;
 import pcgen.cdom.enumeration.DataSetID;
-import pcgen.cdom.enumeration.FactKey;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.cdom.enumeration.SourceFormat;
@@ -48,13 +45,10 @@ import pcgen.persistence.lst.output.prereq.PrerequisiteWriter;
 import pcgen.system.PCGenSettings;
 
 /**
- * <code>PObject</code><br>
+ * {@code PObject}<br>
  * This is the base class for several objects in the PCGen database.
  *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
- */
-/**
+ * @author Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt;
  * @author Joe.Frazier
  *
  */
@@ -179,12 +173,6 @@ public class PObject extends CDOMObject implements Cloneable, Serializable, Comp
 		return Collections.unmodifiableList(ret);
 	}
 	
-	public String getClassType()
-	{
-		FactKey<String> fk = FactKey.valueOf("ClassType");
-		return getResolved(fk);
-	}
-	
 	/**
 	 * If aType begins with an &#34; (Exclamation Mark) the &#34; will be
 	 * removed before checking the type.
@@ -199,7 +187,7 @@ public class PObject extends CDOMObject implements Cloneable, Serializable, Comp
 	{
 		final String myType;
 
-		if (aType.length() == 0)
+		if (aType.isEmpty())
 		{
 			return false;
 		}

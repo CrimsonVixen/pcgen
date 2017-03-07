@@ -19,11 +19,10 @@ package plugin.pretokens.test;
 
 import java.util.List;
 
-import pcgen.base.util.ObjectContainer;
+import pcgen.base.util.Indirect;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Reducible;
 import pcgen.cdom.enumeration.FactSetKey;
-import pcgen.core.Globals;
 import pcgen.core.PlayerCharacter;
 import pcgen.core.prereq.AbstractPrerequisiteTest;
 import pcgen.core.prereq.Prerequisite;
@@ -34,7 +33,7 @@ import pcgen.output.publish.OutputDB;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>PreFactTester</code> is responsible for testing FACT values on an object.
+ * The Class {@code PreFactTester} is responsible for testing FACT values on an object.
  */
 public class PreFactSetTester extends AbstractPrerequisiteTest implements PrerequisiteTest
 {
@@ -78,17 +77,17 @@ public class PreFactSetTester extends AbstractPrerequisiteTest implements Prereq
 		return countedTotal(prereq, runningTotal);
 	}
 
-	private <T> int getRunningTotal(final Prerequisite prereq, final int number,
-		Iterable<Reducible> objModel, String factval, FactSetKey<T> fk)
+	private static <T> int getRunningTotal(final Prerequisite prereq, final int number,
+	                                       Iterable<Reducible> objModel, String factval, FactSetKey<T> fk)
 	{
-		T targetVal = fk.getFormatManager().convert(Globals.getContext(), factval);
+		T targetVal = fk.getFormatManager().convert(factval);
 		int runningTotal = 0;
 		CDO: for (Reducible r : objModel)
 		{
-			List<ObjectContainer<T>> sets = r.getCDOMObject().getSetFor(fk);
-			for (ObjectContainer<T> container:sets)
+			List<Indirect<T>> sets = r.getCDOMObject().getSetFor(fk);
+			for (Indirect<T> indirect : sets)
 			{
-				if (container.contains(targetVal))
+				if (indirect.get().equals(targetVal))
 				{
 					runningTotal++;
 					continue CDO;
@@ -124,8 +123,8 @@ public class PreFactSetTester extends AbstractPrerequisiteTest implements Prereq
 
 		final String foo = LanguageBundle.getFormattedString(
 				"PreFactSet.toHtml", //$NON-NLS-1$
-				new Object[] { prereq.getOperator().toDisplayString(),
-						prereq.getOperand(), prereq.getKey() });
+				prereq.getOperator().toDisplayString(),
+				prereq.getOperand(), prereq.getKey());
 		return foo;
 	}
 

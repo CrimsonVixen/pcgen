@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on September 2, 2002, 8:02 AM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.lsttokens.level;
@@ -29,9 +25,8 @@ import pcgen.core.LevelInfo;
 import pcgen.persistence.lst.LevelLstToken;
 
 /**
- * <code>CskillmaxToken</code>
+ * {@code CskillmaxToken}
  *
- * @author  Devon Jones <soulcatcher@evilsoft.org>
  */
 public class CskillmaxToken implements LevelLstToken
 {

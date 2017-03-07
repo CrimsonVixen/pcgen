@@ -16,13 +16,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Apr 1, 2010, 8:19:31 PM
  */
 package pcgen.system;
 
 import java.io.File;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import pcgen.output.publish.OutputDB;
 
@@ -30,7 +29,6 @@ import pcgen.output.publish.OutputDB;
  * This stores some of the properties that pcgen uses.
  * This class is mainly intended to be used to store non-ui related
  * properties
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public final class PCGenSettings extends PropertyContext
 {
@@ -60,6 +58,7 @@ public final class PCGenSettings extends PropertyContext
 	public static final String OPTION_AUTOCREATE_MW_MAGIC_EQUIP = "autoCreateMagicMwEquip";
 	public static final String OPTION_ALLOW_OVERRIDE_DUPLICATES = "allowOverrideDuplicates";
 	public static final String OPTION_SKILL_FILTER = "skillsOutputFilter";
+	public static final String OPTION_GENERATE_TEMP_FILE_WITH_PDF = "generateTempFileWithPdf";
 	public static final String BROWSER_PATH = "browserPath";
 	/**
 	 * The key for the path to the character files.

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Mar 30, 2007
  *
- * $Id$
  *
  */
 package plugin.exporttokens;
@@ -41,11 +39,7 @@ import pcgen.rules.context.LoadContext;
  * <code>ACTokenTest</code> tests the function of the AC token and 
  * thus the calculations of armor class.  
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class AttackTokenTest extends AbstractCharacterTestCase
 {
@@ -88,7 +82,7 @@ public class AttackTokenTest extends AbstractCharacterTestCase
 
 		myClass.setName("My Class");
 		myClass.put(FormulaKey.START_SKILL_POINTS, FormulaFactory.getFormulaFor(3));
-		final BonusObj babClassBonus = Bonus.newBonus(context, "COMBAT|BAB|CL+5");
+		final BonusObj babClassBonus = Bonus.newBonus(context, "COMBAT|BASEAB|CL+5");
 		myClass.getOriginalClassLevel(1).addToListFor(ListKey.BONUS, babClassBonus);
 		Globals.getContext().getReferenceContext().importObject(myClass);
 

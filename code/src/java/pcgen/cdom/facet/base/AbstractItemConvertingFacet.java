@@ -54,7 +54,6 @@ import pcgen.cdom.facet.event.DataFacetChangeEvent;
  * 
  * null is a valid source.
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public abstract class AbstractItemConvertingFacet<S, D> extends
 		AbstractDataFacet<CharID, D>
@@ -538,10 +537,8 @@ public abstract class AbstractItemConvertingFacet<S, D> extends
 		Map<S, Target> componentMap = getCachedMap(id);
 		if (componentMap != null)
 		{
-			for (Iterator<Map.Entry<S, Target>> it = componentMap.entrySet()
-					.iterator(); it.hasNext();)
+			for (Entry<S, Target> me : componentMap.entrySet())
 			{
-				Entry<S, Target> me = it.next();
 				Target target = me.getValue();
 				if (target != null)
 				{
@@ -560,7 +557,6 @@ public abstract class AbstractItemConvertingFacet<S, D> extends
 	 * converted object as well as the list of sources for the given destination
 	 * object.
 	 * 
-	 * @author Thomas Parker (thpr [at] yahoo.com)
 	 */
 	private class Target
 	{
@@ -568,7 +564,7 @@ public abstract class AbstractItemConvertingFacet<S, D> extends
 		 * The set of objects from which the converted object has been received
 		 */
 		public Set<Object> set =
-				new WrappedMapSet<Object>(IdentityHashMap.class);
+                new WrappedMapSet<>(IdentityHashMap.class);
 
 		/**
 		 * The converted ("destination") object
@@ -611,7 +607,7 @@ public abstract class AbstractItemConvertingFacet<S, D> extends
 
 	public Collection<S> getSourceObjects(CharID id)
 	{
-		Set<S> set = new WrappedMapSet<S>(IdentityHashMap.class);
+		Set<S> set = new WrappedMapSet<>(IdentityHashMap.class);
 		Map<S, Target> componentMap = getCachedMap(id);
 		if (componentMap != null)
 		{
@@ -629,7 +625,7 @@ public abstract class AbstractItemConvertingFacet<S, D> extends
 	public Collection<Object> getSourcesFor(CharID id, S obj)
 	{
 		Map<S, Target> componentMap = getCachedMap(id);
-		Set<Object> set = new WrappedMapSet<Object>(IdentityHashMap.class);
+		Set<Object> set = new WrappedMapSet<>(IdentityHashMap.class);
 		if (componentMap == null)
 		{
 			return set;

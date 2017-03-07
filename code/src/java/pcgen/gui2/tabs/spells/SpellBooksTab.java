@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Oct 1, 2011, 10:09:50 PM
  */
 package pcgen.gui2.tabs.spells;
 
@@ -34,7 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.facade.core.CharacterFacade;
 import pcgen.facade.core.ClassFacade;
@@ -57,12 +56,14 @@ import pcgen.gui2.tools.FlippingSplitPane;
 import pcgen.gui2.tools.Icons;
 import pcgen.gui2.tools.InfoPane;
 import pcgen.gui2.util.JTreeViewTable;
+import pcgen.gui2.util.table.SortableTableModel;
+import pcgen.gui2.util.table.SortableTableRowSorter;
+import pcgen.gui2.util.treeview.TreeViewModel;
 import pcgen.system.LanguageBundle;
 import pcgen.util.enumeration.Tab;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 @SuppressWarnings("serial")
 public class SpellBooksTab extends FlippingSplitPane implements CharacterInfoTab
@@ -82,12 +83,21 @@ public class SpellBooksTab extends FlippingSplitPane implements CharacterInfoTab
 	public SpellBooksTab()
 	{
 		super("SpellBooks");
-		this.availableTable = new FilteredTreeViewTable<CharacterFacade, SuperNode>();
-		this.selectedTable = new JTreeViewTable<SuperNode>();
+		this.availableTable = new FilteredTreeViewTable<>();
+		this.selectedTable = new JTreeViewTable<SuperNode>(){
+			
+			@Override
+			public void setTreeViewModel(TreeViewModel<SuperNode> viewModel)
+			{
+				super.setTreeViewModel(viewModel);
+				sortModel();
+			}
+			
+		};
 		this.spellRenderer = new QualifiedSpellTreeCellRenderer();
 		this.addButton = new JButton();
 		this.removeButton = new JButton();
-		this.qFilterButton = new FilterButton<CharacterFacade, SuperNode>("SpellBooksQualified");
+		this.qFilterButton = new FilterButton<>("SpellBooksQualified");
 		this.spellsPane = new InfoPane(LanguageBundle.getString("InfoSpells.spell.info"));
 		this.classPane = new InfoPane(LanguageBundle.getString("InfoSpells.class.info"));
 		this.defaultBookCombo = new JComboBox();
@@ -98,7 +108,17 @@ public class SpellBooksTab extends FlippingSplitPane implements CharacterInfoTab
 	{
 		availableTable.setTreeCellRenderer(spellRenderer);
 		selectedTable.setTreeCellRenderer(spellRenderer);
-		FilterBar<CharacterFacade, SuperNode> filterBar = new FilterBar<CharacterFacade, SuperNode>();
+		selectedTable.setRowSorter(new SortableTableRowSorter(){
+			
+			@Override
+			public SortableTableModel getModel()
+			{
+				return (SortableTableModel) selectedTable.getModel();
+			}
+
+		});
+		selectedTable.getRowSorter().toggleSortOrder(0);
+		FilterBar<CharacterFacade, SuperNode> filterBar = new FilterBar<>();
 		filterBar.addDisplayableFilter(new SearchFilterPanel());
 		qFilterButton.setText(LanguageBundle.getString("in_igQualFilter")); //$NON-NLS-1$
 		filterBar.addDisplayableFilter(qFilterButton);
@@ -199,11 +219,10 @@ public class SpellBooksTab extends FlippingSplitPane implements CharacterInfoTab
 	 * Identify the current spell book, being the spell book that spells should
 	 * be added to. If no books exist then return an empty string.
 	 *
-	 * @param character The character we are checking for.
 	 * @return The name of the 'current' spell book, or empty string if none
 	 *         exist.
 	 */
-	String getCurrentSpellBookName(CharacterFacade character)
+	String getCurrentSpellBookName()
 	{
 		String spellList = "";
 		Object selectedObject = selectedTable.getSelectedObject();
@@ -277,7 +296,7 @@ public class SpellBooksTab extends FlippingSplitPane implements CharacterInfoTab
 		public void actionPerformed(ActionEvent e)
 		{
 			List<?> data = availableTable.getSelectedData();
-			String bookname = getCurrentSpellBookName(character);
+			String bookname = getCurrentSpellBookName();
 			for (Object object : data)
 			{
 				if (object instanceof SpellNode)
@@ -350,8 +369,8 @@ public class SpellBooksTab extends FlippingSplitPane implements CharacterInfoTab
 		public TreeViewModelHandler(CharacterFacade character)
 		{
 			this.character = character;
-			availableModel = new SpellTreeViewModel(character.getSpellSupport().getKnownSpellNodes(), false, "SpellBooksAva");
-			selectedModel = new SpellTreeViewModel(character.getSpellSupport().getBookSpellNodes(), true, "SpellBooksSel");
+			availableModel = new SpellTreeViewModel(character.getSpellSupport().getKnownSpellNodes(), false, "SpellBooksAva", character.getInfoFactory());
+			selectedModel = new SpellTreeViewModel(character.getSpellSupport().getBookSpellNodes(), true, "SpellBooksSel", character.getInfoFactory());
 		}
 
 		public void install()

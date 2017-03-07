@@ -78,7 +78,7 @@ TAB:TEMPMOD		NAME:in_InfoTempMod	CONTEXT:tabpages\tabtemporarybonuses.html
 MENUENTRY:3.5e
 MENUTOOLTIP:Use 3.5e character creation settings
 DISPLAYORDER:1
-ALLOWEDMODES:35e|DnD
+ALLOWEDMODES:35e|DnD|LoE
 #
 # SHORTRANGE sets the Short Range as referenced by
 #  TOHIT-SHORTRANGE and DAMAGE-SHORTRANGE
@@ -145,7 +145,7 @@ BABMINVAL:1
 #BABMAXLVL:20
 #CHECKSMAXLVL:20
 #
-MAXNONEPICLEVEL:20
+MAXNONEPICLEVEL:19
 
 #Class Types
 CLASSTYPE:PC		CRFORMULA:CL		ISMONSTER:NO	XPPENALTY:YES	CRMOD:0	CRMODPRIORITY:1
@@ -169,7 +169,7 @@ ACTYPE:NaturalArmor			ADD:NaturalArmor|NaturalArmorEnhancement
 ACTYPE:NaturalArmorEnhancement	ADD:NaturalArmorEnhancement
 ACTYPE:Dodge				ADD:Dodge
 ACTYPE:Deflection				ADD:Deflection
-ACTYPE:Misc					ADD:TOTAL		REMOVE:Base|Armor|Shield|Ability|Size|NaturalArmor|NaturalArmorEnhancement|Dodge|Deflection|ShieldEnhancement|ArmorEnhancement
+ACTYPE:Misc					ADD:TOTAL		REMOVE:Base|Armor|Shield|Ability|Size|NaturalArmor|NaturalArmorEnhancement|Dodge|Deflection|ShieldEnhancement|ArmorEnhancement|Circumstance|Insight|Morale|Profane|Sacred|ClassDefense	
 ACTYPE:Circumstance			ADD:Circumstance
 ACTYPE:Insight				ADD:Insight
 ACTYPE:Morale				ADD:Morale
@@ -294,8 +294,9 @@ ABILITYCATEGORY:Natural Attack	VISIBLE:NO		EDITABLE:NO		EDITPOOL:NO		FRACTIONALP
 
 
 PREVIEWDIR:d20/fantasy
-PREVIEWSHEET:Standard.htm
-INFOSHEET:SUMMARY|preview/summary/35e_info.html
+PREVIEWSHEET:Standard.htm.ftl
+
+INFOSHEET:SUMMARY|preview/summary/35e_info.html.ftl
 INFOSHEET:SKILLS|preview/skills/35e_skills.html
 
 
@@ -313,7 +314,7 @@ RESIZABLEEQUIPTYPE:Shield|Weapon|Armor|Ammunition|Resizable
 # Character Types:
 CHARACTERTYPE:PC|NPC
 
-DEFAULTDATASET:3.5 RSRD|SRD 3.5 for Game Masters (includes Monsters)
+DEFAULTDATASET:3.5 RSRD
 
 #
 # DONE

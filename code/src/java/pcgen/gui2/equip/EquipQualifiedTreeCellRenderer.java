@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Sep 25, 2011
  */
 package pcgen.gui2.equip;
 
@@ -24,7 +23,6 @@ import java.awt.Component;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 
 import pcgen.facade.core.CharacterFacade;
 import pcgen.facade.core.EquipModFacade;
@@ -32,16 +30,15 @@ import pcgen.facade.core.EquipmentFacade;
 import pcgen.facade.core.InfoFacade;
 import pcgen.gui2.UIPropertyContext;
 import pcgen.gui2.util.FontManipulation;
+import pcgen.gui2.util.TreeColumnCellRenderer;
 import pcgen.system.LanguageBundle;
 
 /**
  * EquipQualifiedTreeCellRenderer renders an equipment modifier in a table 
  * cell using color to show if the modifier can be used.
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
-public class EquipQualifiedTreeCellRenderer extends DefaultTreeCellRenderer
+public class EquipQualifiedTreeCellRenderer extends TreeColumnCellRenderer
 {
 
 	private CharacterFacade character;
@@ -57,9 +54,6 @@ public class EquipQualifiedTreeCellRenderer extends DefaultTreeCellRenderer
 		this.character = character;
 		this.equip = equip;
 		setTextNonSelectionColor(UIPropertyContext.getQualifiedColor());
-		setClosedIcon(null);
-		setLeafIcon(null);
-		setOpenIcon(null);
 	}
 
 	@Override

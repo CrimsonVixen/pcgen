@@ -24,10 +24,9 @@ import pcgen.cdom.base.Ungranted;
 
 
 /**
- * <code>WeaponProf</code>.
+ * {@code WeaponProf}.
  * 
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
+ * @author Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt;
  */
 public final class WeaponProf extends PObject implements Comparable<Object>,
 		Ungranted
@@ -50,8 +49,8 @@ public final class WeaponProf extends PObject implements Comparable<Object>,
 	 * 
 	 * @param obj
 	 *            the WeaponProf with which to compare.
-	 * @return <code>true</code> if this WeaponProf is the same as the obj
-	 *         argument; <code>false</code> otherwise.
+	 * @return {@code true} if this WeaponProf is the same as the obj
+	 *         argument; {@code false} otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj)

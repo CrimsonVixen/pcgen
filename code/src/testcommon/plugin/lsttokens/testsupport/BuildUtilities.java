@@ -1,7 +1,9 @@
 package plugin.lsttokens.testsupport;
 
+import pcgen.base.format.StringManager;
 import pcgen.base.util.BasicIndirect;
-import pcgen.base.util.ObjectContainer;
+import pcgen.base.util.FormatManager;
+import pcgen.base.util.Indirect;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.FormulaFactory;
 import pcgen.cdom.base.Loadable;
@@ -17,12 +19,14 @@ import pcgen.core.PCAlignment;
 import pcgen.core.PCStat;
 import pcgen.core.SizeAdjustment;
 import pcgen.rules.context.LoadContext;
-import pcgen.rules.types.FormatManager;
-import plugin.format.StringManager;
 
-public class BuildUtilities
+public final class BuildUtilities
 {
 	private static final StringManager STR_MGR = new StringManager();
+
+	private BuildUtilities()
+	{
+	}
 
 	public static PCAlignment createAlignment(final String longName,
 		final String shortName)
@@ -61,7 +65,7 @@ public class BuildUtilities
 	public static void setFact(CDOMObject cdo, String factname, String value)
 	{
 		FactKey<String> fk = FactKey.getConstant(factname, STR_MGR);
-		cdo.put(fk, new BasicIndirect<String>(STR_MGR, value));
+		cdo.put(fk, new BasicIndirect<>(STR_MGR, value));
 	}
 	
 	/**
@@ -75,7 +79,7 @@ public class BuildUtilities
 	{
 		FactSetKey<String> fk = FactSetKey.getConstant(factsetname, STR_MGR);
 		FormatManager<String> tm = new StringManager();
-		ObjectContainer<String> indirect = tm.convertObjectContainer(null, value);
+		Indirect<String> indirect = tm.convertIndirect(value);
 		cdo.addToSetFor(fk, indirect);
 	}
 

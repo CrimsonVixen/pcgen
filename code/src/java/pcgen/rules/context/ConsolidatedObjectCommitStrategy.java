@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 import pcgen.base.formula.Formula;
 import pcgen.base.util.Indirect;
-import pcgen.base.util.ObjectContainer;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.ConcretePrereqObject;
 import pcgen.cdom.enumeration.FactKey;
@@ -109,15 +108,15 @@ public class ConsolidatedObjectCommitStrategy implements ObjectCommitStrategy
 	}
 
 	@Override
-	public <T> Changes<ObjectContainer<T>> getSetChanges(CDOMObject cdo, FactSetKey<T> lk)
+	public <T> Changes<Indirect<T>> getSetChanges(CDOMObject cdo, FactSetKey<T> lk)
 	{
-		return new CollectionChanges<ObjectContainer<T>>(cdo.getSetFor(lk), null, false);
+		return new CollectionChanges<>(cdo.getSetFor(lk), null, false);
 	}
 
 	@Override
 	public <T> Changes<T> getListChanges(CDOMObject cdo, ListKey<T> lk)
 	{
-		return new CollectionChanges<T>(cdo.getListFor(lk), null, false);
+		return new CollectionChanges<>(cdo.getListFor(lk), null, false);
 	}
 
 	@Override
@@ -199,7 +198,7 @@ public class ConsolidatedObjectCommitStrategy implements ObjectCommitStrategy
 	}
 
 	@Override
-	public <T> void addToSet(CDOMObject cdo, FactSetKey<T> key, ObjectContainer<T> value)
+	public <T> void addToSet(CDOMObject cdo, FactSetKey<T> key, Indirect<T> value)
 	{
 		cdo.addToSetFor(key, value);
 	}
@@ -211,7 +210,7 @@ public class ConsolidatedObjectCommitStrategy implements ObjectCommitStrategy
 	}
 
 	@Override
-	public <T> void removeFromSet(CDOMObject cdo, FactSetKey<T> lk, ObjectContainer<T> val)
+	public <T> void removeFromSet(CDOMObject cdo, FactSetKey<T> lk, Indirect<T> val)
 	{
 		cdo.removeFromSetFor(lk, val);
 	}
@@ -237,15 +236,15 @@ public class ConsolidatedObjectCommitStrategy implements ObjectCommitStrategy
 	@Override
 	public <K, V> MapChanges<K, V> getMapChanges(CDOMObject cdo, MapKey<K, V> mk)
 	{
-		return new MapChanges<K, V>(cdo.getMapFor(mk), null, false);
+		return new MapChanges<>(cdo.getMapFor(mk), null, false);
 	}
 
 	
 	@Override
 	public Changes<Prerequisite> getPrerequisiteChanges(ConcretePrereqObject obj)
 	{
-		return new CollectionChanges<Prerequisite>(obj.getPrerequisiteList(),
-				null, false);
+		return new CollectionChanges<>(obj.getPrerequisiteList(),
+                null, false);
 	}
 
 	@Override
@@ -277,7 +276,7 @@ public class ConsolidatedObjectCommitStrategy implements ObjectCommitStrategy
 	public <T> PatternChanges<T> getListPatternChanges(CDOMObject cdo,
 			ListKey<T> lk)
 	{
-		return new PatternChanges<T>(cdo.getListFor(lk), null, false);
+		return new PatternChanges<>(cdo.getListFor(lk), null, false);
 	}
 
 	@Override

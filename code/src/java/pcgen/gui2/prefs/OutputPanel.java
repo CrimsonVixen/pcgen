@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/11/2010 19:50:00
  *
- * $Id$
  */
 package pcgen.gui2.prefs;
 
@@ -42,7 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.enumeration.SkillFilter;
@@ -59,15 +57,11 @@ import pcgen.system.LanguageBundle;
 import pcgen.system.PCGenSettings;
 
 /**
- * The Class <code>OutputPanel</code> is responsible for 
+ * The Class {@code OutputPanel} is responsible for
  * displaying character output related preferences and allowing the 
  * preferences to be edited by the user.
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public class OutputPanel extends PCGenPrefsPanel
@@ -101,10 +95,12 @@ public class OutputPanel extends PCGenPrefsPanel
 			LanguageBundle.getString("in_Prefs_skillFilterLabel");
 	private static String in_choose =
 			LanguageBundle.getString("...");
+	private static String in_generateTempFileWithPdf = LanguageBundle.getString("in_Prefs_generateTempFileWithPdf");
 
 	private JCheckBox printSpellsWithPC = new JCheckBox();
 	private JCheckBox removeTempFiles = new JCheckBox(in_removeTemp);
 	private JCheckBox saveOutputSheetWithPC = new JCheckBox();
+	private JCheckBox generateTempFileWithPdf = new JCheckBox(in_generateTempFileWithPdf);
 
 	private JCheckBox weaponProfPrintout;
 	private JButton outputSheetEqSetButton;
@@ -352,6 +348,10 @@ public class OutputPanel extends PCGenPrefsPanel
 		Utility.buildConstraints(c, 1, 16, GridBagConstraints.REMAINDER, 1, 0, 0);
 		gridbag.setConstraints(exportChoice, c);
 		this.add(exportChoice);
+		
+		Utility.buildConstraints(c, 0, 17, 3, 1, 0, 0);
+		gridbag.setConstraints(generateTempFileWithPdf, c);
+		this.add(generateTempFileWithPdf);
 
 		Utility.buildConstraints(c, 0, 20, 3, 1, 1, 1);
 		c.fill = GridBagConstraints.BOTH;
@@ -428,6 +428,8 @@ public class OutputPanel extends PCGenPrefsPanel
 		
 		ExportChoices choice = (ExportChoices) exportChoice.getSelectedItem();
 		context.setProperty(UIPropertyContext.ALWAYS_OPEN_EXPORT_FILE, choice.getValue());
+		PCGenSettings.OPTIONS_CONTEXT.setBoolean(PCGenSettings.OPTION_GENERATE_TEMP_FILE_WITH_PDF,
+				generateTempFileWithPdf.isSelected());
 	}
 
 	/* (non-Javadoc)
@@ -457,6 +459,10 @@ public class OutputPanel extends PCGenPrefsPanel
 		String value =
 				context.getProperty(UIPropertyContext.ALWAYS_OPEN_EXPORT_FILE);
 		exportChoice.setSelectedItem(ExportChoices.getChoice(value));
+		
+		generateTempFileWithPdf.setSelected(
+				PCGenSettings.OPTIONS_CONTEXT.initBoolean(
+						PCGenSettings.OPTION_GENERATE_TEMP_FILE_WITH_PDF, false));
 	}
 
 	private final class PrefsButtonListener implements ActionListener
@@ -624,14 +630,11 @@ public class OutputPanel extends PCGenPrefsPanel
 
 	// This is the focus listener so that text field values may be manually entered.
 	// sage_sam April 2003 for FREQ 707022
-	private final class TextFocusLostListener implements FocusListener
+	private static final class TextFocusLostListener implements FocusListener
 	{
 		private String initialValue = null;
 		private boolean dialogOpened = false;
 
-		/**
-		 * @see java.awt.event.FocusListener#focusGained(FocusEvent)
-		 */
 		@Override
 		public void focusGained(FocusEvent e)
 		{
@@ -647,9 +650,6 @@ public class OutputPanel extends PCGenPrefsPanel
 			}
 		}
 
-		/**
-		 * @see java.awt.event.FocusListener#focusLost(FocusEvent)
-		 */
 		@Override
 		public void focusLost(FocusEvent e)
 		{
@@ -664,7 +664,7 @@ public class OutputPanel extends PCGenPrefsPanel
 
 				if ((!fieldFile.exists())
 					&& (!fieldValue.equalsIgnoreCase("null"))
-					&& (fieldValue.trim().length() > 0) && (!dialogOpened))
+					&& (!fieldValue.trim().isEmpty()) && (!dialogOpened))
 				{
 					// display error dialog and restore previous value
 					dialogOpened = true;

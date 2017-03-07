@@ -26,15 +26,15 @@ import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.util.enumeration.ProhibitedSpellType;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class ChoiceTokenTest extends AbstractTokenTestCase<SubClass>
+public class ChoiceTokenTest extends AbstractCDOMTokenTestCase<SubClass>
 {
 
 	static ChoiceToken token = new ChoiceToken();
-	static CDOMTokenLoader<SubClass> loader = new CDOMTokenLoader<SubClass>();
+	static CDOMTokenLoader<SubClass> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public Class<SubClass> getCDOMClass()
@@ -163,7 +163,7 @@ public class ChoiceTokenTest extends AbstractTokenTestCase<SubClass>
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<SpellProhibitor> getObjectKey()
+	private static ObjectKey<SpellProhibitor> getObjectKey()
 	{
 		return ObjectKey.CHOICE;
 	}
@@ -192,7 +192,7 @@ public class ChoiceTokenTest extends AbstractTokenTestCase<SubClass>
 		expectSingle(getToken().unparse(primaryContext, primaryProf), "DESCRIPTOR|Fire");
 	}
 
-	private SpellProhibitor getConstant(ProhibitedSpellType type, String args)
+	private static SpellProhibitor getConstant(ProhibitedSpellType type, String args)
 	{
 		SpellProhibitor spellProb = new SpellProhibitor();
 		spellProb.setType(type);

@@ -39,10 +39,10 @@ public final class ChooseInformationUtilities
 		{
 			return Constants.EMPTY_STRING;
 		}
-		List<String> list = new ArrayList<String>(collection.size());
+		List<String> list = new ArrayList<>(collection.size());
 		for (T sl : collection)
 		{
-			list.add(info.encodeChoice(sl));
+			list.add(String.valueOf(sl));
 		}
 		Collections.sort(list);
 		return StringUtil.joinToStringBuilder(list, ", ");

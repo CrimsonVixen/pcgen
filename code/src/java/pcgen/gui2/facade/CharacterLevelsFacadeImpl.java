@@ -15,9 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 03/06/2010 12:09:38 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -61,16 +59,12 @@ import pcgen.util.Logging;
 import pcgen.util.enumeration.Tab;
 
 /**
- * The Class <code>CharacterLevelsFacadeImpl</code> is an implementation of 
+ * The Class {@code CharacterLevelsFacadeImpl} is an implementation of
  * the CharacterLevelsFacade interface for the new user interface. It allows 
  * the user interface to work with the class levels of a character.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class CharacterLevelsFacadeImpl extends
 		AbstractListFacade<CharacterLevelFacade> implements
@@ -131,8 +125,8 @@ public class CharacterLevelsFacadeImpl extends
 	 */
 	private void initForCharacter()
 	{
-		classLevels = new ArrayList<ClassFacade>();
-		charLevels = new ArrayList<CharacterLevelFacade>();
+		classLevels = new ArrayList<>();
+		charLevels = new ArrayList<>();
 		refreshClassList();
 
 		charID = theCharacter.getCharID();
@@ -190,8 +184,8 @@ public class CharacterLevelsFacadeImpl extends
 		List<PCClass> newClasses = charDisplay.getClassList();
 		Collection<PCLevelInfo> levelInfo = charDisplay.getLevelInfo();
 
-		Map<String, Integer> levelCount = new HashMap<String, Integer>();
-		Map<String, PCClass> classMap = new HashMap<String, PCClass>();
+		Map<String, Integer> levelCount = new HashMap<>();
+		Map<String, PCClass> classMap = new HashMap<>();
 		for (PCClass pcClass : newClasses)
 		{
 			levelCount.put(pcClass.getKeyName(), 1);
@@ -274,7 +268,7 @@ public class CharacterLevelsFacadeImpl extends
 			numHp = 1;
 		}
 
-		return Integer.valueOf(numHp);
+		return numHp;
 
 	}
 
@@ -302,7 +296,7 @@ public class CharacterLevelsFacadeImpl extends
 		PCClassLevel classLevel = getClassLevel(level);
 		if (classLevel != null)
 		{
-			theCharacter.setHP(classLevel, Integer.valueOf(hp));
+			theCharacter.setHP(classLevel, hp);
 			fireHitPointEvent(this, getLevelIndex(level), false);
 		}
 	}
@@ -342,9 +336,6 @@ public class CharacterLevelsFacadeImpl extends
 		return classLevel.getSkillPointsGained(theCharacter);
 	}
 
-	/**
-	 * @{inheritdoc}
-	 */
 	@Override
 	public float getMaxRanks(CharacterLevelFacade level, SkillCost cost, boolean isClassForMaxRanks)
 	{
@@ -408,9 +399,6 @@ public class CharacterLevelsFacadeImpl extends
 		return null;
 	}
 
-	/**
-	 * @{inheritdoc}
-	 */
 	@Override
 	public boolean isClassSkillForMaxRanks(CharacterLevelFacade level, SkillFacade skill)
 	{
@@ -469,15 +457,12 @@ public class CharacterLevelsFacadeImpl extends
 		{
 			Float ranks =  SkillRankControl.getTotalRank(theCharacter, (Skill) skill);
 			Integer mods = SkillModifier.modifier((Skill) skill, theCharacter);
-			return Integer.valueOf(mods.intValue() + ranks.intValue());
+			return mods.intValue() + ranks.intValue();
 		}
 		
 		return 0;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SkillBreakdown getSkillBreakdown(CharacterLevelFacade level, SkillFacade skill)
 	{
@@ -618,7 +603,7 @@ public class CharacterLevelsFacadeImpl extends
 			characterFacadeImpl.postLevellingUpdates();
 		}
 
-		if (errMessage.length() > 0)
+		if (!errMessage.isEmpty())
 		{
 			delegate.showInfoMessage(Constants.APPLICATION_NAME, errMessage);
 
@@ -631,9 +616,6 @@ public class CharacterLevelsFacadeImpl extends
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CharacterLevelFacade findNextLevelForSkill(SkillFacade skill,
 		CharacterLevelFacade baseLevel, float newRank)
@@ -648,7 +630,7 @@ public class CharacterLevelsFacadeImpl extends
 			// 1. Selected level (if class had purchased a rank and is not above max ranks)
 			if (classHasRanksIn(skill,
 				((CharacterLevelFacadeImpl) baseLevel).getSelectedClass())
-				&& maxRanks != Float.NaN
+				&& !Float.isNaN(maxRanks)
 				&& maxRanks >= currRank
 				&& getSpentSkillPoints(baseLevel) > 0)
 			{
@@ -675,7 +657,7 @@ public class CharacterLevelsFacadeImpl extends
 		}
 
 		// Check if current level ok
-		if (maxRanks != Float.NaN && maxRanks >= newRank
+		if (!Float.isNaN(maxRanks) && maxRanks >= newRank
 			&& getRemainingSkillPoints(baseLevel) > 0)
 		{
 			return baseLevel;
@@ -734,7 +716,7 @@ public class CharacterLevelsFacadeImpl extends
 			float maxRanks =
 					getMaxRanks(testLevel, skillCost,
 						isClassSkillForMaxRanks(testLevel, aSkill));
-			if (maxRanks != Float.NaN && maxRanks >= testRank)
+			if (!Float.isNaN(maxRanks) && maxRanks >= testRank)
 			{
 				//Logging.errorPrint("Selected level " + testLevel);
 				return testLevel;
@@ -772,7 +754,7 @@ public class CharacterLevelsFacadeImpl extends
 			float maxRanks =
 					getMaxRanks(testLevel, skillCost,
 						isClassSkillForMaxRanks(testLevel, aSkill));
-			if (maxRanks != Float.NaN && maxRanks >= testRank)
+			if (!Float.isNaN(maxRanks) && maxRanks >= testRank)
 			{
 				//Logging.errorPrint("Selected level " + testLevel);
 				return testLevel;
@@ -1044,9 +1026,6 @@ public class CharacterLevelsFacadeImpl extends
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void dataAdded(DataFacetChangeEvent<CharID, Skill> dfce)
 	{
@@ -1061,9 +1040,6 @@ public class CharacterLevelsFacadeImpl extends
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void dataRemoved(DataFacetChangeEvent<CharID, Skill> dfce)
 	{
@@ -1075,9 +1051,6 @@ public class CharacterLevelsFacadeImpl extends
 		fireSkillBonusEvent(this, 0, true);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void bonusChange(BonusChangeEvent bce)
 	{

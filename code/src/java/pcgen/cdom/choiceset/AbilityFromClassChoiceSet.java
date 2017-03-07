@@ -143,8 +143,8 @@ public class AbilityFromClassChoiceSet implements
 	@Override
 	public Set<CNAbilitySelection> getSet(PlayerCharacter pc)
 	{
-		PCClass aClass = pc.getClassKeyed(classRef.resolvesTo().getKeyName());
-		Set<CNAbilitySelection> set = new HashSet<CNAbilitySelection>();
+		PCClass aClass = pc.getClassKeyed(classRef.get().getKeyName());
+		Set<CNAbilitySelection> set = new HashSet<>();
 		if (aClass != null)
 		{
 			//TODO This is a bug -> it was not properly gathering before

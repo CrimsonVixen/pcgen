@@ -19,17 +19,18 @@ package plugin.qualifier.pobject;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.ChooseInformation;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.core.Race;
 import pcgen.persistence.PersistenceLayerException;
+import pcgen.persistence.lst.LstToken;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.CDOMSecondaryToken;
 import pcgen.rules.persistence.token.QualifierToken;
+
+import org.junit.Test;
 import plugin.lsttokens.ChooseLst;
 import plugin.lsttokens.choose.RaceToken;
 import plugin.lsttokens.testsupport.AbstractQualifierTokenTestCase;
@@ -41,12 +42,13 @@ public class QualifiedQualifierTokenTest extends
 		AbstractQualifierTokenTestCase<CDOMObject, Race>
 {
 
-	static ChooseLst token = new ChooseLst();
-	static RaceToken subtoken = new RaceToken();
-	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<CDOMObject>();
-	private Race s1, s2, s3;
+	private static final CDOMPrimaryToken token = new ChooseLst();
+	private static final CDOMSecondaryToken subtoken = new RaceToken();
+	private static final CDOMLoader<CDOMObject> loader = new CDOMTokenLoader<>();
+	private Race s1;
+	private Race s2;
 
-	private static final plugin.qualifier.pobject.QualifiedToken QUALIFIED_TOKEN = new plugin.qualifier.pobject.QualifiedToken();
+	private static final LstToken QUALIFIED_TOKEN = new QualifiedToken();
 
 	public QualifiedQualifierTokenTest()
 	{
@@ -99,18 +101,17 @@ public class QualifiedQualifierTokenTest extends
 	@Override
 	protected Class<? extends QualifierToken> getQualifierClass()
 	{
-		return plugin.qualifier.pobject.QualifiedToken.class;
+		return QualifiedToken.class;
 	}
 
 	@Test
 	public void testGetSet() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|QUALIFIED[ALL]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);
@@ -127,11 +128,10 @@ public class QualifiedQualifierTokenTest extends
 	public void testGetSetFiltered() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|QUALIFIED[TYPE=Masterful]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);
@@ -155,7 +155,7 @@ public class QualifiedQualifierTokenTest extends
 		primaryContext.getReferenceContext().importObject(s2);
 		primaryContext.unconditionallyProcess(s2, "TYPE", "Masterful");
 
-		s3 = new Race();
+		Race s3 = new Race();
 		s3.setName("s3");
 		primaryContext.getReferenceContext().importObject(s3);
 		primaryContext.unconditionallyProcess(s3, "TYPE", "Masterful");

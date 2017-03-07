@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 28/06/2014 2:21:13 pm
  *
- * $Id$
  */
 package pcgen.io.freemarker;
 
@@ -46,11 +44,7 @@ import pcgen.persistence.lst.FeatLoader;
  * the PCHasVarFunction class.
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class PCHasVarFunctionTest extends AbstractJunit4CharacterTestCase
@@ -59,9 +53,6 @@ public class PCHasVarFunctionTest extends AbstractJunit4CharacterTestCase
 
 	private Ability fooFeat;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void additionalSetUp() throws Exception
 	{

@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.test;
@@ -152,7 +148,7 @@ public class PreTypeTester extends AbstractDisplayPrereqTest implements
 	@Deprecated
 	private static List<String> getTypes(CharacterDisplay display)
 	{
-		final List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<>();
 	
 		Race race = display.getRace();
 		if (race != null)

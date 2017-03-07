@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 18/02/2012 4:49:06 PM
  *
- * $Id$
  */
 package plugin.exporttokens;
 
@@ -36,11 +34,7 @@ import pcgen.core.PlayerCharacter;
  * The Class <code>PortraitTokenTest</code> checks the function of PortraitToken.
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class PortraitTokenTest extends AbstractCharacterTestCase

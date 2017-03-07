@@ -20,10 +20,6 @@ void unSnapshotVersion() {
 
 void updateVersion() {
 	def version = project.version.toString()
-	def versionPatterns = [
-		//Increments last number: "2.5-SNAPSHOT" => "2.6-SNAPSHOT"
-		/(\d+)([^\d]*$)/: { Matcher m, Project p -> m.replaceAll("${ (m[0][1] as int) + 1 }${ m[0][2] }") }
-	]
 	String pattern = /(\d+)([^\d]*$)/
 	//noinspection GroovyUnusedAssignment
 	Closure handler = { Matcher m, Project p -> m.replaceAll("${ String.format( '%02d', (m[0][1] as int) + 1 )}${ m[0][2] }") }
@@ -103,29 +99,3 @@ File findPropertiesFile() {
 	propertiesFile
 }
 
-boolean commitFile(File file, String message) {
-	println "Committing ${file.getPath()} with message ${message}"
-	new ByteArrayOutputStream().withStream { os ->
-		def result = exec {
-		    executable = 'svn'
-		    args = ['--non-interactive', 'commit', file.getPath(), '-m', "${message}"]
-		    //standardOutput = os
-		    ignoreExitValue = false // Fail if we haven't got svn or if the command fails
-		}
-	}
-}
-
-boolean tagRepository(String sourcePath, String tagName, String message) {
-	def sourceFullPath = "^/${sourcePath}"
-	def tagFullPath = "^/tags/${tagName}"
-	println "Tagging from ${sourceFullPath} to ${tagFullPath} with message '${message}'"
-	new ByteArrayOutputStream().withStream { os ->
-		def result = exec {
-			//svn copy ^/trunk ^/tags/release-1.0 -m "Tagging for release 1.0"
-		    executable = 'svn'
-		    args = ['--non-interactive', 'copy', sourceFullPath, tagFullPath, '-m', message]
-		    //standardOutput = os
-		    ignoreExitValue = false // Fail if we haven't got svn or if the command fails
-		}
-	}
-}

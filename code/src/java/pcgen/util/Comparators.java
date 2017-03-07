@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Feb 14, 2008, 11:23:02 PM
  */
 package pcgen.util;
 
@@ -27,11 +26,11 @@ import java.util.Date;
 
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.enumeration.StringKey;
+import pcgen.facade.core.InfoFacade;
 import pcgen.gui2.util.treetable.TreeTableNode;
 
 /**
  *
- * @author Connor Petty <mistercpp2000@gmail.com>
  */
 @SuppressWarnings("unchecked")
 public final class Comparators
@@ -84,7 +83,7 @@ public final class Comparators
 		{
 			return ((InverseComparator<T>) comparator).getComparator();
 		}
-		return new InverseComparator<T>(comparator);
+		return new InverseComparator<>(comparator);
 
 	}
 
@@ -131,7 +130,8 @@ public final class Comparators
 		{
 			return (Comparator<? super T>) ignoreCaseStringComparator();
 		}
-		else if (c == TreeTableNode.class)
+		else if (c == TreeTableNode.class || c == InfoFacade.class
+			|| c.getSuperclass() == InfoFacade.class)
 		{
 			return treeTableNodeComparator();
 		}
@@ -139,18 +139,15 @@ public final class Comparators
 	}
 
 	/**
-	 * A <code>Comparator</code> to compare objects as
-	 * <code>String</code>s.  This is particularly useful for applications
-	 * such as maintaining a sorted <code>JComboBoxEx</code> and the like.
+	 * A {@code Comparator} to compare objects as
+	 * {@code String}s.  This is particularly useful for applications
+	 * such as maintaining a sorted {@code JComboBoxEx} and the like.
 	 *
-	 * @author <a href="mailto:binkley@alumni.rice.edu">B. K. Oxley (binkley)</a>
-	 * @version $Revision: 2112 $
 	 */
 	private static final class ToStringComparator implements Comparator<Object>,
 			Serializable
 	{
 
-		/** {@inheritDoc} */
 		@Override
 		public int compare(Object o1, Object o2)
 		{
@@ -162,19 +159,16 @@ public final class Comparators
 	}
 
 	/**
-	 * A <code>Comparator</code> to compare objects as
-	 * <code>String</code>s ignoring case.  This is particularly useful
+	 * A {@code Comparator} to compare objects as
+	 * {@code String}s ignoring case.  This is particularly useful
 	 * for applications such as maintaining a sorted
-	 * <code>JComboBoxEx</code> and the like.
+	 * {@code JComboBoxEx} and the like.
 	 *
-	 * @author <a href="mailto:binkley@alumni.rice.edu">B. K. Oxley (binkley)</a>
-	 * @version $Revision: 2112 $
 	 */
 	private static final class ToStringIgnoreCaseComparator implements
 			Comparator<Object>, Serializable
 	{
 
-		/** {@inheritDoc} */
 		@Override
 		public int compare(Object o1, Object o2)
 		{
@@ -188,13 +182,12 @@ public final class Comparators
 	}
 
 	/**
-	 * A <code>Comparator</code> to compare tree table nodes. This respects SORTKEY for the contained object. 
+	 * A {@code Comparator} to compare tree table nodes. This respects SORTKEY for the contained object.
 	 */
 	private static final class TreeTableNodeComparator implements Comparator<Object>,
 			Serializable
 	{
 
-		/** {@inheritDoc} */
 		@Override
 		public int compare(Object o1, Object o2)
 		{

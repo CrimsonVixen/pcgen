@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 12/07/2008 12:38:47
  *
- * $Id: $
  */
 package plugin.pretokens.test;
 
@@ -42,14 +40,10 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>PreCampaignTester</code> is responsible for testing if the 
+ * The Class {@code PreCampaignTester} is responsible for testing if the
  * currently loaded sources satisfy the campaign prerequisite.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class PreCampaignTester extends AbstractDisplayPrereqTest implements PrerequisiteTest
 {
@@ -109,7 +103,7 @@ public class PreCampaignTester extends AbstractDisplayPrereqTest implements Prer
 	private int countCampaignByBookType(String bookType,
 		boolean includeSubCampaigns)
 	{
-		Set<Campaign> matchingCampaigns = new HashSet<Campaign>();
+		Set<Campaign> matchingCampaigns = new HashSet<>();
 		PersistenceManager pMan = PersistenceManager.getInstance();
 		List<URI> selCampaigns = pMan.getChosenCampaignSourcefiles();
 		for (URI element : selCampaigns)
@@ -122,7 +116,7 @@ public class PreCampaignTester extends AbstractDisplayPrereqTest implements Prer
 			}
 			else
 			{
-				fullCampList = new ArrayList<Campaign>();
+				fullCampList = new ArrayList<>();
 				fullCampList.add(aCampaign);
 			}
 			for (Campaign camp : fullCampList)
@@ -159,7 +153,7 @@ public class PreCampaignTester extends AbstractDisplayPrereqTest implements Prer
 			List<URI> selCampaigns = pMan.getChosenCampaignSourcefiles();
 			for (URI element : selCampaigns)
 			{
-				final Campaign aCampaign = Globals.getCampaignByURI(element);
+				final Campaign aCampaign = Globals.getCampaignByURI(element, true);
 				if (includeSubCampaigns)
 				{
 					List<Campaign> campList = getFullCampaignList(aCampaign);
@@ -195,9 +189,9 @@ public class PreCampaignTester extends AbstractDisplayPrereqTest implements Prer
 	 * @param aCampaign The master campaign.
 	 * @return The list of included campaigns.
 	 */
-	private List<Campaign> getFullCampaignList(Campaign aCampaign)
+	private static List<Campaign> getFullCampaignList(Campaign aCampaign)
 	{
-		List<Campaign> campList = new ArrayList<Campaign>();
+		List<Campaign> campList = new ArrayList<>();
 		addChildrenRecursively(campList, aCampaign);
 		return campList;
 	}
@@ -208,8 +202,8 @@ public class PreCampaignTester extends AbstractDisplayPrereqTest implements Prer
 	 * @param campList The list being built up.
 	 * @param aCampaign The campaign to be added.
 	 */
-	private void addChildrenRecursively(List<Campaign> campList,
-		Campaign aCampaign)
+	private static void addChildrenRecursively(List<Campaign> campList,
+	                                           Campaign aCampaign)
 	{
 		campList.add(aCampaign);
 		for (Campaign subCampaign : aCampaign.getSubCampaigns())
@@ -242,8 +236,8 @@ public class PreCampaignTester extends AbstractDisplayPrereqTest implements Prer
 
 		final String foo = LanguageBundle.getFormattedString(
 				"PreCampaign.toHtml", //$NON-NLS-1$
-				new Object[] { prereq.getOperator().toDisplayString(),
-						prereq.getOperand(), prereq.getKey() });
+				prereq.getOperator().toDisplayString(),
+				prereq.getOperand(), prereq.getKey());
 		return foo;
 	}
 

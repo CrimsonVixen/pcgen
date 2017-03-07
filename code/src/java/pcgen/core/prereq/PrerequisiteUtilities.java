@@ -18,9 +18,6 @@
  *
  * Refactored out of PObject July 22, 2005
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 package pcgen.core.prereq;
 
@@ -54,7 +51,6 @@ import pcgen.core.spell.Spell;
 import pcgen.util.Logging;
 
 /**
- * @author Tom Parker <thpr@sourceforge.net>
  *
  * This is a utility class related to PreReq objects.
  */
@@ -90,7 +86,7 @@ public final class PrerequisiteUtilities
 
 		final StringBuilder pString = new StringBuilder(aList.size() * 20);
 
-		final List<Prerequisite> newList = new ArrayList<Prerequisite>();
+		final List<Prerequisite> newList = new ArrayList<>();
 		boolean first = true;
 
 		for (Prerequisite prereq : aList)
@@ -345,7 +341,8 @@ public final class PrerequisiteUtilities
 			if (countMults && ability.getSafe(ObjectKey.MULTIPLE_ALLOWED))
 			{
 				int select = ability.getSafe(FormulaKey.SELECT).resolve(character, "").intValue();
-				runningTotal = assocs.size() / select;
+				int countMatchingSubKey = countSubkeyMatches(assocs, subKey);
+				runningTotal = countMatchingSubKey / select;
 			}
 			else
 			{
@@ -366,6 +363,19 @@ public final class PrerequisiteUtilities
 		}
 
 		return runningTotal;
+	}
+
+	private static int countSubkeyMatches(List<String> assocs, String subKey)
+	{
+		int numMatches = 0;
+		for (String s : assocs)
+		{
+			if (subKey.equalsIgnoreCase(s))
+			{
+				numMatches++;
+			}
+		}
+		return numMatches;
 	}
 
 	private static boolean hasAssoc(List<String> assocs, String subKey)
@@ -418,7 +428,7 @@ public final class PrerequisiteUtilities
 		{
 			final String fString = assoc.toUpperCase();
 
-			if (preWilcard.length() == 0 || fString.startsWith(preWilcard))
+			if (preWilcard.isEmpty() || fString.startsWith(preWilcard))
 			{
 				runningTotal++;
 				if (!countMults)
@@ -470,7 +480,7 @@ public final class PrerequisiteUtilities
 		final PlayerCharacter character,
 		String categoryName)
 	{
-		final Set<Ability> abilityList = new WrappedMapSet<Ability>(IdentityHashMap.class);
+		final Set<Ability> abilityList = new WrappedMapSet<>(IdentityHashMap.class);
 		if (character != null)
 		{
 			AbilityCategory cat = SettingsHandler.getGame().getAbilityCategory(categoryName);
@@ -526,7 +536,8 @@ public final class PrerequisiteUtilities
 		for (String spell : selectedList)
 		{
 			//TODO Case sensitivity?
-			final Spell sp = Globals.getSpellKeyed(spell);
+			final Spell sp = Globals.getContext().getReferenceContext()
+					.silentlyGetConstructedCDOMObject(Spell.class, spell);
 
 			if (sp == null)
 			{
@@ -713,7 +724,7 @@ public final class PrerequisiteUtilities
 	 */
 	public static Collection<Prerequisite> getPreReqsOfKind(final Prerequisite prereq, String matchKind)
 	{
-		Set<Prerequisite> matchingPrereqs = new HashSet<Prerequisite>();
+		Set<Prerequisite> matchingPrereqs = new HashSet<>();
 		if (prereq == null)
 		{
 			return matchingPrereqs;

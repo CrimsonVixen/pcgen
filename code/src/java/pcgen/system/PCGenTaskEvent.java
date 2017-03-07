@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Apr 9, 2010, 5:16:46 PM
  */
 package pcgen.system;
 
@@ -25,19 +24,18 @@ import java.util.logging.LogRecord;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class PCGenTaskEvent extends EventObject
 {
 
 	private LogRecord errorRecord;
 
-	public PCGenTaskEvent(PCGenTask source)
+	PCGenTaskEvent(PCGenTask source)
 	{
 		this(source, null);
 	}
 
-	public PCGenTaskEvent(PCGenTask source, LogRecord errorRecord)
+	PCGenTaskEvent(PCGenTask source, LogRecord errorRecord)
 	{
 		super(source);
 		this.errorRecord = errorRecord;

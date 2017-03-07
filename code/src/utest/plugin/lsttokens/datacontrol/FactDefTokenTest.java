@@ -36,8 +36,6 @@ import pcgen.rules.context.ConsolidatedListCommitStrategy;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.context.RuntimeLoadContext;
 import pcgen.rules.context.RuntimeReferenceContext;
-import plugin.format.OrderedPairManager;
-import plugin.format.StringManager;
 import plugin.lsttokens.testsupport.TokenRegistration;
 
 public class FactDefTokenTest extends TestCase
@@ -70,8 +68,6 @@ public class FactDefTokenTest extends TestCase
 		}
 		TokenRegistration.clearTokens();
 		TokenRegistration.register(token);
-		TokenRegistration.register(new OrderedPairManager());
-		TokenRegistration.register(new StringManager());
 		resetContext();
 	}
 
@@ -137,7 +133,7 @@ public class FactDefTokenTest extends TestCase
 		assertNotNull(fd.getFactName());
 		assertNotNull(fd.getUsableLocation());
 		assertEquals("Possibility", fd.getFactName());
-		assertEquals(Skill.class, fd.getUsableLocation());
+		assertSame(Skill.class, fd.getUsableLocation());
 		String[] unparsed = token.unparse(context, fd);
 		assertNotNull(unparsed);
 		assertEquals(1, unparsed.length);
@@ -153,7 +149,7 @@ public class FactDefTokenTest extends TestCase
 		assertNotNull(fd.getFactName());
 		assertNotNull(fd.getUsableLocation());
 		assertEquals("Caster", fd.getFactName());
-		assertEquals(Domain.class, fd.getUsableLocation());
+		assertSame(Domain.class, fd.getUsableLocation());
 		String[] unparsed = token.unparse(context, fd);
 		assertNotNull(unparsed);
 		assertEquals(1, unparsed.length);

@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.test;
@@ -35,7 +31,6 @@ import pcgen.core.prereq.PrerequisiteTest;
 import pcgen.system.LanguageBundle;
 
 /**
- * @author wardc
  *
  */
 public class PreLegsTester extends AbstractDisplayPrereqTest implements
@@ -55,7 +50,7 @@ public class PreLegsTester extends AbstractDisplayPrereqTest implements
 			final int targetLegs = Integer.parseInt(prereq.getOperand());
 
 			runningTotal =
-					prereq.getOperator().compare(display.getLegs(),
+					prereq.getOperator().compare(display.getPreFormulaLegs(),
 						targetLegs);
 		}
 		catch (NumberFormatException nfe)

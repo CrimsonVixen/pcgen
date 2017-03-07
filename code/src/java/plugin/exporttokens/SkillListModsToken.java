@@ -17,7 +17,6 @@ import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.Token;
 
 /**
- * @author karianna
  * Class deals with SKILLLISTMODS Token
  */
 public class SkillListModsToken extends Token
@@ -66,7 +65,7 @@ public class SkillListModsToken extends Token
 			{
 				modSkill =
 						SkillModifier.modifier(aSkill, pc).intValue()
-							- pc.getStatModFor(statref.resolvesTo());
+							- pc.getStatModFor(statref.get());
 			}
 
 			if ((SkillRankControl.getTotalRank(pc, aSkill).intValue() > 0) || (modSkill > 0))

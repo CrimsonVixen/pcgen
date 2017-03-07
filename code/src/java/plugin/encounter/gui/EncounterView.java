@@ -15,7 +15,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * $Id$
  */
  package plugin.encounter.gui;
 
@@ -27,7 +26,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BoxLayout;
@@ -46,8 +44,6 @@ import pcgen.system.LanguageBundle;
 /**
  * View part (in MVC model) of the encounter plugin, a JPanel.
  * 
- * @author Soulcatcher
- * @author Vincent Lhote
  */
 public class EncounterView extends JPanel
 {
@@ -274,14 +270,7 @@ public class EncounterView extends JPanel
 
 		targetEncounterLevel.setText(Integer.toString(1));
 		targetEncounterLevel
-			.addActionListener(new ActionListener()
-			{
-            @Override
-				public void actionPerformed(ActionEvent evt)
-				{
-					targetEncounterLevelActionPerformed(evt);
-				}
-			});
+			.addActionListener(this::targetEncounterLevelActionPerformed);
 
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -299,14 +288,7 @@ public class EncounterView extends JPanel
 		jPanel1.add(numberLabel, gridBagConstraints);
 
 		numberOfCreatures.setText(Integer.toString(0));
-		numberOfCreatures.addActionListener(new ActionListener()
-		{
-            @Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				numberOfCreaturesActionPerformed(evt);
-			}
-		});
+		numberOfCreatures.addActionListener(this::numberOfCreaturesActionPerformed);
 
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -332,14 +314,7 @@ public class EncounterView extends JPanel
 		jPanel1.add(environment, gridBagConstraints);
 
 		generateEncounter.setText(LanguageBundle.getString("in_plugin_encounter_newEncounter")); //$NON-NLS-1$
-		generateEncounter.addActionListener(new ActionListener()
-		{
-            @Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				generateEncounterActionPerformed(evt);
-			}
-		});
+		generateEncounter.addActionListener(this::generateEncounterActionPerformed);
 
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;

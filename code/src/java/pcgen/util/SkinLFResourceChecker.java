@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on January 3, 2002
  */
 package pcgen.util;
 
@@ -25,8 +24,6 @@ package pcgen.util;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:
- * @author Jason Buchanan
- * @version $Revision$
  */
 public final class SkinLFResourceChecker
 {
@@ -61,7 +58,7 @@ public final class SkinLFResourceChecker
 	{
 		if (missingResourceCount != 0)
 		{
-			return resourceBuffer.toString() + "\n"
+			return resourceBuffer + "\n"
 				+ ResourceChecker.getItHereMsg + whereToGetIt + "\n"
 				+ ResourceChecker.missingLibMsg;//TODO Why does this have hardcoded file separators? JK070115
 		}

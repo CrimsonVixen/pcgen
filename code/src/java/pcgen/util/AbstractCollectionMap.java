@@ -16,18 +16,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Feb 2, 2008, 10:07:00 PM
  */
 package pcgen.util;
 
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
  *
- * @author Connor Petty <mistercpp2000@gmail.com>
  */
 public abstract class AbstractCollectionMap<K, V, C extends Collection<V>>
 	extends AbstractMap<K, C> implements CollectionMap<K, V, C>
@@ -153,12 +152,12 @@ public abstract class AbstractCollectionMap<K, V, C extends Collection<V>>
 		@Override
 		public boolean contains(Object v)
 		{
-		    return AbstractCollectionMap.this.containsValue(v);
+		    return containsValue(v);
 		}
 
 	    };
 	}
-	return values;
+	return Collections.unmodifiableCollection(values);
     }
 
 }

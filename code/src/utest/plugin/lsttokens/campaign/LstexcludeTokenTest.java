@@ -39,13 +39,7 @@ public class LstexcludeTokenTest extends AbstractCampaignTokenTestCase
 	@Override
 	public Character getSeparator()
 	{
-		return Character.valueOf('|');
-	}
-
-	@Test
-	public void dummyTest()
-	{
-		// Just to get Eclipse to recognize this as a JUnit 4.0 Test Case
+		return '|';
 	}
 
 	@Override

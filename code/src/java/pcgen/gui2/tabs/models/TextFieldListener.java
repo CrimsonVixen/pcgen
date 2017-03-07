@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 10/10/2011 2:28:48 PM
  *
- * $Id$
  */
 package pcgen.gui2.tabs.models;
 
@@ -27,17 +25,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 /**
- * The Class <code>TextFieldListener</code> is a convenience class for 
+ * The Class {@code TextFieldListener} is a convenience class for
  * processing a change in the value of a text field. It is only one way 
  * though and does not update the text field if the underlying value 
  * changes.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public abstract class TextFieldListener implements DocumentListener
 {

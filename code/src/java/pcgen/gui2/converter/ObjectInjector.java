@@ -37,14 +37,15 @@ import pcgen.cdom.base.CDOMObject;
 import pcgen.core.Campaign;
 import pcgen.persistence.lst.CampaignSourceEntry;
 import pcgen.rules.context.LoadContext;
+import pcgen.system.PCGenPropBundle;
 import pcgen.util.StringPClassUtil;
 
 public class ObjectInjector
 {
 
-	private final TripleKeyMapToList<URI, String, String, String> campaignData = new TripleKeyMapToList<URI, String, String, String>();
+	private final TripleKeyMapToList<URI, String, String, String> campaignData = new TripleKeyMapToList<>();
 
-	private final DoubleKeyMapToList<URI, File, String> fileData = new DoubleKeyMapToList<URI, File, String>();
+	private final DoubleKeyMapToList<URI, File, String> fileData = new DoubleKeyMapToList<>();
 
 	private final Collection<Loader> loaders;
 	private final File outDir;
@@ -111,7 +112,7 @@ public class ObjectInjector
 
 	public void writeInjectedObjects(List<Campaign> list) throws IOException
 	{
-		List<URI> affectedURIs = new ArrayList<URI>();
+		List<URI> affectedURIs = new ArrayList<>();
 		boolean first = true;
 		for (Campaign campaign : list)
 		{
@@ -155,16 +156,7 @@ public class ObjectInjector
 		StringBuilder sb = new StringBuilder();
 		sb.append("# This file was automatically created ");
 		sb.append("during dataset conversion by PCGen ");
-		try
-		{
-			ResourceBundle d_properties = ResourceBundle
-					.getBundle("pcgen/gui/prop/PCGenProp");
-			sb.append(d_properties.getString("VersionNumber"));
-		}
-		catch (MissingResourceException mre)
-		{
-			mre.printStackTrace();
-		}
+		sb.append(PCGenPropBundle.getVersionNumber());
 		DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
 		sb.append(" on ").append(df.format(new Date()));
 		sb.append("\n# This file does not contain SOURCE information\n");
@@ -278,7 +270,7 @@ public class ObjectInjector
 
 	private List<File> generateDirectoryHierarchy(File a)
 	{
-		List<File> l = new ArrayList<File>();
+		List<File> l = new ArrayList<>();
 		while (a != null)
 		{
 			l.add(0, a);

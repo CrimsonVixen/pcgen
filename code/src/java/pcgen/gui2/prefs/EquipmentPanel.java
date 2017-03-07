@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 17/11/2010 19:50:00
  *
- * $Id$
  */
 package pcgen.gui2.prefs;
 
@@ -43,15 +41,11 @@ import pcgen.system.LanguageBundle;
 import pcgen.system.PCGenSettings;
 
 /**
- * The Class <code>EquipmentPanel</code> is responsible for 
+ * The Class {@code EquipmentPanel} is responsible for
  * displaying equipment related preferences and allowing the 
  * preferences to be edited by the user.
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public class EquipmentPanel extends PCGenPrefsPanel

@@ -25,15 +25,15 @@ import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.util.enumeration.Visibility;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class VisibleTokenTest extends AbstractTokenTestCase<PCTemplate>
+public class VisibleTokenTest extends AbstractCDOMTokenTestCase<PCTemplate>
 {
 
 	static VisibleToken token = new VisibleToken();
-	static CDOMTokenLoader<PCTemplate> loader = new CDOMTokenLoader<PCTemplate>();
+	static CDOMTokenLoader<PCTemplate> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public Class<PCTemplate> getCDOMClass()
@@ -56,7 +56,7 @@ public class VisibleTokenTest extends AbstractTokenTestCase<PCTemplate>
 	@Test
 	public void testInvalidOutput()
 	{
-		assertTrue(primaryContext.getWriteMessageCount() == 0);
+		assertEquals(0, primaryContext.getWriteMessageCount());
 		primaryProf.put(ObjectKey.VISIBILITY, Visibility.QUALIFY);
 		secondaryProf.put(ObjectKey.VISIBILITY, Visibility.QUALIFY);
 		assertNull(token.unparse(primaryContext, primaryProf));
@@ -155,7 +155,7 @@ public class VisibleTokenTest extends AbstractTokenTestCase<PCTemplate>
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<Visibility> getObjectKey()
+	private static ObjectKey<Visibility> getObjectKey()
 	{
 		return ObjectKey.VISIBILITY;
 	}

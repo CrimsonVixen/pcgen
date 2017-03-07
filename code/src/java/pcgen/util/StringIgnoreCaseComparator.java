@@ -17,7 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * Created on July 30, 2003, 8:34 AM
  */
 package pcgen.util;
 
@@ -25,24 +24,21 @@ import java.util.Comparator;
 import java.io.Serializable;
 
 /**
- * A <code>Comparator</code> to compare objects as
- * <code>String</code>s ignoring case.  This is particularly useful
+ * A {@code Comparator} to compare objects as
+ * {@code String}s ignoring case.  This is particularly useful
  * for applications such as maintaining a sorted
- * <code>JComboBoxEx</code> and the like.
+ * {@code JComboBoxEx} and the like.
  *
- * @author <a href="mailto:binkley@alumni.rice.edu">B. K. Oxley (binkley)</a>
- * @version $Revision$
  */
 public final class StringIgnoreCaseComparator implements Comparator<Object>, Serializable
 {
-	/** Constructs a <code>StringIgnoreCaseComparator</code>. */
+	/** Constructs a {@code StringIgnoreCaseComparator}. */
 	public StringIgnoreCaseComparator()
 	{
 		// TODO: Exception needs to be handled
 	}
 
-	/** {@inheritDoc} */
-    @Override
+	@Override
 	public int compare(Object o1, Object o2)
 	{
 		// Treat null as the empty string.

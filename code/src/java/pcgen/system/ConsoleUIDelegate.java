@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/01/2012 3:48:05 PM
  *
- * $Id$
  */
 package pcgen.system;
 
@@ -27,20 +25,15 @@ import pcgen.facade.core.ChooserFacade;
 import pcgen.facade.core.EquipmentBuilderFacade;
 import pcgen.facade.core.SpellBuilderFacade;
 import pcgen.facade.core.UIDelegate;
-import pcgen.system.PropertyContext;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>ConsoleUIDelegate</code> displays messages to the console 
+ * The Class {@code ConsoleUIDelegate} displays messages to the console
  * and returns default choices. It is used when PCGen is running in batch mode 
  * without any windows shown.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class ConsoleUIDelegate implements UIDelegate
 {
@@ -93,43 +86,24 @@ public class ConsoleUIDelegate implements UIDelegate
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see pcgen.core.facade.UIDelegate#showWarningPrompt(java.lang.String, java.lang.String)
-	 */
-    @Override
-	public boolean showWarningPrompt(String title, String message)
-	{
-		Logging.log(Logging.WARNING, title + " - " + message);
-		return true;
-	}
-
-    @Override
+	@Override
 	public void showWarningMessage(String title, String message)
 	{
 		Logging.log(Logging.WARNING, title + " - " + message);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean showGeneralChooser(ChooserFacade chooserFacade)
 	{
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String showInputDialog(String title, String message, String initialValue)
 	{
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CustomEquipResult showCustomEquipDialog(CharacterFacade character, 
 		EquipmentBuilderFacade equipBuilder)
@@ -137,9 +111,6 @@ public class ConsoleUIDelegate implements UIDelegate
 		return CustomEquipResult.CANCELLED;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean showCustomSpellDialog(SpellBuilderFacade spellBuilderFacade)
 	{

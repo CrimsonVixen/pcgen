@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 27/10/2007
  *
- * $Id$
  */
 
 package plugin.jepcommands;
@@ -38,7 +36,6 @@ import java.util.Stack;
  * So, given or(x,y,z), x or y or z is returned
  * </p>
  *
- * @author Andrew Wilson
  *
  */
 public class OrCommand extends PCGenCommand
@@ -101,7 +98,7 @@ public class OrCommand extends PCGenCommand
             // If we're haven't found a true value yet
             if (operand instanceof Number)
             {
-                if (((Number) operand).doubleValue() != 0d) {
+                if (((Number) operand).doubleValue() != 0.0d) {
                     result = operand;
                     break;
                 }

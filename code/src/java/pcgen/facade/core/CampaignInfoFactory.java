@@ -25,14 +25,11 @@ package pcgen.facade.core;
 import java.util.List;
 
 /**
- * The Class <code>CampaignInfoFactory</code> is ...
+ * The Class {@code CampaignInfoFactory} is ...
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
+ * @author James Dempsey &lt;jdempsey@users.sourceforge.net&gt;
  */
 public interface CampaignInfoFactory
 {

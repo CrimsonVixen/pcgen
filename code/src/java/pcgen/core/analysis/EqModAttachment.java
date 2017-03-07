@@ -49,7 +49,7 @@ public class EqModAttachment
 			{
 				List<EquipmentModifier> modlist = head
 						.getListFor(ListKey.EQMOD);
-				EquipmentModifier eqMod = modRef.getRef().resolvesTo();
+				EquipmentModifier eqMod = modRef.getRef().get();
 				String eqModKey = eqMod.getKeyName();
 				EquipmentModifier curMod = null;
 				if (modlist != null)
@@ -69,7 +69,7 @@ public class EqModAttachment
 				{
 					// only make a copy if we need to
 					// add qualifiers to modifier
-					if (eqMod.getSafe(StringKey.CHOICE_STRING).length() != 0)
+					if (!eqMod.getSafe(StringKey.CHOICE_STRING).isEmpty())
 					{
 						eqMod = eqMod.clone();
 					}
@@ -82,7 +82,7 @@ public class EqModAttachment
 				}
 	
 				// Add the associated choices
-				if (eqMod.getSafe(StringKey.CHOICE_STRING).length() != 0)
+				if (!eqMod.getSafe(StringKey.CHOICE_STRING).isEmpty())
 				{
 					List<String> choices = modRef.getChoices();
 					for (String x : choices)

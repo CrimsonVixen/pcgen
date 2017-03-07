@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 26/10/2013
  *
- * $Id$
  */
 package pcgen.gui2.tools;
 
@@ -34,11 +32,9 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>InfoPaneLinkAction</code> acts on the user clicking on hyperlinks 
+ * The Class {@code InfoPaneLinkAction} acts on the user clicking on hyperlinks
  * in an info pane such as the source info pane.
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class InfoPaneLinkAction
 		implements HyperlinkListener
@@ -48,7 +44,7 @@ public class InfoPaneLinkAction
 
 	/**
 	 * Create a new instance.
-	 * @param advancedSourceSelectionPanel TODO
+	 * @param infoPane the infopane that this will listen to
 	 */
 	public InfoPaneLinkAction(InfoPane infoPane)
 	{

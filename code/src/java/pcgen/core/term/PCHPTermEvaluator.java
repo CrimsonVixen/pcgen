@@ -16,24 +16,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 07/02/2009 1:52:35 PM
  *
- * $Id$
  */
 package pcgen.core.term;
 
 import pcgen.core.PlayerCharacter;
 
 /**
- * The Class <code>PCHPTermEvaluator</code> is responsible for
+ * The Class {@code PCHPTermEvaluator} is responsible for
  * providing the internal variable HP, which has the value of
  * the character's maximum total hit points. 
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class PCHPTermEvaluator 
 		extends BasePCTermEvaluator implements TermEvaluator

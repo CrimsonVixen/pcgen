@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 14/02/2011 5:47:54 PM
  *
- * $Id$
  */
 package pcgen.persistence.lst;
 
@@ -32,14 +30,10 @@ import pcgen.rules.context.LoadContext;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>EquipIconLoader</code> loads the equipIcon.lst game mode file.
+ * The Class {@code EquipIconLoader} loads the equipIcon.lst game mode file.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class EquipIconLoader extends LstLineFileLoader
 {

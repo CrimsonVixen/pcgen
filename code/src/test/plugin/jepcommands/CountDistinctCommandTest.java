@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Oct 20, 2007
  *
- * $Id$
  *
  */
 package plugin.jepcommands;
@@ -40,11 +38,7 @@ import plugin.lsttokens.testsupport.BuildUtilities;
  * <code>CountDistinctCommandTest</code> tests the functioning of the jep 
  * countdistinct plugin
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author andrew wilson <nuance@users.sourceforge.net>
- * @version $Revision$
  */
 public class CountDistinctCommandTest extends AbstractCharacterTestCase
 {

@@ -1,5 +1,4 @@
 /*
- * PCStat.java
  * Copyright 2002 (C) Bryan McRoberts <merton_monk@yahoo.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -15,46 +14,31 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * Created on August 10, 2002, 11:58 PM
  */
 package pcgen.core;
 
+import pcgen.base.formula.base.VarScoped;
 import pcgen.cdom.base.NonInteractive;
 import pcgen.cdom.base.SortKeyRequired;
-import pcgen.cdom.enumeration.FormulaKey;
 import pcgen.cdom.enumeration.IntegerKey;
-import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.facade.core.StatFacade;
 
-/**
- * <code>PCStat</code>.
- *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
- */
 public final class PCStat extends PObject implements StatFacade,
-		NonInteractive, SortKeyRequired
+		NonInteractive, SortKeyRequired, VarScoped
 {
 	@Override
 	public int getMinValue()
 	{
 		return getSafe(IntegerKey.MIN_VALUE);		
 	}
-	
+
+	/*
+	 * This is what the UI displays for the CHOOSE:PCSTAT.
+	 */
 	@Override
 	public String toString()
 	{
-		final StringBuilder sb = new StringBuilder(30);
-		sb.append("stat:").append(getKeyName()).append(' ');
-		sb.append("formula:").append(getSafe(FormulaKey.STAT_MOD)).append(' ');
-		boolean rolled = getSafe(ObjectKey.ROLLED);
-		if (!rolled)
-		{
-			sb.append(' ').append("rolled:").append(rolled);
-		}
-
-		return sb.toString();
+		return getKeyName();
 	}
 
 	/* (non-Javadoc)
@@ -64,5 +48,11 @@ public final class PCStat extends PObject implements StatFacade,
 	public String getName()
 	{
 		return getDisplayName();
+	}
+
+	@Override
+	public String getLocalScopeName()
+	{
+		return "STAT";
 	}
 }

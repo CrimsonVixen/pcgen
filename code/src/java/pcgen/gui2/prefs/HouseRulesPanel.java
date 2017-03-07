@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/07/2008 14:21:40
  *
- * $Id$
  */
 package pcgen.gui2.prefs;
 
@@ -48,15 +46,11 @@ import pcgen.gui2.tools.Utility;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>HouseRulesPanel</code> is responsible for 
+ * The Class {@code HouseRulesPanel} is responsible for
  * displaying the house rules preferences and allowing the 
  * preferences to be edited by the user.
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public class HouseRulesPanel extends PCGenPrefsPanel
@@ -211,7 +205,7 @@ public class HouseRulesPanel extends PCGenPrefsPanel
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(2, 2, 2, 2);
 		
-		List<String> doneList = new ArrayList<String>();
+		List<String> doneList = new ArrayList<>();
 
 		for (int i = 0; i < hrRadio.length; i++)
 		{
@@ -281,9 +275,9 @@ public class HouseRulesPanel extends PCGenPrefsPanel
 				String exKey = hrRadio[ii].getActionCommand();
 
 				if ((excludedRef != null) && excludedRef.hasBeenResolved()
-						&& exKey.equals(excludedRef.resolvesTo().getKeyName()))
+						&& exKey.equals(excludedRef.get().getKeyName()))
 				{
-					aRule = excludedRef.resolvesTo();
+					aRule = excludedRef.get();
 					aDesc = aRule.getDesc();
 					hrGroup[groupNum].add(hrRadio[ii]);
 					doneList.add(excludedRef.getLSTformat(false));

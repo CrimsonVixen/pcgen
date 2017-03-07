@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.test;
@@ -42,7 +38,6 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.Logging;
 
 /**
- * @author wardc
  *
  */
 public class PreAlignTester extends AbstractDisplayPrereqTest implements PrerequisiteTest
@@ -70,7 +65,7 @@ public class PreAlignTester extends AbstractDisplayPrereqTest implements Prerequ
 		//
 		int runningTotal = 0;
 
-		if (Globals.getGameModeAlignmentText().length() == 0)
+		if (Globals.getGameModeAlignmentText().isEmpty())
 		{
 			runningTotal = 1;
 		}
@@ -113,8 +108,8 @@ public class PreAlignTester extends AbstractDisplayPrereqTest implements Prerequ
 	 * @param charAlignment The character's alignment
 	 * @return true if the alignment matches, false if not.
 	 */
-	private boolean alignMatches(final CharacterDisplay display,
-		String desiredAlignment, final PCAlignment charAlignment)
+	private static boolean alignMatches(final CharacterDisplay display,
+	                                    String desiredAlignment, final PCAlignment charAlignment)
 	{
 		PCAlignment al = getPCAlignment(desiredAlignment);
 		if (al.equals(charAlignment))
@@ -126,8 +121,7 @@ public class PreAlignTester extends AbstractDisplayPrereqTest implements Prerequ
 		{
 			final CDOMSingleRef<PCAlignment> deityAlign =
 					display.getDeity().get(ObjectKey.ALIGNMENT);
-			if ((deityAlign != null)
-				&& charAlignment.equals(deityAlign.resolvesTo()))
+			if ((deityAlign != null) && charAlignment.equals(deityAlign.get()))
 			{
 				return true;
 			}
@@ -158,7 +152,7 @@ public class PreAlignTester extends AbstractDisplayPrereqTest implements Prerequ
 				"PreAlign.toHtml", prereq.getOperator().toDisplayString(), al.getKeyName()); //$NON-NLS-1$
 	}
 
-	private PCAlignment getPCAlignment(String desiredAlignIdentifier)
+	private static PCAlignment getPCAlignment(String desiredAlignIdentifier)
 	{
 		PCAlignment desiredAlign =
 				Globals

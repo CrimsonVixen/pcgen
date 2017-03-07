@@ -30,8 +30,6 @@ import pcgen.facade.util.ListFacade;
  * An implementation of the Chooser Interface that does not display a GUI but
  * simply selects a random choice from the available list of options.
  *
- * @author    Aaron Divinsky
- * @version $Revision$
  */
 public final class RandomChooser implements ChooserInterface, ChoiceHandler
 {
@@ -183,7 +181,7 @@ public final class RandomChooser implements ChooserInterface, ChoiceHandler
     @Override
 	public void setVisible(boolean b)
 	{
-		while (getEffectivePool() > 0 && theAvailableList.size() > 0)
+		while (getEffectivePool() > 0 && !theAvailableList.isEmpty())
 		{
 			selectAvailable();
 		}
@@ -294,13 +292,10 @@ public final class RandomChooser implements ChooserInterface, ChoiceHandler
 				- theSelectedList.size();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean makeChoice(ChooserFacade chooserFacade)
 	{
-		while (chooserFacade.getRemainingSelections().getReference() > 0
+		while (chooserFacade.getRemainingSelections().get() > 0
 			&& !chooserFacade.getAvailableList().isEmpty())
 		{
 			ListFacade<InfoFacade> availableList = chooserFacade.getAvailableList();
@@ -310,7 +305,7 @@ public final class RandomChooser implements ChooserInterface, ChoiceHandler
 			chooserFacade.addSelected(addObj);
 		}
 		
-		if (chooserFacade.getRemainingSelections().getReference() == 0
+		if (chooserFacade.getRemainingSelections().get() == 0
 			|| !chooserFacade.isRequireCompleteSelection())
 		{
 			chooserFacade.commit();

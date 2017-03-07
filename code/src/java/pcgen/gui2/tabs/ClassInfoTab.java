@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jun 27, 2008, 1:36:26 PM
  */
 package pcgen.gui2.tabs;
 
@@ -70,8 +69,6 @@ import pcgen.gui2.tabs.models.QualifiedTreeCellRenderer;
 import pcgen.gui2.tools.FlippingSplitPane;
 import pcgen.gui2.tools.Icons;
 import pcgen.gui2.tools.InfoPane;
-import pcgen.gui2.util.SortMode;
-import pcgen.gui2.util.SortingPriority;
 import pcgen.gui2.util.table.TableUtils;
 import pcgen.gui2.util.treeview.DataView;
 import pcgen.gui2.util.treeview.DataViewColumn;
@@ -84,7 +81,6 @@ import pcgen.util.enumeration.Tab;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 @SuppressWarnings("serial")
 public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
@@ -111,14 +107,14 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 	public ClassInfoTab()
 	{
 		super("Class");
-		this.availableTable = new FilteredTreeViewTable<Object, ClassFacade>();
+		this.availableTable = new FilteredTreeViewTable<>();
 		this.classTable = TableUtils.createDefaultTable();
 		this.addButton = new JButton();
 		this.removeButton = new JButton();
 		this.tabTitle = new TabTitle(Tab.CLASSES);
 		this.infoPane = new InfoPane(LanguageBundle.getString("in_clInfo")); //$NON-NLS-1$
 		this.spinner = new JSpinner(new SpinnerNumberModel(1, 1, 50, 1));
-		this.qFilterButton = new FilterButton<Object, ClassFacade>("ClassQualified");
+		this.qFilterButton = new FilterButton<>("ClassQualified");
 		this.qualifiedRenderer = new QualifiedTreeCellRenderer();
 		this.classTransferHandler = new ClassTransferHandler();
 		initComponents();
@@ -131,7 +127,7 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		setOrientation(VERTICAL_SPLIT);
 
 		JPanel availPanel = new JPanel(new BorderLayout());
-		FilterBar<Object, ClassFacade> bar = new FilterBar<Object, ClassFacade>();
+		FilterBar<Object, ClassFacade> bar = new FilterBar<>();
 		bar.addDisplayableFilter(new SearchFilterPanel());
 		qFilterButton.setText(LanguageBundle.getString("in_igQualFilter")); //$NON-NLS-1$
 		bar.addDisplayableFilter(qFilterButton);
@@ -139,8 +135,6 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 
 		availableTable.setTreeCellRenderer(qualifiedRenderer);
 		availableTable.setDisplayableFilter(bar);
-		availableTable.setSortingPriority(Collections.singletonList(new SortingPriority(0, SortMode.ASCENDING)));
-		availableTable.sortModel();
 		availPanel.add(new JScrollPane(availableTable), BorderLayout.CENTER);
 		{
 			Box box = Box.createHorizontalBox();
@@ -180,7 +174,7 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 
 		topPane.setRightComponent(selPanel);
 		setBottomComponent(infoPane);
-		setResizeWeight(.75);
+		setResizeWeight(0.75);
 	}
 
 	private void initListeners()
@@ -493,13 +487,7 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 					addCharacterLevels(character, c);
 					return true;
 				}
-				catch (UnsupportedFlavorException ex)
-				{
-					Logger.getLogger(ClassInfoTab.class.getName()).log(Level.SEVERE,
-							null,
-							ex);
-				}
-				catch (IOException ex)
+				catch (UnsupportedFlavorException | IOException ex)
 				{
 					Logger.getLogger(ClassInfoTab.class.getName()).log(Level.SEVERE,
 							null,
@@ -542,6 +530,7 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		private static final List<DefaultDataViewColumn> columns
 				= Arrays.asList(new DefaultDataViewColumn("in_clInfoHD", String.class), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_clInfoType", String.class, true), //$NON-NLS-1$
+						new DefaultDataViewColumn("in_descrip", String.class, false), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_baseStat", String.class), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_spellType", String.class), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_source", String.class)); //$NON-NLS-1$
@@ -554,9 +543,6 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 			this.character = character;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getPrefsKey()
 		{
@@ -588,11 +574,29 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 		}
 
 		@Override
-		public List<?> getData(ClassFacade obj)
+		public Object getData(ClassFacade obj, int column)
 		{
-			return Arrays.asList(obj.getHD(), getTypes(obj),
-					"None".equals(obj.getBaseStat()) ? "" : obj.getBaseStat(), //$NON-NLS-1$ //$NON-NLS-2$
-					obj.getSpellType(), obj.getSource());
+			switch(column){
+				case 0:
+					return obj.getHD();
+				case 1:
+					return getTypes(obj);
+				case 2:
+					return character.getInfoFactory().getDescription(obj);
+				case 3:
+					return "None".equals(obj.getBaseStat()) ? "" : obj.getBaseStat(); //$NON-NLS-1$ //$NON-NLS-2$
+				case 4:
+					return obj.getSpellType();
+				case 5:
+					return obj.getSource();
+				default:
+					return null;
+			}
+		}
+
+		@Override
+		public void setData(Object value, ClassFacade element, int column)
+		{
 		}
 
 		private String getTypes(ClassFacade obj)
@@ -645,19 +649,19 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 						if (types != null && types.length > 0)
 						{
 							List<TreeViewPath<ClassFacade>> paths
-									= new ArrayList<TreeViewPath<ClassFacade>>(types.length);
+									= new ArrayList<>(types.length);
 							for (String type : types)
 							{
-								paths.add(new TreeViewPath<ClassFacade>(pobj, type));
+								paths.add(new TreeViewPath<>(pobj, type));
 							}
 							return paths;
 						}
 					case NAME:
-						return Collections.singletonList(new TreeViewPath<ClassFacade>(pobj));
+						return Collections.singletonList(new TreeViewPath<>(pobj));
 					case SOURCE_NAME:
 						return Collections.singletonList(
-								new TreeViewPath<ClassFacade>(pobj,
-										pobj.getSourceForNodeDisplay()));
+                                new TreeViewPath<>(pobj,
+                                        pobj.getSourceForNodeDisplay()));
 					default:
 						throw new InternalError();
 				}
@@ -794,7 +798,7 @@ public class ClassInfoTab extends FlippingSplitPane implements CharacterInfoTab
 				if (data != null)
 				{
 					text = character.getInfoFactory().getHTMLInfo(
-							(ClassFacade) data, null);
+							data, null);
 					infoPane.setText(text);
 				}
 				else

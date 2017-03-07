@@ -17,11 +17,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Current Ver: $Revision: $
  *
- * Last Editor: $Author: $
  *
- * Last Edited: $Date:  $
  *
  */
 package pcgen.cdom.facet;
@@ -89,10 +86,10 @@ public class DamageReductionFacetTest extends
 		});
 
 		Map<DamageReduction, Set<Object>> drList =
-				new IdentityHashMap<DamageReduction, Set<Object>>();
+                new IdentityHashMap<>();
 		String listResult = drFacet.getDRString(id, drList);
-		assertEquals(listResult, "");
-		Set<Object> sourceSet = new HashSet<Object>();
+		assertEquals("", listResult);
+		Set<Object> sourceSet = new HashSet<>();
 		sourceSet.add(new Object());
 
 		drList.put(new DamageReduction(FormulaFactory.getFormulaFor(10),
@@ -247,7 +244,7 @@ public class DamageReductionFacetTest extends
 			.equalsIgnoreCase("15/good and magic; 10/lawful; 5/evil"));
 
 		Map<DamageReduction, Set<Object>> drList1 =
-				new IdentityHashMap<DamageReduction, Set<Object>>();
+                new IdentityHashMap<>();
 		drList1.put(new DamageReduction(FormulaFactory.getFormulaFor(10),
 			"epic"), sourceSet);
 		drList1.put(new DamageReduction(FormulaFactory.getFormulaFor(10),

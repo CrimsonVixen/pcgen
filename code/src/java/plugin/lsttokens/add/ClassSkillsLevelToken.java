@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.ChoiceSet;
 import pcgen.cdom.base.ConcretePersistentTransitionChoice;
@@ -40,7 +41,6 @@ import pcgen.cdom.reference.CDOMGroupRef;
 import pcgen.cdom.reference.ObjectMatchingReference;
 import pcgen.core.PCClass;
 import pcgen.core.Skill;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.TokenUtilities;
@@ -75,6 +75,9 @@ public class ClassSkillsLevelToken extends AbstractNonEmptyToken<PCClassLevel> i
 		PCClassLevel obj, String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String activeValue = sep.next();
 		Formula count;
 		if (!sep.hasNext())
@@ -107,7 +110,7 @@ public class ClassSkillsLevelToken extends AbstractNonEmptyToken<PCClassLevel> i
 			return pr;
 		}
 
-		List<CDOMReference<Skill>> refs = new ArrayList<CDOMReference<Skill>>();
+		List<CDOMReference<Skill>> refs = new ArrayList<>();
 		StringTokenizer tok = new StringTokenizer(activeValue, Constants.COMMA);
 		CDOMGroupRef<Skill> allRef = context.getReferenceContext()
 				.getCDOMAllReference(SKILL_CLASS);
@@ -125,21 +128,21 @@ public class ClassSkillsLevelToken extends AbstractNonEmptyToken<PCClassLevel> i
 				if (Constants.LST_UNTRAINED.equals(tokText))
 				{
 					ObjectMatchingReference<Skill, Boolean> omr =
-							new ObjectMatchingReference<Skill, Boolean>(tokText,
-								SKILL_CLASS, allRef, ObjectKey.USE_UNTRAINED,
-								Boolean.TRUE);
+							new ObjectMatchingReference<>(tokText,
+									SKILL_CLASS, allRef, ObjectKey.USE_UNTRAINED,
+									Boolean.TRUE);
 					omr.returnIncludesNulls(true);
 					refs.add(omr);
 				}
 				else if (Constants.LST_TRAINED.equals(tokText))
 				{
-					refs.add(new ObjectMatchingReference<Skill, Boolean>(
+					refs.add(new ObjectMatchingReference<>(
 							tokText, SKILL_CLASS, allRef,
 							ObjectKey.USE_UNTRAINED, Boolean.FALSE));
 				}
 				else if (Constants.LST_EXCLUSIVE.equals(tokText))
 				{
-					refs.add(new ObjectMatchingReference<Skill, Boolean>(
+					refs.add(new ObjectMatchingReference<>(
 							tokText, SKILL_CLASS, allRef, ObjectKey.EXCLUSIVE,
 							Boolean.TRUE));
 				}
@@ -147,8 +150,8 @@ public class ClassSkillsLevelToken extends AbstractNonEmptyToken<PCClassLevel> i
 						|| Constants.LST_CROSS_CLASS.equals(tokText))
 				{
 					ObjectMatchingReference<Skill, Boolean> omr =
-							new ObjectMatchingReference<Skill, Boolean>(tokText,
-								SKILL_CLASS, allRef, ObjectKey.EXCLUSIVE, Boolean.FALSE);
+							new ObjectMatchingReference<>(tokText,
+									SKILL_CLASS, allRef, ObjectKey.EXCLUSIVE, Boolean.FALSE);
 					omr.returnIncludesNulls(true);
 					refs.add(omr);
 				}
@@ -201,14 +204,14 @@ public class ClassSkillsLevelToken extends AbstractNonEmptyToken<PCClassLevel> i
 					+ ": Contains no skill reference: " + value, context);
 		}
 
-		ReferenceChoiceSet<Skill> rcs = new ReferenceChoiceSet<Skill>(refs);
+		ReferenceChoiceSet<Skill> rcs = new ReferenceChoiceSet<>(refs);
 		if (!rcs.getGroupingState().isValid())
 		{
 			return new ParseResult.Fail("Non-sensical " + getFullName()
 					+ ": Contains ANY and a specific reference: " + value, context);
 		}
-		ChoiceSet<Skill> cs = new ChoiceSet<Skill>(getTokenName(), rcs, true);
-		PersistentTransitionChoice<Skill> tc = new ConcretePersistentTransitionChoice<Skill>(
+		ChoiceSet<Skill> cs = new ChoiceSet<>(getTokenName(), rcs, true);
+		PersistentTransitionChoice<Skill> tc = new ConcretePersistentTransitionChoice<>(
 				cs, count);
 		// TODO This is a hack, to get this to work pre-CDOM
 		PCClass parent = (PCClass) obj.get(ObjectKey.TOKEN_PARENT);
@@ -231,7 +234,7 @@ public class ClassSkillsLevelToken extends AbstractNonEmptyToken<PCClassLevel> i
 			// Zero indicates no Token
 			return null;
 		}
-		List<String> addStrings = new ArrayList<String>();
+		List<String> addStrings = new ArrayList<>();
 		for (TransitionChoice<?> container : addedItems)
 		{
 			SelectableSet<?> cs = container.getChoices();

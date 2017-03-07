@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Apr 10, 2010, 2:57:00 PM
  */
 package pcgen.persistence;
 
@@ -62,6 +61,7 @@ import pcgen.persistence.lst.TraitLoader;
 import pcgen.persistence.lst.prereq.PreParserFactory;
 import pcgen.rules.context.AbstractReferenceContext;
 import pcgen.rules.context.LoadContext;
+import pcgen.rules.persistence.CodeControlLoader;
 import pcgen.system.ConfigurationSettings;
 import pcgen.system.LanguageBundle;
 import pcgen.system.PCGenTask;
@@ -70,40 +70,33 @@ import pcgen.util.enumeration.Tab;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class GameModeFileLoader extends PCGenTask
 {
 
 	private static final FilenameFilter gameModeFileFilter =
-			new FilenameFilter()
+			(aFile, aString) ->
 			{
-
-        @Override
-				public boolean accept(File aFile, String aString)
+				try
 				{
-					try
-					{
-						final File d = new File(aFile, aString);
+					final File d = new File(aFile, aString);
 
-						if (d.isDirectory())
-						{
-							// the directory must contain
-							// a "miscinfo.lst" file and a
-							// "statsandchecks.lst" file to be
-							// a complete gameMode
-							return new File(d, "statsandchecks.lst").exists() &&
-									new File(d, "miscinfo.lst").exists();
-						}
-					}
-					catch (SecurityException e)
+					if (d.isDirectory())
 					{
-						Logging.errorPrint("GameModes.listGameFiles", e);
+						// the directory must contain
+						// a "miscinfo.lst" file and a
+						// "statsandchecks.lst" file to be
+						// a complete gameMode
+						return new File(d, "statsandchecks.lst").exists() &&
+								new File(d, "miscinfo.lst").exists();
 					}
-
-					return false;
+				}
+				catch (SecurityException e)
+				{
+					Logging.errorPrint("GameModes.listGameFiles", e);
 				}
 
+				return false;
 			};
 
 	@Override
@@ -115,7 +108,7 @@ public class GameModeFileLoader extends PCGenTask
 	@Override
 	public void execute()
 	{
-		String[] gameFiles = getGameFilesList();
+		String[] gameFiles = GameModeFileLoader.getGameFilesList();
 		if ((gameFiles != null) && (gameFiles.length > 0))
 		{
 			setMaximum(gameFiles.length + 1);
@@ -132,26 +125,27 @@ public class GameModeFileLoader extends PCGenTask
 	private static String[] getGameFilesList()
 	{
 		final String aDirectory =
-				ConfigurationSettings.getSystemsDir() + File.separator + "gameModes" +
-				File.separator;
+				ConfigurationSettings.getSystemsDir() + File.separator + "gameModes"
+						+ File.separator;
 
 		return new File(aDirectory).list(gameModeFileFilter);
 	}
 
 	private static UnitSet DEFAULT_UNIT_SET;
-	private SimpleLoader<RuleCheck> ruleCheckLoader = new SimpleLoader<RuleCheck>(RuleCheck.class);
-	private LoadInfoLoader loadInfoLoader = new LoadInfoLoader();
-	private EquipSlotLoader eqSlotLoader = new EquipSlotLoader();
-	private SimpleLoader<PaperInfo> paperLoader = new SimplePrefixLoader<PaperInfo>(PaperInfo.class, "NAME");
-	private PointBuyLoader pointBuyLoader = new PointBuyLoader();
-	private TraitLoader traitLoader = new TraitLoader();
-	private LocationLoader locationLoader = new LocationLoader();
-	private SizeAdjustmentLoader sizeLoader = new SizeAdjustmentLoader();
-	private StatsAndChecksLoader statCheckLoader = new StatsAndChecksLoader();
-	private MigrationLoader migrationLoader = new MigrationLoader();
-	private BioSetLoader bioLoader = new BioSetLoader();
-	private SimpleLoader<Sponsor> sponsorLoader = new SimplePrefixLoader<Sponsor>(Sponsor.class, "SPONSOR");
-	private EquipIconLoader equipIconLoader = new EquipIconLoader();
+	private LstLineFileLoader ruleCheckLoader = new SimpleLoader<>(RuleCheck.class);
+	private LstLineFileLoader loadInfoLoader = new LoadInfoLoader();
+	private LstLineFileLoader eqSlotLoader = new EquipSlotLoader();
+	private LstLineFileLoader paperLoader = new SimplePrefixLoader<>(PaperInfo.class, "NAME");
+	private LstLineFileLoader pointBuyLoader = new PointBuyLoader();
+	private LstLineFileLoader traitLoader = new TraitLoader();
+	private LstLineFileLoader locationLoader = new LocationLoader();
+	private LstLineFileLoader sizeLoader = new SizeAdjustmentLoader();
+	private LstLineFileLoader statCheckLoader = new StatsAndChecksLoader();
+	private LstLineFileLoader migrationLoader = new MigrationLoader();
+	private LstLineFileLoader bioLoader = new BioSetLoader();
+	private LstLineFileLoader sponsorLoader = new SimplePrefixLoader<>(Sponsor.class, "SPONSOR");
+	private LstLineFileLoader equipIconLoader = new EquipIconLoader();
+	private LstLineFileLoader codeControlLoader = new CodeControlLoader();
 
 	/**
 	 * Load a sponsors lst file.
@@ -161,13 +155,13 @@ public class GameModeFileLoader extends PCGenTask
 	private void loadSponsorsLstFile()
 	{
 		File sponsorDir = new File(ConfigurationSettings.getSystemsDir(), "sponsors");
-		File sponsorFile = new File(sponsorDir, "sponsors.lst");
 
 		try
 		{
+			File sponsorFile = new File(sponsorDir, "sponsors.lst");
 			sponsorLoader.loadLstFile(Globals.getGlobalContext(), sponsorFile.toURI(), null);
 		}
-		catch (PersistenceLayerException ple)
+		catch (final PersistenceLayerException ple)
 		{
 			Logging.errorPrint("Warning: sponsors file is missing");
 		}
@@ -175,15 +169,15 @@ public class GameModeFileLoader extends PCGenTask
 
 	private void loadGameModes(String[] gameFiles)
 	{
-		int progress = 0;
-		
+
 		SystemCollections.clearGameModeList();
 		File gameModeDir = new File(ConfigurationSettings.getSystemsDir(), "gameModes");
-		for (String gameFile : gameFiles)
+		int progress = 0;
+		for (final String gameFile : gameFiles)
 		{
 			File specGameModeDir = new File(gameModeDir, gameFile);
 			File miscInfoFile = new File(specGameModeDir, "miscinfo.lst");
-			final GameMode gm = loadGameModeMiscInfo(gameFile, miscInfoFile.toURI());
+			final GameMode gm = GameModeFileLoader.loadGameModeMiscInfo(gameFile, miscInfoFile.toURI());
 			if (gm != null)
 			{
 				String gmName = gm.getName();
@@ -193,53 +187,55 @@ public class GameModeFileLoader extends PCGenTask
 				loadGameModeInfoFile(gm, new File(specGameModeDir, "rules.lst").toURI(), "rules");
 
 				// Load equipmentslot.lst
-				loadGameModeLstFile(context, eqSlotLoader, gmName, gameFile,
+				GameModeFileLoader.loadGameModeLstFile(context, eqSlotLoader, gmName, gameFile,
 									"equipmentslots.lst");
 
 				// Load paperInfo.lst
-				loadGameModeLstFile(context, paperLoader, gmName, gameFile, "paperInfo.lst");
+				GameModeFileLoader.loadGameModeLstFile(context, paperLoader, gmName, gameFile, "paperInfo.lst");
 
 				// Load bio files
-				loadGameModeLstFile(context, traitLoader, gmName, gameFile, "bio" + File.separator +
+				GameModeFileLoader.loadGameModeLstFile(context, traitLoader, gmName, gameFile, "bio" + File.separator +
 						"traits.lst");
-				loadGameModeLstFile(context, locationLoader, gmName, gameFile, "bio" +
+				GameModeFileLoader.loadGameModeLstFile(context, locationLoader, gmName, gameFile, "bio" +
 						File.separator + "locations.lst");
 
 				// Load load.lst and check for completeness
-				loadGameModeLstFile(context, loadInfoLoader, gmName, gameFile, "load.lst");
+				GameModeFileLoader.loadGameModeLstFile(context, loadInfoLoader, gmName, gameFile, "load.lst");
 
 				// Load sizeAdjustment.lst
-				loadGameModeLstFile(context, sizeLoader, gmName, gameFile,
+				GameModeFileLoader.loadGameModeLstFile(context, sizeLoader, gmName, gameFile,
 									"sizeAdjustment.lst");
 
 				// Load statsandchecks.lst
-				loadGameModeLstFile(context, statCheckLoader, gmName, gameFile,
+				GameModeFileLoader.loadGameModeLstFile(context, statCheckLoader, gmName, gameFile,
 									"statsandchecks.lst");
 
 				// Load equipIcons.lst
-				loadGameModeLstFile(context, equipIconLoader, gmName, gameFile,
+				GameModeFileLoader.loadGameModeLstFile(context, equipIconLoader, gmName, gameFile,
 					"equipIcons.lst");
 
+				GameModeFileLoader.loadGameModeLstFile(context, codeControlLoader, gmName, gameFile,
+						"codeControl.lst");
 				
 				// Load pointbuymethods.lst
 				loadPointBuyFile(context, gameFile, gmName);
-				for (PointBuyCost pbc : context.getReferenceContext().getConstructedCDOMObjects(PointBuyCost.class))
+				for (final PointBuyCost pbc : context.getReferenceContext().getConstructedCDOMObjects(PointBuyCost.class))
 				{
 					gm.addPointBuyStatCost(pbc);
 				}
 
 				// Load migration.lst
-				loadGameModeLstFile(context, migrationLoader, gmName, gameFile,
+				GameModeFileLoader.loadGameModeLstFile(context, migrationLoader, gmName, gameFile,
 					"migration.lst");
-				
-				loadGameModeLstFile(context, bioLoader, gmName, gameFile, "bio" + File.separator +
-						"biosettings.lst");
+
+				GameModeFileLoader.loadGameModeLstFile(context, bioLoader, gmName, gameFile, "bio" + File.separator
+						+ "biosettings.lst");
 			}
 			try
 			{
-				addDefaultWieldCategories(gm.getModeContext());
+				GameModeFileLoader.addDefaultWieldCategories(gm.getModeContext());
 			}
-			catch (PersistenceLayerException ple)
+			catch (final PersistenceLayerException ple)
 			{
 				Logging.errorPrint("Error Initializing PreParserFactory");
 				Logging.errorPrint("  " + ple.getMessage(), ple);
@@ -262,8 +258,8 @@ public class GameModeFileLoader extends PCGenTask
 	 * @param gameModeFolderName the name of the folder that the game mode is located in
 	 * @param lstFileName the lst file to load
 	 */
-	private void loadGameModeLstFile(LoadContext context, LstLineFileLoader lstFileLoader,
-									 String gameModeName, String gameModeFolderName, String lstFileName)
+	private static void loadGameModeLstFile(LoadContext context, LstLineFileLoader lstFileLoader,
+	                                        String gameModeName, String gameModeFolderName, String lstFileName)
 	{
 		loadGameModeLstFile(context, lstFileLoader, gameModeName, gameModeFolderName, lstFileName, true);
 	}
@@ -279,8 +275,8 @@ public class GameModeFileLoader extends PCGenTask
 	 * @param showMissing show the missing file as a warning. Some files are optional and shouldn't generate a warning
 	 * @return true if the file was loaded, false if it was missing.
 	 */
-	private boolean loadGameModeLstFile(LoadContext context, LstLineFileLoader lstFileLoader,
-										String gameModeName, String gameModeFolderName, String lstFileName, final boolean showMissing)
+	private static boolean loadGameModeLstFile(LoadContext context, LstLineFileLoader lstFileLoader,
+	                                           String gameModeName, String gameModeFolderName, String lstFileName, final boolean showMissing)
 	{
 		File gameModeDir = new File(ConfigurationSettings.getSystemsDir(), "gameModes");
 
@@ -294,7 +290,7 @@ public class GameModeFileLoader extends PCGenTask
 				return true;
 			}
 		}
-		catch (PersistenceLayerException ple)
+		catch (final PersistenceLayerException ple)
 		{
 			//This is OK, grab the default
 		}
@@ -309,12 +305,12 @@ public class GameModeFileLoader extends PCGenTask
 				return true;
 			}
 		}
-		catch (PersistenceLayerException ple2)
+		catch (final PersistenceLayerException ple2)
 		{
 			if (showMissing)
 			{
-				Logging.errorPrint("Warning: game mode " + gameModeName + " is missing file " +
-						lstFileName);
+				Logging.errorPrint("Warning: game mode " + gameModeName + " is missing file "
+						+ lstFileName);
 			}
 		}
 		return false;
@@ -327,7 +323,7 @@ public class GameModeFileLoader extends PCGenTask
 		{
 			data = LstFileLoader.readFromURI(uri).toString();
 		}
-		catch (PersistenceLayerException ple)
+		catch (final PersistenceLayerException ple)
 		{
 			Logging.errorPrint(LanguageBundle.getFormattedString(
 					"Errors.LstSystemLoader.loadGameModeInfoFile", //$NON-NLS-1$
@@ -342,7 +338,7 @@ public class GameModeFileLoader extends PCGenTask
 			String aLine = fileLines[i];
 
 			// Ignore commented-out and empty lines
-			if (((aLine.length() > 0) && (aLine.charAt(0) == '#')) || (aLine.length() == 0))
+			if (((!aLine.isEmpty()) && (aLine.charAt(0) == '#')) || (aLine.isEmpty()))
 			{
 				continue;
 			}
@@ -361,7 +357,7 @@ public class GameModeFileLoader extends PCGenTask
 				{
 					ruleCheckLoader.parseLine(gameMode.getModeContext(), aLine, uri);
 				}
-				catch (PersistenceLayerException e)
+				catch (final PersistenceLayerException e)
 				{
 					Logging.errorPrint(LanguageBundle.getFormattedString(
 							"Errors.LstSystemLoader.loadGameModeInfoFile", //$NON-NLS-1$
@@ -379,7 +375,7 @@ public class GameModeFileLoader extends PCGenTask
 		{
 			data = LstFileLoader.readFromURI(uri).toString();
 		}
-		catch (PersistenceLayerException ple)
+		catch (final PersistenceLayerException ple)
 		{
 			Logging.errorPrint(LanguageBundle.getFormattedString(
 					"Errors.LstSystemLoader.loadGameModeInfoFile", //$NON-NLS-1$
@@ -394,7 +390,7 @@ public class GameModeFileLoader extends PCGenTask
 			String aLine = fileLines[i];
 
 			// Ignore commented-out and empty lines
-			if (((aLine.length() > 0) && (aLine.charAt(0) == '#')) || (aLine.length() == 0))
+			if (((!aLine.isEmpty()) && (aLine.charAt(0) == '#')) || aLine.isEmpty())
 			{
 				continue;
 			}
@@ -417,8 +413,7 @@ public class GameModeFileLoader extends PCGenTask
 		int[] dieSizes = gameMode.getDieSizes();
 		if (dieSizes == null || dieSizes.length == 0)
 		{
-			final int[] defaultDieSizes = new int[]
-			{
+			final int[] defaultDieSizes = {
 				1, 2, 3, 4, 6, 8, 10, 12, 20, 100, 1000
 			};
 			gameMode.setDieSizes(defaultDieSizes);
@@ -454,17 +449,17 @@ public class GameModeFileLoader extends PCGenTask
 				pointBuyLoader.loadLstFile(context, pointBuyFile.toURI(), gmName);
 				useGameModeFile = false;
 			}
-			catch (PersistenceLayerException e)
+			catch (final PersistenceLayerException e)
 			{
 				// Ignore - its OK if the file cannot be loaded
 			}
 		}
 		if (useGameModeFile)
 		{
-			if (!loadGameModeLstFile(context, pointBuyLoader, gmName, gameFile,
+			if (!GameModeFileLoader.loadGameModeLstFile(context, pointBuyLoader, gmName, gameFile,
 									 "pointbuymethods.lst", false))
 			{
-				loadGameModeLstFile(context, pointBuyLoader, gmName, gameFile,
+				GameModeFileLoader.loadGameModeLstFile(context, pointBuyLoader, gmName, gameFile,
 									"pointbuymethods_system.lst", false);
 			}
 		}
@@ -505,7 +500,7 @@ public class GameModeFileLoader extends PCGenTask
 	public static void addDefaultTabInfo(GameMode gameMode)
 	{
 		LoadContext context = gameMode.getModeContext();
-		for (Tab aTab : Tab.values())
+		for (final Tab aTab : Tab.values())
 		{
 			TabInfo ti = context.getReferenceContext().silentlyGetConstructedCDOMObject(
 					TabInfo.class, aTab.toString());
@@ -526,11 +521,11 @@ public class GameModeFileLoader extends PCGenTask
 		{
 			prereqParser = PreParserFactory.getInstance();
 		}
-		catch (PersistenceLayerException ple)
+		catch (final PersistenceLayerException ple)
 		{
 			Logging.errorPrint("Error Initializing PreParserFactory");
 			Logging.errorPrint("  " + ple.getMessage(), ple);
-			throw new UnreachableError();
+			throw new UnreachableError(ple);
 		}
 
 		AbstractReferenceContext refContext = context.getReferenceContext();
@@ -542,7 +537,7 @@ public class GameModeFileLoader extends PCGenTask
 		WieldCategory tooLarge = null;
 		WieldCategory tooSmall = null;
 
-		for (WieldCategory wc : categories)
+		for (final WieldCategory wc : categories)
 		{
 			String name = wc.getKeyName();
 			if ("Light".equalsIgnoreCase(name))
@@ -567,10 +562,6 @@ public class GameModeFileLoader extends PCGenTask
 			}
 		}
 		boolean buildLight = false;
-		boolean buildTwoHanded = false;
-		boolean buildOneHanded = false;
-		boolean buildTooLarge = false;
-		boolean buildTooSmall = false;
 		if (light == null)
 		{
 			light = new WieldCategory();
@@ -578,6 +569,7 @@ public class GameModeFileLoader extends PCGenTask
 			refContext.importObject(light);
 			buildLight = true;
 		}
+		boolean buildTwoHanded = false;
 		if (twoHanded == null)
 		{
 			twoHanded = new WieldCategory();
@@ -585,6 +577,7 @@ public class GameModeFileLoader extends PCGenTask
 			refContext.importObject(twoHanded);
 			buildTwoHanded = true;
 		}
+		boolean buildOneHanded = false;
 		if (oneHanded == null)
 		{
 			oneHanded = new WieldCategory();
@@ -592,6 +585,7 @@ public class GameModeFileLoader extends PCGenTask
 			refContext.importObject(oneHanded);
 			buildOneHanded = true;
 		}
+		boolean buildTooLarge = false;
 		if (tooLarge == null)
 		{
 			tooLarge = new WieldCategory();
@@ -599,6 +593,7 @@ public class GameModeFileLoader extends PCGenTask
 			refContext.importObject(tooLarge);
 			buildTooLarge = true;
 		}
+		boolean buildTooSmall = false;
 		if (tooSmall == null)
 		{
 			tooSmall = new WieldCategory();
@@ -619,22 +614,22 @@ public class GameModeFileLoader extends PCGenTask
 			light.addDamageMult(1, 1.0f);
 			light.addDamageMult(2, 1.0f);
 			Prerequisite p = prereqParser.parse("PREVARLTEQ:EQUIP.SIZE.INT,PC.SIZE.INT-1");
-			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<>(
 					tooSmallRef);
 			qo.addPrerequisite(p);
 			light.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT+1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					oneHandedRef);
 			qo.addPrerequisite(p);
 			light.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT+2");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					twoHandedRef);
 			qo.addPrerequisite(p);
 			light.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVARGTEQ:EQUIP.SIZE.INT,PC.SIZE.INT+3");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					tooLargeRef);
 			qo.addPrerequisite(p);
 			light.addCategorySwitch(qo);
@@ -647,22 +642,22 @@ public class GameModeFileLoader extends PCGenTask
 			twoHanded.setHandsRequired(2);
 			twoHanded.addDamageMult(2, 1.5f);
 			Prerequisite p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-3");
-			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<>(
 					tooSmallRef);
 			qo.addPrerequisite(p);
 			twoHanded.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-2");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					lightRef);
 			qo.addPrerequisite(p);
 			twoHanded.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					oneHandedRef);
 			qo.addPrerequisite(p);
 			twoHanded.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVARGTEQ:EQUIP.SIZE.INT,PC.SIZE.INT+1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					tooLargeRef);
 			qo.addPrerequisite(p);
 			twoHanded.addCategorySwitch(qo);
@@ -676,22 +671,22 @@ public class GameModeFileLoader extends PCGenTask
 			oneHanded.addDamageMult(1, 1.0f);
 			oneHanded.addDamageMult(2, 1.5f);
 			Prerequisite p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-2");
-			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<>(
 					tooSmallRef);
 			qo.addPrerequisite(p);
 			oneHanded.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					lightRef);
 			qo.addPrerequisite(p);
 			oneHanded.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT+1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					twoHandedRef);
 			qo.addPrerequisite(p);
 			oneHanded.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVARGTEQ:EQUIP.SIZE.INT,PC.SIZE.INT+2");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					tooLargeRef);
 			qo.addPrerequisite(p);
 			oneHanded.addCategorySwitch(qo);
@@ -713,22 +708,22 @@ public class GameModeFileLoader extends PCGenTask
 			tooSmall.setHandsRequired(2);
 			tooSmall.addDamageMult(2, 1.5f);
 			Prerequisite p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-3");
-			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			QualifiedObject<CDOMSingleRef<WieldCategory>> qo = new QualifiedObject<>(
 					tooSmallRef);
 			qo.addPrerequisite(p);
 			tooSmall.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-2");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					lightRef);
 			qo.addPrerequisite(p);
 			tooSmall.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVAREQ:EQUIP.SIZE.INT,PC.SIZE.INT-1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					oneHandedRef);
 			qo.addPrerequisite(p);
 			tooSmall.addCategorySwitch(qo);
 			p = prereqParser.parse("PREVARGTEQ:EQUIP.SIZE.INT,PC.SIZE.INT+1");
-			qo = new QualifiedObject<CDOMSingleRef<WieldCategory>>(
+			qo = new QualifiedObject<>(
 					tooLargeRef);
 			qo.addPrerequisite(p);
 			tooSmall.addCategorySwitch(qo);

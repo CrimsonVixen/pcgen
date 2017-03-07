@@ -38,16 +38,13 @@ import pcgen.util.PJEP;
 import pcgen.util.PjepPool;
 
 /**
- * <code>VariableProcessor</code> is the base class for PCGen variable
+ * {@code VariableProcessor} is the base class for PCGen variable
  * processors. These are classes that convert a formula or variable
  * into a value and are used extensively both in defintions of objects
  * and for output to output sheets.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author Chris Ward <frugal@purplewombat.co.uk>
- * @version $Revision$
+ * @author Chris Ward &lt;frugal@purplewombat.co.uk&gt;
  */
 public abstract class VariableProcessor
 {
@@ -61,10 +58,10 @@ public abstract class VariableProcessor
 	private int cachePaused;
 	private int serial;
 
-	private Map<String, CachedVariable<String>> sVariableCache = 
-			new HashMap<String, CachedVariable<String>>();
-	private Map<String, CachedVariable<Float>>  fVariableCache = 
-			new HashMap<String, CachedVariable<Float>>();
+	private Map<String, CachedVariable<String>> sVariableCache =
+            new HashMap<>();
+	private Map<String, CachedVariable<Float>>  fVariableCache =
+            new HashMap<>();
 
 	protected Float convertToFloat(String element, String foo)
 	{
@@ -94,7 +91,7 @@ public abstract class VariableProcessor
 	}
 
 	/**
-	 * <code>CachableResult</code> encapsulates a result returned from JEP processing
+	 * {@code CachableResult} encapsulates a result returned from JEP processing
 	 * allowing us to retrieve both the result and its cachability.
 	 */
 	private static class CachableResult
@@ -426,25 +423,25 @@ public abstract class VariableProcessor
 
 				if (i < aString.length())
 				{
-					if (aString.length() > 0 && aString.charAt(i) == '+')
+					if (!aString.isEmpty() && aString.charAt(i) == '+')
 					{
 						nextMode = MATH_OP.PLUS;
 					}
-					else if (aString.length() > 0 && aString.charAt(i) == '-')
+					else if (!aString.isEmpty() && aString.charAt(i) == '-')
 					{
 						nextMode = MATH_OP.MINUS;
 					}
-					else if (aString.length() > 0 && aString.charAt(i) == '*')
+					else if (!aString.isEmpty() && aString.charAt(i) == '*')
 					{
 						nextMode = MATH_OP.MULTIPLY;
 					}
-					else if (aString.length() > 0 && aString.charAt(i) == '/')
+					else if (!aString.isEmpty() && aString.charAt(i) == '/')
 					{
 						nextMode = MATH_OP.DIVIDE;
 					}
 				}
 
-				if (valString.length() > 0)
+				if (!valString.isEmpty())
 				{
 					float valFloat = 0.0f;
 					try
@@ -691,7 +688,7 @@ public abstract class VariableProcessor
 		{
 			return;
 		}
-		final CachedVariable<Float> cached = new CachedVariable<Float>();
+		final CachedVariable<Float> cached = new CachedVariable<>();
 		cached.setSerial( getSerial() );
 		cached.setValue(value);
 //		if (lookup.equals("floor(SCORE/2)-5#STAT:CHA"))
@@ -793,7 +790,7 @@ public abstract class VariableProcessor
 		{
 			return;
 		}
-		final CachedVariable<String> cached = new CachedVariable<String>();
+		final CachedVariable<String> cached = new CachedVariable<>();
 		cached.setSerial( getSerial() );
 		cached.setValue(value);
 

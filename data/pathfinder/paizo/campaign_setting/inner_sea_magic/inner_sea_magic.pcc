@@ -1,6 +1,6 @@
 # CVS $Revision: 9628 $ $Author: eddyanthony $ -- Sat Dec  8 13:05:34 2007 -- reformated by prettylst.pl v1.38 (build 4387)
 CAMPAIGN:Inner Sea Magic
-GAMEMODE:Pathfinder
+GAMEMODE:Pathfinder|Pathfinder_PFS
 TYPE:Paizo Publishing.Pathfinder Campaign Setting
 RANK:3
 STATUS:BETA
@@ -55,7 +55,7 @@ EQUIPMENT:ism_equip.lst
 # LICENSE MONKEY: Paul Grosse
 # RELEASE REVIEW #
 # BETA: Andrew Maitland (9/13/2015)
-# RELEASE: 
+# RELEASE:
 # Built for PCGen Version: 6.05.04
 # Updated to work with version: -
 # MINVER:6.5

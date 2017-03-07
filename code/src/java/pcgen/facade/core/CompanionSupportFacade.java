@@ -25,7 +25,7 @@ import pcgen.facade.util.MapFacade;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
+ * @author Connor Petty &lt;cpmeister@users.sourceforge.net&gt;
  */
 public interface CompanionSupportFacade
 {
@@ -47,7 +47,7 @@ public interface CompanionSupportFacade
 	/**
 	 * Removes a companion from this character.
 	 * The companion to removed will be one retrieved from the
-	 * <code>getCompanions</code> list.
+	 * {@code getCompanions} list.
 	 * @param companion the companion to remove
 	 */
 	public void removeCompanion(CompanionFacade companion);

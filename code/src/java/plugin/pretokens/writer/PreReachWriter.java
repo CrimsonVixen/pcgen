@@ -17,13 +17,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 18-Dec-2003
  *
- * Current Ver: $Revision: 1821 $
  *
- * Last Editor: $Author: jdempsey $
  *
- * Last Edited: $Date: 2006-12-28 07:12:38 +0100 (Do, 28 Dez 2006) $
  *
  */
 package plugin.pretokens.writer;

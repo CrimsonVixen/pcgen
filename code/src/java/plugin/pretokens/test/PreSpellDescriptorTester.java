@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on August 21, 2004
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.test;
@@ -36,7 +32,6 @@ import pcgen.system.LanguageBundle;
 import java.util.List;
 
 /**
- * @author blithwyn
  *
  */
 public class PreSpellDescriptorTester extends AbstractPrerequisiteTest

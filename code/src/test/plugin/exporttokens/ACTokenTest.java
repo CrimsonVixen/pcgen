@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Nov 12, 2006
  *
- * $Id: BioTokenTest.java 661 2006-04-06 14:35:49Z karianna $
  *
  */
 package plugin.exporttokens;
@@ -48,11 +46,7 @@ import pcgen.util.TestHelper;
  * <code>ACTokenTest</code> tests the function of the AC token and 
  * thus the calculations of armor class.  
  *
- * Last Editor: $Author: karianna $
- * Last Edited: $Date: 2006-04-07 00:35:49 +1000 (Fri, 07 Apr 2006) $
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: 661 $
  */
 public class ACTokenTest extends AbstractCharacterTestCase
 {

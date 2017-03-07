@@ -31,6 +31,7 @@ import java.util.List;
 import javax.swing.undo.UndoManager;
 
 import pcgen.cdom.enumeration.BiographyField;
+import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.enumeration.Nature;
 import pcgen.cdom.enumeration.SkillFilter;
 import pcgen.cdom.meta.CorePerspective;
@@ -51,14 +52,14 @@ import pcgen.io.ExportHandler;
  * can pick up on. To operate like this, all values returned
  * from this class, with a couple of exceptions, are models that can
  * be listenered to. Two of the most commonly used models are
- * the <code>ReferenceFacade</code> and the <code>ListFacade</code>
+ * the {@code ReferenceFacade} and the <code>ListFacade</code>
  * <br>
  * Note: This facade returns references to items of interest.
  * These allow not only the values to be retrieved but also
  * interested parties to register as listeners for changes to the valiues.
- * @see pcgen.core.facade.util.ListFacade
+ * @see pcgen.facade.util.ListFacade
  * @see ReferenceFacade
- * @author Connor Petty <cpmeister@users.sourceforge.net>
+ * @author Connor Petty &lt;cpmeister@users.sourceforge.net&gt;
  */
 public interface CharacterFacade extends CompanionFacade
 {
@@ -81,7 +82,7 @@ public interface CharacterFacade extends CompanionFacade
 	 * @param stat The stat to retrieve the base for
 	 * @return A reference to the base score for the stat
 	 */
-	public ReferenceFacade<Integer> getScoreBaseRef(StatFacade stat);
+	public ReferenceFacade<Number> getScoreBaseRef(StatFacade stat);
 
 	/**
 	 * @param stat The stat to retrieve the mod total for
@@ -223,9 +224,9 @@ public interface CharacterFacade extends CompanionFacade
 
 	public EquipmentListFacade getPurchasedEquipment();
 
-	public void addPurchasedEquipment(EquipmentFacade equipment, int quantity, boolean customize);
+	public void addPurchasedEquipment(EquipmentFacade equipment, int quantity, boolean customize, boolean free);
 
-	public void removePurchasedEquipment(EquipmentFacade equipment, int quantity);
+	public void removePurchasedEquipment(EquipmentFacade equipment, int quantity, boolean free);
 
 	//public int getQuantity(EquipmentFacade equipment);
 	public boolean isQualifiedFor(EquipmentFacade equipment);
@@ -511,7 +512,7 @@ public interface CharacterFacade extends CompanionFacade
 	/**
 	 * Set the character's display filter for skills
 	 * *
-	 * @param previewSheet The skill filter to be set
+	 * @param filter The skill filter to be set
 	 */
 	public void setSkillFilter(SkillFilter filter);
 
@@ -631,6 +632,13 @@ public interface CharacterFacade extends CompanionFacade
 	 * @return True if the character can take the domain, false if not.
 	 */
 	public boolean isQualifiedFor(DomainFacade domain);
+	
+	/**
+	 * Check if the character meets all requirements to take the deity.
+	 * @param deity The deity to be checked.
+	 * @return True if the character can take the deity, false if not.
+	 */
+	public boolean isQualifiedFor(DeityFacade deity);
 
 	/**
 	 * Check if the character meets all requirements to take the temporary bonus.
@@ -869,4 +877,6 @@ public interface CharacterFacade extends CompanionFacade
 	public void addNote(List<EquipmentFacade> targets);
 	
 	public List<CoreViewNodeFacade> getCoreViewTree(CorePerspective pers);
+
+	CharID getCharID();
 }

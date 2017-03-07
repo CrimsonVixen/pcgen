@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Nov 6, 2011, 12:26:57 PM
  */
 package pcgen.gui2.dialog;
 
@@ -54,16 +53,8 @@ import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 
 import pcgen.cdom.base.Constants;
 import pcgen.core.Globals;
@@ -81,13 +72,21 @@ import pcgen.system.ConfigurationSettings;
 import pcgen.system.PCGenSettings;
 import pcgen.util.Logging;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+
 /**
  * The dialog provides the list of output sheets for a character or party to
  * be exported to.
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 @SuppressWarnings("serial")
-public class ExportDialog extends JDialog implements ActionListener, ListSelectionListener
+public final class ExportDialog extends JDialog implements ActionListener, ListSelectionListener
 {
 
 	private static final String PDF_EXPORT_DIR_PROP = "pdfExportDir";
@@ -100,7 +99,7 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 	public static void showExportDialog(PCGenFrame parent)
 	{
 		ExportDialog dialog = new ExportDialog(parent);
-		Utility.setDialogRelativeLocation(parent, dialog);
+		Utility.setComponentRelativeLocation(parent, dialog);
 		dialog.setVisible(true);
 	}
 
@@ -120,8 +119,8 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 	{
 		super(parent, true);
 		this.pcgenFrame = parent;
-		this.characterBoxModel = new FacadeComboBoxModel<CharacterFacade>(CharacterManager.getCharacters(),
-																		  parent.getSelectedCharacterRef());
+		this.characterBoxModel = new FacadeComboBoxModel<>(CharacterManager.getCharacters(),
+                parent.getSelectedCharacterRef());
 		this.characterBox = new JComboBox(characterBoxModel);
 		this.partyBox = new JCheckBox("Entire Party");
 		this.exportBox = new JComboBox(SheetFilter.values());
@@ -155,7 +154,7 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 			{
 				CharacterFacade character = (CharacterFacade) value;
-				return super.getListCellRendererComponent(list, character.getNameRef().getReference(), index, isSelected, cellHasFocus);
+				return super.getListCellRendererComponent(list, character.getNameRef().get(), index, isSelected, cellHasFocus);
 			}
 
 		});
@@ -310,15 +309,21 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 		String extension = ExportUtilities.getOutputExtension(uri.toString(), pdf);
 		if (pdf)
 		{
-			fcExport.addChoosableFileFilter(new FileNameExtensionFilter("PDF Documents (*.pdf)", "pdf"));
+			FileFilter fileFilter = new FileNameExtensionFilter("PDF Documents (*.pdf)", "pdf");
+			fcExport.addChoosableFileFilter(fileFilter);
+			fcExport.setFileFilter(fileFilter);
 		}
 		else if ("htm".equalsIgnoreCase(extension) || "html".equalsIgnoreCase(extension))
 		{
-			fcExport.addChoosableFileFilter(new FileNameExtensionFilter("HTML Documents (*.htm, *.html)", "htm", "html"));
+			FileFilter fileFilter = new FileNameExtensionFilter("HTML Documents (*.htm, *.html)", "htm", "html");
+			fcExport.addChoosableFileFilter(fileFilter);
+			fcExport.setFileFilter(fileFilter);
 		}
 		else if ("xml".equalsIgnoreCase(extension))
 		{
-			fcExport.addChoosableFileFilter(new FileNameExtensionFilter("XML Documents (*.xml)", "xml"));
+			FileFilter fileFilter = new FileNameExtensionFilter("XML Documents (*.xml)", "xml");
+			fcExport.addChoosableFileFilter(fileFilter);
+			fcExport.setFileFilter(fileFilter);
 		}
 		else
 		{
@@ -330,7 +335,7 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 		if (!partyBox.isSelected())
 		{
 			CharacterFacade character = (CharacterFacade) characterBox.getSelectedItem();
-			path = character.getFileRef().getReference();
+			path = character.getFileRef().get();
 			if (path != null)
 			{
 				path = path.getParentFile();
@@ -339,10 +344,10 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 			{
 				path = new File(PCGenSettings.getPcgDir());
 			}
-			name = character.getTabNameRef().getReference();
-			if (name == null || "".equals(name))
+			name = character.getTabNameRef().get();
+			if (StringUtils.isEmpty(name))
 			{
-				name = character.getNameRef().getReference();
+				name = character.getNameRef().get();
 			}
 		}
 		else
@@ -672,8 +677,7 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 				return Collections.emptyList();
 			}
 			IOFileFilter fileFilter = FileFilterUtils.notFileFilter(new SuffixFileFilter(".fo"));
-			IOFileFilter dirFilter = FileFilterUtils.makeSVNAware(TrueFileFilter.INSTANCE);
-			return FileUtils.listFiles(dir, fileFilter, dirFilter);
+			return FileUtils.listFiles(dir, fileFilter, TrueFileFilter.INSTANCE);
 		}
 
 		@Override
@@ -707,9 +711,9 @@ public class ExportDialog extends JDialog implements ActionListener, ListSelecti
 		HTMLXML("htmlxml", "Standard", "HTM"),
 		PDF("pdf", "PDF", "PDF"),
 		TEXT("text", "Text", "TXT");
-		private String dirFilter;
-		private String description;
-		private String tag;
+		private final String dirFilter;
+		private final String description;
+		private final String tag;
 
 		private SheetFilter(String dirFilter, String description, String tag)
 		{

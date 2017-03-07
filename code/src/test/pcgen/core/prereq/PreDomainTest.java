@@ -40,11 +40,7 @@ import pcgen.persistence.lst.prereq.PreParserFactory;
  * <code>PreDomainTest</code> tests that the PREDOMAIN tag is
  * working correctly.
  *
- * Last Editor: $Author: $
- * Last Edited: $Date$
  *
- * @author Aaron Divinsky <boomer70@yahoo.com>
- * @version $Revision$
  */
 public class PreDomainTest extends AbstractCharacterTestCase
 {
@@ -141,7 +137,6 @@ public class PreDomainTest extends AbstractCharacterTestCase
 	/**
 	 * Test for any domain.
 	 * 
-	 * @author Koen Van Daele <vandaelek@users.sorceforge.net>
 	 * @throws Exception
 	 */
 	public void testAny() throws Exception

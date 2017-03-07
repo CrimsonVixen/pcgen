@@ -25,7 +25,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 import pcgen.AbstractCharacterTestCase;
-import pcgen.base.util.BasicObjectContainer;
+import pcgen.base.format.StringManager;
+import pcgen.base.util.BasicIndirect;
 import pcgen.cdom.enumeration.FactSetKey;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.cdom.reference.CDOMDirectSingleRef;
@@ -33,17 +34,12 @@ import pcgen.core.Deity;
 import pcgen.core.PlayerCharacter;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.persistence.lst.prereq.PreParserFactory;
-import plugin.format.StringManager;
 
 /**
  * <code>PreDeityTest</code> tests that the PREDEITY tag is
  * working correctly.
  *
- * Last Editor: $Author: $
- * Last Edited: $Date$
  *
- * @author Aaron Divinsky <boomer70@yahoo.com>
- * @version $Revision$
  */
 public class PreDeityTest extends AbstractCharacterTestCase
 {
@@ -246,6 +242,6 @@ public class PreDeityTest extends AbstractCharacterTestCase
 		deity.put(ObjectKey.ALIGNMENT, CDOMDirectSingleRef.getRef(ng));
 		StringManager sm = new StringManager();
 		FactSetKey<String> fsk = FactSetKey.getConstant("Pantheon", sm);
-		deity.addToSetFor(fsk, new BasicObjectContainer<String>(sm, "Celtic"));
+		deity.addToSetFor(fsk, new BasicIndirect<>(sm, "Celtic"));
 	}
 }

@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jul 6, 2010, 3:53:51 PM
  */
 package pcgen.gui2.tabs.skill;
 
@@ -28,7 +27,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.cdom.enumeration.SkillCost;
 import pcgen.facade.core.CharacterFacade;
@@ -51,7 +50,6 @@ import pcgen.system.LanguageBundle;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		DataView<SkillFacade>, SkillBonusListener, ListSelectionListener
@@ -64,6 +62,7 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 			new DefaultDataViewColumn("in_classString", String.class, true),
 			new DefaultDataViewColumn("in_skillSkillCost", String.class,
 				SkillCost.CLASS.getCost() != SkillCost.CROSS_CLASS.getCost()),
+			new DefaultDataViewColumn("in_descrip", String.class), //$NON-NLS-1$
 			new DefaultDataViewColumn("in_source", String.class));
 	private final DefaultListFacade<TreeView<SkillFacade>> treeviews;
 	private final CharacterFacade character;
@@ -84,7 +83,7 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 																	SkillTreeView.KEYSTAT_TYPE_NAME, 
 																	COST_NAME,
 																	COST_TYPE_NAME);
-		treeviews = new DefaultListFacade<TreeView<SkillFacade>>(views);
+		treeviews = new DefaultListFacade<>(views);
 	}
 
 	public void install(FilteredTreeViewTable<CharacterFacade, SkillFacade> ftvt)
@@ -126,9 +125,6 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		return character.getDataSet().getSkills();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getPrefsKey()
 	{
@@ -136,27 +132,54 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 	}
 
 	@Override
-	public List<?> getData(SkillFacade obj)
+	public Object getData(SkillFacade obj, int column)
 	{
 		if (selectionModel.isSelectionEmpty())
 		{
-			return Arrays.asList(0, 0, 0.0, null, 0, obj.getSource());
+			switch(column){
+				case 0:
+				case 1:
+				case 4:
+					return 0;
+				case 2:
+					return 0.0;
+				case 3:
+				case 5:
+					return null;
+				case 6:
+					return obj.getSource();
+				default:
+					return null;
+			}
 		}
-		else
-		{
-			int index = selectionModel.getMinSelectionIndex();
+		int index = selectionModel.getMinSelectionIndex();
 			CharacterLevelFacade level = levels.getElementAt(index);
 			SkillBreakdown skillBreakdown = levels.getSkillBreakdown(level, obj);
-			return Arrays.asList(
-				skillBreakdown.total,
-				skillBreakdown.modifier,
-				skillBreakdown.ranks,
-					levels.getSkillCost(level, obj) == SkillCost.CLASS
+		switch(column){
+			case 0:
+				return skillBreakdown.total;
+			case 1:
+				return skillBreakdown.modifier;
+			case 2:
+				return skillBreakdown.ranks;
+			case 3:
+				return levels.getSkillCost(level, obj) == SkillCost.CLASS
 						? LanguageBundle.getString("in_yes") :  //$NON-NLS-1$
-						  LanguageBundle.getString("in_no"),    //$NON-NLS-1$
-					levels.getSkillCost(level, obj).getCost(),
-					obj.getSource());
+						  LanguageBundle.getString("in_no");    //$NON-NLS-1$
+			case 4:
+				return levels.getSkillCost(level, obj).getCost();
+			case 5:
+				return character.getInfoFactory().getDescription(obj);
+			case 6:
+				return obj.getSource();
+			default:
+				return null;
 		}
+	}
+
+	@Override
+	public void setData(Object value, SkillFacade element, int column)
+	{
 	}
 
 	@Override
@@ -165,9 +188,6 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		return columns;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void skillBonusChanged(CharacterLevelEvent e)
 	{
@@ -187,11 +207,7 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		Object displayPath[];
 		if (path.length > 0 && StringUtils.isEmpty(String.valueOf(path[path.length - 1])))
 		{
-			displayPath = new Object[path.length - 1];
-			for (int i = 0; i < displayPath.length; i++)
-			{
-				displayPath[i] = path[i];
-			}
+			displayPath = Arrays.copyOf(path, path.length - 1);
 		}
 		else
 		{
@@ -199,9 +215,9 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		}
 		if (displayPath.length == 0)
 		{
-			return new TreeViewPath<SkillFacade>(pobj);
+			return new TreeViewPath<>(pobj);
 		}
-		return new TreeViewPath<SkillFacade>(pobj, displayPath);
+		return new TreeViewPath<>(pobj, displayPath);
 	}
 
 	private enum SkillTreeView implements TreeView<SkillFacade>
@@ -211,7 +227,7 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		TYPE_NAME("in_typeName"), //$NON-NLS-1$
 		KEYSTAT_NAME("in_keyStatName"), //$NON-NLS-1$
 		KEYSTAT_TYPE_NAME("in_keyStatTypeName"); //$NON-NLS-1$
-		private String name;
+		private final String name;
 
 		private SkillTreeView(String nameKey)
 		{
@@ -232,14 +248,14 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 			switch (this)
 			{
 				case NAME:
-					path = new TreeViewPath<SkillFacade>(pobj);
+					path = new TreeViewPath<>(pobj);
 					break;
 				case TYPE_NAME:
 					path = createTreeViewPath(pobj, pobj.getDisplayType());
 					break;
 				case KEYSTAT_NAME:
-					path = new TreeViewPath<SkillFacade>(pobj,
-														 pobj.getKeyStat());
+					path = new TreeViewPath<>(pobj,
+                            pobj.getKeyStat());
 					break;
 				case KEYSTAT_TYPE_NAME:
 					path =
@@ -267,7 +283,7 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		@SuppressWarnings("unchecked")
 		public List<TreeViewPath<SkillFacade>> getPaths(SkillFacade pobj)
 		{
-			List<Object> path = new ArrayList<Object>();
+			List<Object> path = new ArrayList<>();
 			int index = selectionModel.getMinSelectionIndex();
 			if (index >= 0)
 			{
@@ -291,7 +307,7 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 		@SuppressWarnings("unchecked")
 		public List<TreeViewPath<SkillFacade>> getPaths(SkillFacade pobj)
 		{
-			List<Object> path = new ArrayList<Object>();
+			List<Object> path = new ArrayList<>();
 			int index = selectionModel.getMinSelectionIndex();
 			if (index >= 0)
 			{
@@ -309,9 +325,6 @@ public class SkillTreeViewModel implements TreeViewModel<SkillFacade>,
 
 	};
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void valueChanged(ListSelectionEvent arg0)
 	{

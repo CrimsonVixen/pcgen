@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 2/10/2008 16:50:38
  *
- * $Id: $
  */
 package pcgen.core.kit;
 
@@ -39,20 +37,16 @@ import pcgen.core.chooser.ChooserUtilities;
 /**
  * Deals with applying a bonus language via a Kit
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class KitLangBonus extends BaseKit
 {
 	/** The list of language names. */
-	private List<CDOMSingleRef<Language>> langList = new ArrayList<CDOMSingleRef<Language>>();
+	private List<CDOMSingleRef<Language>> langList = new ArrayList<>();
 
 	// These members store the state of an instance of this class.  They are
 	// not cloned.
-	private transient List<Language> theLanguages = new ArrayList<Language>();
+	private transient List<Language> theLanguages = new ArrayList<>();
 
 	/**
 	 * Actually applies the bonus languages to this PC.
@@ -83,11 +77,11 @@ public class KitLangBonus extends BaseKit
 	public boolean testApply(Kit aKit, PlayerCharacter aPC,
 			List<String> warnings)
 	{
-		theLanguages = new ArrayList<Language>();
+		theLanguages = new ArrayList<>();
 
 		CNAbility cna = aPC.getBonusLanguageAbility();
 
-		List<String> reservedList = new ArrayList<String>();
+		List<String> reservedList = new ArrayList<>();
 
 		/*
 		 * While this direct use of the controller seems strange, the use of
@@ -107,7 +101,7 @@ public class KitLangBonus extends BaseKit
 		int remaining = allowedCount;
 		for (CDOMSingleRef<Language> ref : langList)
 		{
-			Language lang = ref.resolvesTo();
+			Language lang = ref.get();
 			if (remaining > 0 && controller.conditionallyApply(aPC, lang))
 			{
 				theLanguages.add(lang);
@@ -126,7 +120,7 @@ public class KitLangBonus extends BaseKit
 					+ (langList.size() - allowedCount) + " had to be ignored.");
 		}
 
-		if (theLanguages.size() > 0)
+		if (!theLanguages.isEmpty())
 		{
 			return true;
 		}

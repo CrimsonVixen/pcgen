@@ -17,23 +17,17 @@
  */
 package selectionactor.auto;
 
-import org.junit.Test;
-
 import pcgen.cdom.base.ChooseSelectionActor;
 import pcgen.core.Language;
+
+import org.junit.Test;
 import plugin.lsttokens.auto.LangToken;
 import selectionactor.testsupport.AbstractSelectionActorTest;
 
 public class LangTokenTest extends AbstractSelectionActorTest<Language>
 {
 
-	static LangToken cra = new LangToken();
-
-	@Test
-	public void testEmpty()
-	{
-		// Just to get Eclipse to recognize this as a JUnit 4.0 Test Case
-	}
+	private static final ChooseSelectionActor cra = new LangToken();
 
 	@Override
 	public ChooseSelectionActor<Language> getActor()

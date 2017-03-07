@@ -1,5 +1,4 @@
 /*
- * Created on Sep 2, 2005
  *
  */
 package plugin.lsttokens;
@@ -28,7 +27,6 @@ import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * @author djones4
  *
  */
 public class RegionLst extends AbstractTokenWithSeparator<CDOMObject> implements
@@ -88,7 +86,7 @@ public class RegionLst extends AbstractTokenWithSeparator<CDOMObject> implements
 		{
 			count = FormulaFactory.ONE;
 		}
-		List<Region> regions = new ArrayList<Region>();
+		List<Region> regions = new ArrayList<>();
 		while (true)
 		{
 			regions.add(Region.getConstant(item));
@@ -98,10 +96,10 @@ public class RegionLst extends AbstractTokenWithSeparator<CDOMObject> implements
 			}
 			item = tok.nextToken();
 		}
-		SimpleChoiceSet<Region> rcs = new SimpleChoiceSet<Region>(regions);
-		ChoiceSet<Region> cs = new ChoiceSet<Region>(getTokenName(), rcs);
+		SimpleChoiceSet<Region> rcs = new SimpleChoiceSet<>(regions);
+		ChoiceSet<Region> cs = new ChoiceSet<>(getTokenName(), rcs);
 		cs.setTitle("Region Selection");
-		TransitionChoice<Region> tc = new ConcreteTransitionChoice<Region>(cs, count);
+		TransitionChoice<Region> tc = new ConcreteTransitionChoice<>(cs, count);
 		context.getObjectContext().put(obj, ObjectKey.REGION_CHOICE, tc);
 		tc.setRequired(false);
 		tc.setChoiceActor(this);

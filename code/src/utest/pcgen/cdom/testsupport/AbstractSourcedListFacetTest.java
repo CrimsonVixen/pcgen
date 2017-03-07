@@ -108,9 +108,9 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	@Test
 	public void testTypeAddNull()
 	{
-		Object source1 = new Object();
 		try
 		{
+			Object source1 = new Object();
 			getFacet().add(id, null, source1);
 			fail();
 		}
@@ -127,11 +127,11 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	@Test
 	public void testTypeAddNullID()
 	{
-		Object source1 = new Object();
 		//Remove to try to avoid any event being formed
 		getFacet().removeDataFacetChangeListener(listener);
 		try
 		{
+			Object source1 = new Object();
 			getFacet().add(null, getObject(), source1);
 			fail();
 		}
@@ -267,9 +267,9 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	@Test
 	public void testTypeAddAllNull()
 	{
-		Object source1 = new Object();
 		try
 		{
+			Object source1 = new Object();
 			getFacet().addAll(id, null, source1);
 			fail();
 		}
@@ -284,7 +284,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	public void testTypeAddAllUseless()
 	{
 		Object source1 = new Object();
-		getFacet().addAll(id, new ArrayList<T>(), source1);
+		getFacet().addAll(id, new ArrayList<>(), source1);
 		testTypeUnsetZeroCount();
 		testTypeUnsetEmpty();
 		testTypeUnsetEmptySet();
@@ -297,7 +297,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		Object source1 = new Object();
 		T t1 = getObject();
 		T t2 = getAltObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(t2);
 		getFacet().addAll(id, pct, source1);
@@ -326,7 +326,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		Object source1 = new Object();
 		T t1 = getObject();
 		T t2 = getAltObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(t2);
 		getFacet().addAll(id, pct, source1);
@@ -340,7 +340,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		assertEventCount(2, 0);
 		Object source2 = new Object();
 		T t3 = getThirdObject();
-		List<T> pct2 = new ArrayList<T>();
+		List<T> pct2 = new ArrayList<>();
 		pct2.add(t1);
 		pct2.add(t3);
 		getFacet().addAll(id, pct2, source2);
@@ -360,7 +360,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	{
 		Object source1 = new Object();
 		T t1 = getObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(t1);
 		getFacet().addAll(id, pct, source1);
@@ -376,15 +376,15 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	@Test
 	public void testTypeAddAllNullInList()
 	{
-		Object source1 = new Object();
 		T t1 = getObject();
 		T t2 = getObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(null);
 		pct.add(t2);
 		try
 		{
+			Object source1 = new Object();
 			getFacet().addAll(id, pct, source1);
 			fail();
 		}
@@ -553,7 +553,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 	public void testTypeRemoveAllUseless()
 	{
 		Object source1 = new Object();
-		getFacet().removeAll(id, new ArrayList<T>(), source1);
+		getFacet().removeAll(id, new ArrayList<>(), source1);
 		testTypeUnsetZeroCount();
 		testTypeUnsetEmpty();
 		testTypeUnsetEmptySet();
@@ -568,7 +568,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		T t1 = getObject();
 		T t2 = getAltObject();
 		T t3 = getThirdObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		getFacet().add(id, t1, source1);
 		getFacet().add(id, t2, source1);
 		getFacet().add(id, t3, source1);
@@ -625,7 +625,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		Object source1 = new Object();
 		T t1 = getObject();
 		T t2 = getAltObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		getFacet().add(id, t1, source1);
 		getFacet().add(id, t2, source1);
 		pct.add(t1);
@@ -647,7 +647,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		Object source1 = new Object();
 		T t1 = getObject();
 		T t2 = getAltObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		getFacet().add(id, t1, source1);
 		getFacet().add(id, t2, source1);
 		pct.add(t1);
@@ -739,7 +739,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		{
 			// This is ok too
 		}
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(t2);
 		try
@@ -871,7 +871,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		assertTrue(origset.isEmpty());
 		T t1 = getObject();
 		T t2 = getAltObject();
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(t2);
 		getFacet().addAll(id, pct, source1);
@@ -885,7 +885,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		assertEventCount(2, 0);
 		Object source2 = new Object();
 		T t3 = getThirdObject();
-		List<T> pct2 = new ArrayList<T>();
+		List<T> pct2 = new ArrayList<>();
 		pct2.add(t1);
 		pct2.add(t3);
 		getFacet().addAll(id, pct2, source2);
@@ -922,7 +922,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		T t2 = getAltObject();
 		assertFalse(getFacet().containsFrom(id, source1));
 		assertFalse(getFacet().containsFrom(id, source2));
-		List<T> pct = new ArrayList<T>();
+		List<T> pct = new ArrayList<>();
 		pct.add(t1);
 		pct.add(t2);
 		getFacet().addAll(id, pct, source1);
@@ -932,7 +932,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		assertFalse(getFacet().containsFrom(id, source2));
 		assertEventCount(2, 0);
 		T t3 = getThirdObject();
-		List<T> pct2 = new ArrayList<T>();
+		List<T> pct2 = new ArrayList<>();
 		pct2.add(t1);
 		pct2.add(t3);
 		getFacet().addAll(id, pct2, source2);
@@ -949,9 +949,9 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		assertFalse(getFacet().containsFrom(id, source2));
 	}
 
-	abstract protected AbstractSourcedListFacet<CharID, T> getFacet();
+	protected abstract AbstractSourcedListFacet<CharID, T> getFacet();
 
-	abstract protected T getObject();
+	protected abstract T getObject();
 
 	protected T getAltObject()
 	{
@@ -969,11 +969,7 @@ public abstract class AbstractSourcedListFacetTest<T> extends TestCase
 		{
 			TokenLibrary.addBonusClass(clazz);
 		}
-		catch (InstantiationException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e)
+		catch (InstantiationException | IllegalAccessException e)
 		{
 			e.printStackTrace();
 		}

@@ -16,9 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Current Ver: $Revision$
- * Last Editor: $Author: $
- * Last Edited: $Date$
  */
 package pcgen.core.npcgen;
 
@@ -34,22 +31,20 @@ import pcgen.core.Skill;
  * to treat them special.
  * 
  * <p>As an example, if the user specifies that TYPE.Profession skills are to 
- * have a certain weight the assumption is that that weight applies to picking
+ * have a certain weight the assumption is that weight applies to picking
  * a single Profession skill and not to each Profession skill individually.
  * 
- * @author boomer70 <boomer70@yahoo.com>
  * 
- * @since 5.11.1
  */
 public class SkillChoice
 {
 	private String theKey = null;
-	private WeightedCollection<Skill> theSkillList = new WeightedCollection<Skill>();
+	private WeightedCollection<Skill> theSkillList = new WeightedCollection<>();
 	
 	/**
 	 * Creates a new SkillChoice.
 	 * 
-	 * <p>If the key passed in starts with &quot;<code>TYPE.</code>&quot;, the
+	 * <p>If the key passed in starts with &quot;{@code TYPE.}&quot;, the
 	 * group of skills of that type will be stored as this chice.
 	 * 
 	 * @param aKey A Skill key or TYPE.&lt;skill type&gt;

@@ -26,15 +26,12 @@ import pcgen.core.PlayerCharacter;
 import pcgen.pluginmgr.PCGenMessage;
 
 /**
- * The Class <code>PlayerCharacterWasLoadedMessage</code> encapsulates a
+ * The Class {@code PlayerCharacterWasLoadedMessage} encapsulates a
  * message that a character was opened in PCGen. 
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
+ * @author James Dempsey &lt;jdempsey@users.sourceforge.net&gt;
  */
 @SuppressWarnings("serial")
 public class PlayerCharacterWasLoadedMessage extends PCGenMessage

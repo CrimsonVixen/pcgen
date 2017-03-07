@@ -16,7 +16,6 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- *  Created on May 24, 2003
  */
 package plugin.notes.gui;
 
@@ -27,7 +26,7 @@ import plugin.notes.NotesPlugin;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.Container;
 import java.awt.Desktop;
@@ -44,19 +43,16 @@ import pcgen.gui2.tools.Icons;
  *  represent a file. You can launch files in supported operating systems from
  *  JIcon into their associated application.
  *
- *@author     soulcatcher
- *@since    August 1, 2003, 4:48 PM
  */
 public class JIcon extends JPanel
 {
-	File launch;
+	private File launch;
 	NotesPlugin plugin;
 
 	// Variables declaration - do not modify                     
 	private JButton button;
 	private JLabel label;
 	private JMenuItem deleteMI;
-	private JMenuItem launchMI;
 	private JPopupMenu contextMenu;
 
 	/**
@@ -333,31 +329,17 @@ public class JIcon extends JPanel
 	{
 		                          
 		contextMenu = new JPopupMenu();
-		launchMI = new JMenuItem();
+		JMenuItem launchMI = new JMenuItem();
 		deleteMI = new JMenuItem();
 		button = new JButton();
 		label = new JLabel();
 
 		launchMI.setText("Launch File (enter)");
-		launchMI.addActionListener(new ActionListener()
-		{
-            @Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				launchMIActionPerformed(evt);
-			}
-		});
+		launchMI.addActionListener(this::launchMIActionPerformed);
 
 		contextMenu.add(launchMI);
 		deleteMI.setText("Delete File (del)");
-		deleteMI.addActionListener(new ActionListener()
-		{
-            @Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				deleteMIActionPerformed(evt);
-			}
-		});
+		deleteMI.addActionListener(this::deleteMIActionPerformed);
 
 		contextMenu.add(deleteMI);
 
@@ -368,14 +350,7 @@ public class JIcon extends JPanel
 		button.setBackground((Color) UIManager.getDefaults().get(
 			"Button.background"));
 		button.setBorder(null);
-		button.addActionListener(new ActionListener()
-		{
-            @Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				buttonActionPerformed(evt);
-			}
-		});
+		button.addActionListener(this::buttonActionPerformed);
 
 		button.addFocusListener(new FocusAdapter()
 		{

@@ -32,7 +32,6 @@ import pcgen.util.Logging;
  * ArmorClassFacet calculates the Armor Class (actually types of armor class,
  * such as defense against a touch attack) of a Player Character.
  * 
- * @author Tom Parker (thpr [at] yahoo.com)
  */
 public class ArmorClassFacet
 {
@@ -59,6 +58,7 @@ public class ArmorClassFacet
 	 * @return The armor class of the given type for the Player Character
 	 *         identified by the given CharID
 	 */
+	@Deprecated
 	public int calcACOfType(CharID id, String type)
 	{
 		/*

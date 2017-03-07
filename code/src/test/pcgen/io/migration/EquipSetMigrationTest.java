@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 05/05/2013 1:37:20 PM
  *
- * $Id$
  */
 package pcgen.io.migration;
 
@@ -36,21 +34,14 @@ import pcgen.util.TestHelper;
  * class is functioning correctly.
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class EquipSetMigrationTest extends AbstractCharacterTestCase
 {
-	private final int[] preOrderedVer = new int[] {6,0,1};
-	private final int[] postOrderedVer = new int[] {6,1,3};
+	private final int[] preOrderedVer = {6,0,1};
+	private final int[] postOrderedVer = {6,1,3};
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void setUp() throws Exception
 	{

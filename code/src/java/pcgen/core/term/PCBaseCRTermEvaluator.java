@@ -18,9 +18,6 @@
  *
  * Created 30-Mar-2014 22:45:18
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
@@ -29,15 +26,11 @@ package pcgen.core.term;
 import pcgen.core.PlayerCharacter;
 
 /**
- * The Class <code>PCBaseCRTermEvaluator</code> is responsible for calculating
+ * The Class {@code PCBaseCRTermEvaluator} is responsible for calculating
  * the character's unmodified challenge rating, as specified by the 
  * CR tag in the race definition. 
  * 
- * Last Editor: $Author: thpr $
- * Last Edited: $Date: 2012-01-07 18:57:16 +0100 (Sa, 07 Jan 2012) $
  * 
- * @author Stefan Radermacher <zaister@users.sourceforge.net>
- * @version $Revision: 15744 $
  */
 public class PCBaseCRTermEvaluator
 		extends BasePCTermEvaluator implements TermEvaluator {

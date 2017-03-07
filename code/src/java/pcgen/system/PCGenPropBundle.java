@@ -1,5 +1,5 @@
 /*
- * MainAbout.java
+ * PCGenPropBundle.java
  * Copyright 2001 (C) Tom Epperly <tomepperly@home.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on August 25, 2003, 12:00 PM
  */
 package pcgen.system;
 
@@ -27,33 +26,25 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang.StringUtils;
-
 import pcgen.output.publish.OutputDB;
 import pcgen.util.Logging;
+
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class is used to manage the properties of the PCGen application
- * itself, such as its version, release date, etc.  Created during refactoring
- * for RFE #782127.
+ * itself, such as its version, release date, etc.
  *
- * <p>
- * Current Ver: $Revision$ <br>
- * Last Editor: $Author$ <br>
- * Last Edited: $Date$
- *
- * @author sage_sam
  */
-public class PCGenPropBundle
+public final class PCGenPropBundle
 {
 	private static ResourceBundle d_properties = null;
 	private static ResourceBundle autobuildProperties = null;
-	private static ResourceBundle svnProperties = null;
 
-	/**
+	/*
 	 * This static initializer loads the resources from the PCGenProp resource bundle.
 	 */
 	static
@@ -84,28 +75,8 @@ public class PCGenPropBundle
 		catch (IOException e)
 		{
 			Logging.errorPrint("autobuildProperties. failed", e);
-			
 		}
-		
-		try
-		{
-			File svnProps = new File("svn.properties");
-			if (svnProps.isFile() && svnProps.canRead())
-			{
-				FileInputStream fis = new FileInputStream(svnProps);
-				svnProperties = new PropertyResourceBundle(fis);
-			}
-		}
-		catch (MissingResourceException mre)
-		{
-			Logging.errorPrint("Failed to load autobuild.properties", mre);
-			svnProperties = null;
-		}
-		catch (IOException e)
-		{
-			Logging.errorPrint("Failed to load autobuild.properties", e);
-			svnProperties = null;
-		}
+
 		//Safe as d_properties was constructed earlier in this block
 		try
 		{
@@ -170,6 +141,17 @@ public class PCGenPropBundle
 	public static String getMailingList()
 	{
 		return getPropValue("MailingList", "http://groups.yahoo.com/group/pcgen");
+	}
+
+	/**
+	 * This method gets the Production Version Series, the major.minor version 
+	 * of the prod release the current version is targeting.
+	 * 
+	 * @return String containing the Production Version Series number
+	 */
+	public static String getProdVersionSeries()
+	{
+		return getPropValue("ProdVersionSeries", null);
 	}
 
 	/**
@@ -284,9 +266,9 @@ public class PCGenPropBundle
 	}
 
 	/**
-	 * @return A display formatted version of the autobuild details, or blank if unknown. 
+	 * @return A display formatted version of the autobuild details, or blank if unknown.
 	 */
-	public static String getAutobuildString()
+	static String getAutobuildString()
 	{
 		String autobuildNumber = getAutobuildNumber();
 		String autobuildDate = getAutobuildDate();
@@ -298,31 +280,4 @@ public class PCGenPropBundle
 		return "";
 	}
 
-	/**
-	 * Retrieve the subversion revision number from which this PCGen instance 
-	 * was built.
-	 * @return The SVN revision number, or blank if unknown. 
-	 */
-	public static String getSvnRevisionNumber()
-	{
-		final String svnRevNumKey = "svnrevision";
-		if (svnProperties != null && svnProperties.containsKey(svnRevNumKey))
-		{
-			return svnProperties.getString(svnRevNumKey);
-		}
-		return "";
-	}
-
-	/**
-	 * @return A display formatted version of the SVN revision, or blank if unknown. 
-	 */
-	public static String getSvnRevisionString()
-	{
-		String svnRevisionNumber = getSvnRevisionNumber();
-		if (StringUtils.isNotBlank(svnRevisionNumber))
-		{
-			return " r" + svnRevisionNumber;
-		}
-		return "";
-	}
 }

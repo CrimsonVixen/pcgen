@@ -19,9 +19,10 @@ package plugin.lsttokens;
 
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.base.FormulaFactory;
@@ -30,27 +31,22 @@ import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.helper.StatLock;
 import pcgen.cdom.reference.CDOMSingleRef;
 import pcgen.core.PCStat;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * The Class <code>DefineStatLst</code> parses the DEFINESTAT tag. Valid sub tags are:
- * </p>
+ * The Class {@code DefineStatLst} parses the DEFINESTAT tag. Valid sub tags are:
+ * <p>
  * DEFINESTAT:LOCK|stat|value <br>
  * DEFINESTAT:UNLOCK|stat <br>
  * DEFINESTAT:NONSTAT|stat <br>
  * DEFINESTAT:STAT|stat <br>
  * DEFINESTAT:MINVALUE|stat|value
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class DefineStatLst implements CDOMPrimaryToken<CDOMObject>
 {
@@ -79,6 +75,9 @@ public class DefineStatLst implements CDOMPrimaryToken<CDOMObject>
 				+ obj.getClass().getSimpleName(), context);
 		}
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		if (!sep.hasNext())
 		{
 			return new ParseResult.Fail(getTokenName() + " may not be empty", context);
@@ -181,7 +180,7 @@ public class DefineStatLst implements CDOMPrimaryToken<CDOMObject>
 			obj, ListKey.STAT_MINVALUE);
 		Changes<StatLock> maxValueChanges = context.getObjectContext().getListChanges(
 			obj, ListKey.STAT_MAXVALUE);
-		TreeSet<String> set = new TreeSet<String>();
+		TreeSet<String> set = new TreeSet<>();
 		if (lockChanges != null && !lockChanges.isEmpty())
 		{
 			if (lockChanges.includesGlobalClear())

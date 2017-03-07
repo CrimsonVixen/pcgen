@@ -18,8 +18,6 @@ package plugin.lsttokens.testsupport;
 
 import java.util.Collection;
 
-import org.junit.Test;
-
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.ChooseInformation;
 import pcgen.cdom.enumeration.ObjectKey;
@@ -27,6 +25,10 @@ import pcgen.core.Race;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
+import pcgen.rules.persistence.token.CDOMSecondaryToken;
+import pcgen.rules.persistence.token.QualifierToken;
+
+import org.junit.Test;
 import plugin.lsttokens.ChooseLst;
 
 public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
@@ -35,9 +37,9 @@ public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
 
 	private static ChooseLst token = new ChooseLst();
 	private static CDOMTokenLoader<CDOMObject> loader =
-			new CDOMTokenLoader<CDOMObject>();
+			new CDOMTokenLoader<>();
 
-	public AbstractPCQualifierTokenTestCase()
+	protected AbstractPCQualifierTokenTestCase()
 	{
 		super("PC", null);
 	}
@@ -73,10 +75,10 @@ public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
 		InstantiationException, IllegalAccessException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|PC"));
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);
@@ -102,6 +104,27 @@ public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
 		}
 	}
 
+	@Override
+	public CDOMSecondaryToken<?> getSubToken()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class<T> getTargetClass()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Class<? extends QualifierToken> getQualifierClass()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	protected boolean typeAllowsMult()
 	{
 		return true;
@@ -112,10 +135,10 @@ public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
 		InstantiationException, IllegalAccessException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|PC[TYPE=Masterful]"));
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);
@@ -133,10 +156,10 @@ public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
 		InstantiationException, IllegalAccessException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();
 		assertTrue(parse(getSubTokenName() + "|!PC[TYPE=Masterful]"));
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);
@@ -154,8 +177,7 @@ public abstract class AbstractPCQualifierTokenTestCase<T extends CDOMObject>
 
 	protected abstract void addToPCSet(TransparentPlayerCharacter pc, T item);
 
-	private void initializeObjects() throws InstantiationException,
-		IllegalAccessException
+	private void initializeObjects()
 	{
 		wp1 = (T) construct(primaryContext, "Eq1");
 		primaryContext.unconditionallyProcess(wp1, "TYPE", "Boring");

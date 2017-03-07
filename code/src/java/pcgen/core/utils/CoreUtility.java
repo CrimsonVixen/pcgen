@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -46,8 +45,7 @@ import pcgen.util.Logging;
  * (the two biggest classes in the project.) Some of this code seems awfully
  * similar, and should probably be further refactored.
  * 
- * @author Jonas Karlsson <pjak@yahoo.com>
- * @version $Revision$
+ * @author Jonas Karlsson &lt;pjak@yahoo.com&gt;
  */
 public final class CoreUtility
 {
@@ -224,7 +222,7 @@ public final class CoreUtility
 	 *            second operand
 	 * @param eps
 	 *            the epsilon (or deadband)
-	 * @return TRUE if abs(a - b) < eps, else FALSE
+	 * @return TRUE {@literal if abs(a - b) < eps}, else FALSE
 	 */
 	public static boolean compareDouble(final double a, final double b,
 			final double eps)
@@ -414,10 +412,10 @@ public final class CoreUtility
 	 */
 	public static List<String> split(final String aString, final char separator)
 	{
-		final List<String> temp = new ArrayList<String>();
+		final List<String> temp = new ArrayList<>();
 		final String sepStr = Pattern.quote(String.valueOf(separator));
 
-		if (aString.trim().length() == 0)
+		if (aString.trim().isEmpty())
 		{
 			return temp;
 		}
@@ -455,12 +453,12 @@ public final class CoreUtility
 	public static List<Equipment> mergeEquipmentList(
 			final Collection<Equipment> equip, final int merge)
 	{
-		List<Equipment> workingList = new ArrayList<Equipment>();
+		List<Equipment> workingList = new ArrayList<>();
 		for (Equipment e : equip)
 		{
 			workingList.add(e.clone());
 		}
-		Collections.sort(workingList, equipmentComparator);
+		workingList.sort(equipmentComparator);
 		 
 
 		// no merging, just sorting (calling this is really stupid,
@@ -506,7 +504,7 @@ public final class CoreUtility
 				}
 			}
 
-			eq1.setQty(eQty);
+			workingList.get(i).setQty(eQty);
 		}
 
 		return workingList;

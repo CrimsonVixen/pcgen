@@ -29,6 +29,7 @@ import java.util.TreeSet;
 
 import pcgen.base.formula.Formula;
 import pcgen.base.lang.StringUtil;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.base.util.DoubleKeyMap;
 import pcgen.base.util.MapToList;
 import pcgen.base.util.TripleKeyMap;
@@ -41,7 +42,6 @@ import pcgen.cdom.base.Ungranted;
 import pcgen.cdom.enumeration.AssociationKey;
 import pcgen.core.prereq.Prerequisite;
 import pcgen.core.spell.Spell;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.AssociatedChanges;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
@@ -49,7 +49,6 @@ import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * @author djones4
  *
  */
 public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
@@ -63,13 +62,14 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 	}
 
 	/**
+	 * {@literal 
 	 * SPELLS:<spellbook name>|[<optional parameters, pipe deliminated>] |<spell
 	 * name>[,<formula for DC>] |<spell name2>[,<formula2 for DC>] |PRExxx
 	 * |PRExxx
 	 *
 	 * CASTERLEVEL=<formula> Casterlevel of spells TIMES=<formula> Cast Times
 	 * per day, -1=At Will
-	 *
+	 *}
 	 * @param sourceLine
 	 *            Line from the LST file without the SPELLS:
 	 * @return spells list
@@ -84,7 +84,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 				+ " on an Ungranted object type: "
 				+ obj.getClass().getSimpleName(), context);
 		}
-		if ((sourceLine == null) || (sourceLine.length() == 0))
+		if ((sourceLine == null) || sourceLine.isEmpty())
 		{
 			return new ParseResult.Fail("Argument in " + getTokenName()
 					+ " cannot be empty", context);
@@ -95,8 +95,11 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 			return ParseResult.SUCCESS;
 		}
 		ParsingSeparator sep = new ParsingSeparator(sourceLine, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String spellBook = sep.next();
-		if (spellBook.length() == 0)
+		if (spellBook.isEmpty())
 		{
 			return new ParseResult.Fail("SpellBook in " + getTokenName()
 					+ " cannot be empty", context);
@@ -124,7 +127,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 									+ ": invalid: " + sourceLine, context);
 				}
 				times = token.substring(6);
-				if (times.length() == 0)
+				if (times.isEmpty())
 				{
 					return new ParseResult.Fail(
 							"Error in Times in " + getTokenName()
@@ -147,7 +150,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 									+ ": invalid: " + sourceLine, context);
 				}
 				timeunit = token.substring(9);
-				if (timeunit.length() == 0)
+				if (timeunit.isEmpty())
 				{
 					return new ParseResult.Fail(
 							"Error in TimeUnit in " + getTokenName()
@@ -171,7 +174,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 									+ sourceLine, context);
 				}
 				casterLevel = token.substring(12);
-				if (casterLevel.length() == 0)
+				if (casterLevel.isEmpty())
 				{
 					return new ParseResult.Fail(
 							"Error in Caster Level in " + getTokenName()
@@ -195,7 +198,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 			times = "1";
 		}
 
-		if (token.length() == 0)
+		if (token.isEmpty())
 		{
 			return new ParseResult.Fail("Spell arguments may not be empty in "
 					+ getTokenName() + ": " + sourceLine, context);
@@ -224,11 +227,11 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 		 * See CDOMObject.
 		 */
 		DoubleKeyMap<CDOMReference<Spell>, AssociationKey<?>, Object> dkm =
-				new DoubleKeyMap<CDOMReference<Spell>, AssociationKey<?>, Object>(
-					LinkedHashMap.class, HashMap.class);
+				new DoubleKeyMap<>(
+						LinkedHashMap.class, HashMap.class);
 		while (true)
 		{
-			if (token.length() == 0)
+			if (token.isEmpty())
 			{
 				return new ParseResult.Fail("Spell arguments may not end with comma or pipe in "
 						+ getTokenName() + ": " + sourceLine, context);
@@ -268,7 +271,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 			}
 		}
 
-		List<Prerequisite> prereqs = new ArrayList<Prerequisite>();
+		List<Prerequisite> prereqs = new ArrayList<>();
 
 		while (true)
 		{
@@ -319,7 +322,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 		AssociatedChanges<CDOMReference<Spell>> changes = context
 				.getListContext().getChangesInList(getTokenName(), obj,
 						Spell.SPELLS);
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		if (changes.includesGlobalClear())
 		{
 			list.add(Constants.LST_DOT_CLEAR_ALL);
@@ -341,13 +344,13 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 		MapToList<CDOMReference<Spell>, AssociatedPrereqObject> mtl)
 	{
 		TripleKeyMap<Set<Prerequisite>, Map<AssociationKey<?>, Object>, CDOMReference<Spell>, String> m =
-				new TripleKeyMap<Set<Prerequisite>, Map<AssociationKey<?>, Object>, CDOMReference<Spell>, String>();
+				new TripleKeyMap<>();
 		for (CDOMReference<Spell> lw : mtl.getKeySet())
 		{
 			for (AssociatedPrereqObject assoc : mtl.getListFor(lw))
 			{
 				Map<AssociationKey<?>, Object> am =
-						new HashMap<AssociationKey<?>, Object>();
+						new HashMap<>();
 				String dc = null;
 				for (AssociationKey<?> ak : assoc.getAssociationKeys())
 				{
@@ -366,12 +369,12 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 						am.put(ak, assoc.getAssociation(ak));
 					}
 				}
-				m.put(new HashSet<Prerequisite>(assoc.getPrerequisiteList()),
+				m.put(new HashSet<>(assoc.getPrerequisiteList()),
 					am, lw, dc);
 			}
 		}
 
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		for (Set<Prerequisite> prereqs : m.getKeySet())
 		{
 			for (Map<AssociationKey<?>, Object> am : m
@@ -399,7 +402,7 @@ public class SpellsLst extends AbstractNonEmptyToken<CDOMObject> implements
 					sb.append(Constants.PIPE).append("CASTERLEVEL=")
 						.append(casterLvl);
 				}
-				Set<String> spellSet = new TreeSet<String>();
+				Set<String> spellSet = new TreeSet<>();
 				for (CDOMReference<Spell> spell : m.getTertiaryKeySet(prereqs,
 					am))
 				{

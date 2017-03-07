@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on October 15, 2005, 10:00 PM
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -52,7 +50,7 @@ public class KitRace extends BaseKit
 		boolean tempFeatDlg = SettingsHandler.getShowFeatDialogAtLevelUp();
 		SettingsHandler.setShowFeatDialogAtLevelUp(false);
 		
-		aPC.setRace(theRace.resolvesTo());
+		aPC.setRace(theRace.get());
 		
 		SettingsHandler.setShowFeatDialogAtLevelUp(tempFeatDlg);
 		SettingsHandler.setShowHPDialogAtLevelUp(tempShowHP);

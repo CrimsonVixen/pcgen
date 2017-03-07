@@ -27,9 +27,7 @@ import pcgen.util.enumeration.Visibility;
 /**
  * Handles the VISIBLE token on an ABILITYCATEGORY line.
  * 
- * @author boomer70 <boomer70@yahoo.com>
  * 
- * @since 5.11.1
  */
 public class VisibleToken extends AbstractNonEmptyToken<AbilityCategory>
 		implements CDOMPrimaryToken<AbilityCategory>

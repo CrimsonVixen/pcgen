@@ -19,8 +19,6 @@
  * Created on December 13, 2002, 9:19 AM
  *
  * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core.bonus;
@@ -30,9 +28,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.Constants;
 import pcgen.core.bonus.BonusObj.StackType;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.persistence.lst.LstUtils;
 import pcgen.persistence.lst.prereq.PreParserFactory;
@@ -41,11 +39,11 @@ import pcgen.rules.persistence.TokenLibrary;
 import pcgen.util.Logging;
 
 /**
- * <code>Bonus</code>
+ * {@code Bonus}
  *
- * @author  Greg Bingleman <byngl@hotmail.com>
+ * @author  Greg Bingleman &lt;byngl@hotmail.com&gt;
  */
-public class Bonus
+public final class Bonus
 {
 	static final String BONUS_UNDEFINED = "*UNDEFINED";
 
@@ -62,7 +60,7 @@ public class Bonus
 	 */
 	public static List<BonusObj> sortBonusList(List<BonusObj> listToSort)
 	{
-		final List<BonusObj> tempList = new ArrayList<BonusObj>();
+		final List<BonusObj> tempList = new ArrayList<>();
 
 		// 'BONUS:blah|blah|Foo' depends on
 		// 'BONUS:VAR|Foo|MyGoo' which depends on
@@ -110,7 +108,7 @@ public class Bonus
 
 		listToSort = tempList;
 
-		final ArrayList<BonusObj> tempList2 = new ArrayList<BonusObj>();
+		final ArrayList<BonusObj> tempList2 = new ArrayList<>();
 
 		// go through and move all the static bonuses to the front
 		final int aSize = listToSort.size();
@@ -141,6 +139,8 @@ public class Bonus
 	public static BonusObj newBonus(LoadContext context, final String bonusString)
 	{
 		ParsingSeparator sep = new ParsingSeparator(bonusString, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
 
 		if ((bonusString.indexOf(Constants.PIPE) == bonusString
 				.lastIndexOf(Constants.PIPE))

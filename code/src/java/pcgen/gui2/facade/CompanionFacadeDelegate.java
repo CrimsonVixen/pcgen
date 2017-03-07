@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Mar 18, 2012, 11:49:23 PM
  */
 package pcgen.gui2.facade;
 
@@ -30,14 +29,13 @@ import pcgen.facade.util.event.ReferenceEvent;
 import pcgen.facade.util.event.ReferenceListener;
 
 /**
- * The <code>CompanionFacadeDelegate</code> is a <code>CompanionFacade</code>
+ * The {@code CompanionFacadeDelegate} is a {@code CompanionFacade}
  * implementation that delegates to another CompanionFacade.
  * All internal reference facades are themselves delegates to the underlying
  * CompanionFacade.
  * This class is used to help aid implementation of the
- * <code>CompanionSupportFacadeImpl</code>
+ * {@code CompanionSupportFacadeImpl}
  * @see pcgen.gui2.facade.CompanionSupportFacadeImpl
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class CompanionFacadeDelegate implements CompanionFacade
 {
@@ -49,9 +47,9 @@ public class CompanionFacadeDelegate implements CompanionFacade
 
 	public CompanionFacadeDelegate()
 	{
-		this.nameDelegate = new DelegateReferenceFacade<String>();
-		this.fileDelegate = new DelegateReferenceFacade<File>();
-		this.raceDelegate = new DelegateReferenceFacade<RaceFacade>();
+		this.nameDelegate = new DelegateReferenceFacade<>();
+		this.fileDelegate = new DelegateReferenceFacade<>();
+		this.raceDelegate = new DelegateReferenceFacade<>();
 	}
 
 	public void setCompanionFacade(CompanionFacade companionFacade)
@@ -114,18 +112,18 @@ public class CompanionFacadeDelegate implements CompanionFacade
 			if (delegate != null)
 			{
 				delegate.addReferenceListener(this);
-				setReference(delegate.getReference());
+				set(delegate.get());
 			}
 			else
 			{
-				setReference(null);
+				set(null);
 			}
 		}
 
 		@Override
 		public void referenceChanged(ReferenceEvent<T> e)
 		{
-			setReference(e.getNewReference());
+			set(e.getNewReference());
 		}
 
 	}

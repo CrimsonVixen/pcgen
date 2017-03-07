@@ -16,14 +16,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on May 6, 2010, 3:12:25 PM
  */
 package pcgen.facade.util;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import pcgen.facade.util.event.ListEvent;
 import pcgen.facade.util.event.ListListener;
@@ -31,7 +30,6 @@ import pcgen.util.Logging;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class SortedListFacade<E> extends AbstractListFacade<E> implements ListListener<E>
 {

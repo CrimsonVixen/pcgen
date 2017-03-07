@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on May 11, 2010, 2:01:06 PM
  */
 package pcgen.gui2.tabs.summary;
 
@@ -76,7 +75,7 @@ public class ClassLevelTableModel extends AbstractTableModel
 		super();
 		this.character = character;
 		this.levels = character.getCharacterLevelsFacade();
-		this.finalLevelMap = new HashMap<String, Integer>();
+		this.finalLevelMap = new HashMap<>();
 		resetLevelMap();
 		levels.addListListener(this);
 		levels.addClassListener(this);

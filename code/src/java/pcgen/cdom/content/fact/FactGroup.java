@@ -87,11 +87,12 @@ public class FactGroup<T extends CDOMObject, F> implements ObjectContainer<T>
 		def = fi;
 		AbstractReferenceContext refContext = context.getReferenceContext();
 		allObjects = refContext.getCDOMAllReference(def.getUsableLocation());
-		toMatch = def.getFormatManager().convertIndirect(context, value);
+		toMatch = def.getFormatManager().convertIndirect(value);
 		if (toMatch == null)
 		{
 			throw new IllegalArgumentException("Failed to convert " + value
-				+ " as a " + def.getFormatManager().getType().getSimpleName());
+				+ " as a "
+				+ def.getFormatManager().getManagedClass().getSimpleName());
 		}
 	}
 
@@ -103,7 +104,7 @@ public class FactGroup<T extends CDOMObject, F> implements ObjectContainer<T>
 	{
 		if (cache == null)
 		{
-			List<T> setupCache = new ArrayList<T>();
+			List<T> setupCache = new ArrayList<>();
 			for (T obj : allObjects.getContainedObjects())
 			{
 				if (contains(obj))
@@ -123,7 +124,7 @@ public class FactGroup<T extends CDOMObject, F> implements ObjectContainer<T>
 	public String getLSTformat(boolean useAny)
 	{
 		return def.getFactName() + "="
-			+ def.getFormatManager().unconvert(toMatch.resolvesTo());
+			+ def.getFormatManager().unconvert(toMatch.get());
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class FactGroup<T extends CDOMObject, F> implements ObjectContainer<T>
 	public boolean contains(T obj)
 	{
 		Indirect<?> fact = obj.get(def.getFactKey());
-		return fact != null && fact.resolvesTo().equals(toMatch.resolvesTo());
+		return fact != null && fact.get().equals(toMatch.get());
 	}
 
 	/**

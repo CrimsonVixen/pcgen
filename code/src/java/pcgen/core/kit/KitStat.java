@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on September 20, 2005, 1040h
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -42,17 +40,16 @@ import pcgen.core.pclevelinfo.PCLevelInfo;
 /**
  * KitStat
  *
- * @author boomer70
  */
 public class KitStat extends BaseKit
 {
 	private Map<CDOMSingleRef<PCStat>, Formula> statMap =
-			new HashMap<CDOMSingleRef<PCStat>, Formula>();
+            new HashMap<>();
 
 	@Override
 	public String toString()
 	{
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		for (Map.Entry<CDOMSingleRef<PCStat>, Formula> me : statMap.entrySet())
 		{
 			set.add(me.getKey().getLSTformat(false) + '='+ me.getValue());
@@ -66,7 +63,7 @@ public class KitStat extends BaseKit
 	{
 		for (Map.Entry<CDOMSingleRef<PCStat>, Formula> me : statMap.entrySet())
 		{
-			PCStat mapStat = me.getKey().resolvesTo();
+			PCStat mapStat = me.getKey().get();
 			int sVal = me.getValue().resolve(aPC, "").intValue();
 			for (PCStat currentStat : aPC.getStatSet())
 			{
@@ -101,7 +98,7 @@ public class KitStat extends BaseKit
 	{
 		final Collection<PCClass> classes = aPC.getClassSet();
 		aPC.calcActiveBonuses();
-		if (classes != null && classes.size() != 0)
+		if (classes != null && !classes.isEmpty())
 		{
 			for (PCClass pcClass : classes)
 			{

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 23/01/2011 7:56:33 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -55,11 +53,7 @@ import pcgen.facade.util.MapFacade;
  * The Class <code></code> is ...
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class MockDataSetFacade implements DataSetFacade
 {
@@ -77,13 +71,13 @@ public class MockDataSetFacade implements DataSetFacade
 	public MockDataSetFacade(GameMode gameMode)
 	{
 		this.game = gameMode;
-		equipmentLoc = new DefaultListFacade<BodyStructureFacade>();
-		abilityMap = new DefaultMapFacade<AbilityCategoryFacade, ListFacade<AbilityFacade>>();
-		races = new DefaultListFacade<RaceFacade>();
-		skills = new DefaultListFacade<SkillFacade>();
-		stats  = new DefaultListFacade<StatFacade>();
-		gearBuySellSchemes = new DefaultListFacade<GearBuySellFacade>();
-		classes  = new DefaultListFacade<ClassFacade>();
+		equipmentLoc = new DefaultListFacade<>();
+		abilityMap = new DefaultMapFacade<>();
+		races = new DefaultListFacade<>();
+		skills = new DefaultListFacade<>();
+		stats  = new DefaultListFacade<>();
+		gearBuySellSchemes = new DefaultListFacade<>();
+		classes  = new DefaultListFacade<>();
 	}
 	
 	/* (non-Javadoc)
@@ -277,18 +271,12 @@ public class MockDataSetFacade implements DataSetFacade
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<GearBuySellFacade> getGearBuySellSchemes()
 	{
 		return gearBuySellSchemes;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<KitFacade> getKits()
 	{
@@ -296,9 +284,6 @@ public class MockDataSetFacade implements DataSetFacade
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void refreshEquipment()
 	{
@@ -306,9 +291,6 @@ public class MockDataSetFacade implements DataSetFacade
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<SizeAdjustmentFacade> getSizes()
 	{
@@ -316,9 +298,6 @@ public class MockDataSetFacade implements DataSetFacade
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public MapFacade<AbilityCategoryFacade, ListFacade<AbilityFacade>> getAbilities()
 	{

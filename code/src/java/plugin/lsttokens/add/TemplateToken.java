@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.ChoiceSet;
@@ -37,7 +38,6 @@ import pcgen.cdom.choiceset.ReferenceChoiceSet;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.core.PCTemplate;
 import pcgen.core.PlayerCharacter;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
@@ -72,6 +72,9 @@ public class TemplateToken extends AbstractNonEmptyToken<CDOMObject> implements
 		CDOMObject obj, String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String activeValue = sep.next();
 		Formula count;
 		if (!sep.hasNext())
@@ -104,7 +107,7 @@ public class TemplateToken extends AbstractNonEmptyToken<CDOMObject> implements
 			return pr;
 		}
 
-		List<CDOMReference<PCTemplate>> refs = new ArrayList<CDOMReference<PCTemplate>>();
+		List<CDOMReference<PCTemplate>> refs = new ArrayList<>();
 		StringTokenizer tok = new StringTokenizer(activeValue, Constants.COMMA);
 		while (tok.hasMoreTokens())
 		{
@@ -112,10 +115,10 @@ public class TemplateToken extends AbstractNonEmptyToken<CDOMObject> implements
 					.nextToken()));
 		}
 
-		ReferenceChoiceSet<PCTemplate> rcs = new ReferenceChoiceSet<PCTemplate>(
+		ReferenceChoiceSet<PCTemplate> rcs = new ReferenceChoiceSet<>(
 				refs);
-		ChoiceSet<PCTemplate> cs = new ChoiceSet<PCTemplate>("TEMPLATE", rcs);
-		PersistentTransitionChoice<PCTemplate> tc = new ConcretePersistentTransitionChoice<PCTemplate>(
+		ChoiceSet<PCTemplate> cs = new ChoiceSet<>("TEMPLATE", rcs);
+		PersistentTransitionChoice<PCTemplate> tc = new ConcretePersistentTransitionChoice<>(
 				cs, count);
 		context.getObjectContext().addToList(obj, ListKey.ADD, tc);
 		tc.setChoiceActor(this);
@@ -134,7 +137,7 @@ public class TemplateToken extends AbstractNonEmptyToken<CDOMObject> implements
 			// Zero indicates no Token
 			return null;
 		}
-		List<String> addStrings = new ArrayList<String>();
+		List<String> addStrings = new ArrayList<>();
 		for (TransitionChoice<?> container : addedItems)
 		{
 			SelectableSet<?> cs = container.getChoices();

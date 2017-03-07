@@ -24,20 +24,23 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.swing.event.EventListenerList;
 
 import pcgen.base.lang.CaseInsensitiveString;
 import pcgen.base.util.FixedStringList;
+import pcgen.base.util.FormatManager;
 import pcgen.base.util.HashMapToInstanceList;
+import pcgen.base.util.Indirect;
 import pcgen.base.util.KeyMap;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.Loadable;
 import pcgen.cdom.content.RollMethod;
 import pcgen.util.Logging;
+import pcgen.util.StringPClassUtil;
 
 /**
  * An AbstractReferenceManufacturer is a concrete, but abstract object capable
@@ -84,8 +87,8 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	 * does not correct for internationalization)
 	 */
 	private final Map<FixedStringList, WeakReference<CDOMGroupRef<T>>> typeReferences =
-			new TreeMap<FixedStringList, WeakReference<CDOMGroupRef<T>>>(
-				FixedStringList.CASE_INSENSITIVE_ORDER);
+            new TreeMap<>(
+                    FixedStringList.CASE_INSENSITIVE_ORDER);
 
 	/**
 	 * Storage for individual references. This ensures that only one reference
@@ -95,15 +98,15 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	 * resolveReferences() is called.
 	 */
 	private final Map<String, WeakReference<CDOMSingleRef<T>>> referenced =
-			new TreeMap<String, WeakReference<CDOMSingleRef<T>>>(
-				String.CASE_INSENSITIVE_ORDER);
+            new TreeMap<>(
+                    String.CASE_INSENSITIVE_ORDER);
 
 	/**
 	 * Stores the active objects for this AbstractReferenceManufacturer. These
 	 * are objects that have been constructed or imported into the
 	 * AbstractReferenceManufacturer.
 	 */
-	private final KeyMap<T> active = new KeyMap<T>();
+	private final KeyMap<T> active = new KeyMap<>();
 
 	/**
 	 * Stores derivative objects (Those that are NOT created by this
@@ -112,7 +115,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	 * and need to be processed under certain conditions. The getAllObjects()
 	 * method should NOT add this list to the items returned.
 	 */
-	private final List<T> derivatives = new ArrayList<T>();
+	private final List<T> derivatives = new ArrayList<>();
 
 	/**
 	 * Stores the duplicate objects for identifiers in this
@@ -131,7 +134,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	 * "InstanceList"
 	 */
 	private final HashMapToInstanceList<CaseInsensitiveString, T> duplicates =
-			new HashMapToInstanceList<CaseInsensitiveString, T>();
+            new HashMapToInstanceList<>();
 
 	/**
 	 * Contains a list of deferred objects. Identifiers for objects for which
@@ -141,14 +144,14 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	 * if no object with the matching identifier has been constructed or
 	 * imported into this AbstractReferenceManufacturer.
 	 */
-	private final List<String> deferred = new ArrayList<String>();
+	private final List<String> deferred = new ArrayList<>();
 
 	/**
 	 * Contains a list of manufactured objects (those that are built implicitly
 	 * by tokens like NATURALATTACKS). These can be "displaced" by object which
 	 * are later built explicitly in a WeaponProf LST file, for example.
 	 */
-	private final List<WeakReference<T>> manufactured = new ArrayList<WeakReference<T>>();
+	private final List<WeakReference<T>> manufactured = new ArrayList<>();
 
 	/**
 	 * The EventListenerList which contains the listeners to this
@@ -197,7 +200,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	{
 		for (String type : types)
 		{
-			if (type == null || type.length() == 0)
+			if (type == null || type.isEmpty())
 			{
 				throw new IllegalArgumentException(
 						"Attempt to acquire empty Type "
@@ -241,7 +244,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 		}
 		// Didn't find the appropriate key, create new
 		CDOMGroupRef<T> cgr = factory.getTypeReference(types);
-		typeReferences.put(typeList, new WeakReference<CDOMGroupRef<T>>(cgr));
+		typeReferences.put(typeList, new WeakReference<>(cgr));
 		return cgr;
 	}
 
@@ -653,7 +656,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 			throw new IllegalArgumentException(
 					"Cannot request a reference to null identifier");
 		}
-		if (key.length() == 0)
+		if (key.isEmpty())
 		{
 			throw new IllegalArgumentException(
 					"Cannot request a reference to an empty identifier");
@@ -723,7 +726,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 		else
 		{
 			CDOMSingleRef<T> lr = factory.getReference(key);
-			referenced.put(key, new WeakReference<CDOMSingleRef<T>>(lr));
+			referenced.put(key, new WeakReference<>(lr));
 			ref = lr;
 		}
 		return ref;
@@ -1046,7 +1049,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	 */
 	protected Collection<CDOMGroupRef<T>> getTypeReferences()
 	{
-		List<CDOMGroupRef<T>> list = new ArrayList<CDOMGroupRef<T>>(typeReferences.size());
+		List<CDOMGroupRef<T>> list = new ArrayList<>(typeReferences.size());
 		for (Iterator<WeakReference<CDOMGroupRef<T>>> it = typeReferences.values()
 				.iterator(); it.hasNext();)
 		{
@@ -1084,7 +1087,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	@Override
 	public Collection<CDOMSingleRef<T>> getReferenced()
 	{
-		List<CDOMSingleRef<T>> list = new ArrayList<CDOMSingleRef<T>>();
+		List<CDOMSingleRef<T>> list = new ArrayList<>();
 		for (WeakReference<CDOMSingleRef<T>> wr : referenced.values())
 		{
 			CDOMSingleRef<T> ref = wr.get();
@@ -1167,7 +1170,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 		if (obj == null)
 		{
 			obj = constructObject(key);
-			manufactured.add(new WeakReference<T>(obj));
+			manufactured.add(new WeakReference<>(obj));
 		}
 		return obj;
 	}
@@ -1287,7 +1290,7 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	@Override
 	public Collection<CDOMReference<T>> getAllReferences()
 	{
-		List<CDOMReference<T>> list = new ArrayList<CDOMReference<T>>();
+		List<CDOMReference<T>> list = new ArrayList<>();
 		if (allRef != null)
 		{
 			list.add(allRef);
@@ -1310,6 +1313,43 @@ public abstract class AbstractReferenceManufacturer<T extends Loadable>
 	@Override
 	public Collection<T> getDerivativeObjects()
 	{
-		return new ArrayList<T>(derivatives);
+		return new ArrayList<>(derivatives);
+	}
+
+	@Override
+	public T convert(String key)
+	{
+		return getActiveObject(key);
+	}
+
+	@Override
+	public Indirect<T> convertIndirect(String key)
+	{
+		return factory.getReference(key);
+	}
+
+	@Override
+	public String getIdentifierType()
+	{
+		return StringPClassUtil.getStringFor(getManagedClass());
+	}
+
+	@Override
+	public Class<T> getManagedClass()
+	{
+		return factory.getReferenceClass();
+	}
+
+	@Override
+	public String unconvert(T arg0)
+	{
+		return arg0.getKeyName();
+	}
+
+	@Override
+	@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+	public FormatManager<?> getComponentManager()
+	{
+		return null;
 	}
 }

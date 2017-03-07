@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 3/05/2008
  *
- * $Id$
  */
 package plugin.lsttokens.gamemode;
 
@@ -32,14 +30,10 @@ import pcgen.core.GameMode;
 import pcgen.persistence.lst.GameModeLstToken;
 
 /**
- * <code>ResizableEquipTypeToken</code> parses the list of equipment
+ * {@code ResizableEquipTypeToken} parses the list of equipment
  * types designated as able to be automatically resized. 
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class ResizableEquipTypeToken implements GameModeLstToken
 {
@@ -59,7 +53,7 @@ public class ResizableEquipTypeToken implements GameModeLstToken
     @Override
 	public boolean parse(GameMode gameMode, String value, URI source)
 	{
-		List<String> typelist = new ArrayList<String>();
+		List<String> typelist = new ArrayList<>();
 		final StringTokenizer aTok = new StringTokenizer(value, Constants.PIPE, false);
 
 		while (aTok.hasMoreTokens())

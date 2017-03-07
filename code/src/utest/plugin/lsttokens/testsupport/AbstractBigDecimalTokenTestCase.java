@@ -27,7 +27,7 @@ import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.persistence.PersistenceLayerException;
 
 public abstract class AbstractBigDecimalTokenTestCase<T extends CDOMObject>
-		extends AbstractTokenTestCase<T>
+		extends AbstractCDOMTokenTestCase<T>
 {
 
 	public abstract ObjectKey<BigDecimal> getObjectKey();
@@ -114,7 +114,7 @@ public abstract class AbstractBigDecimalTokenTestCase<T extends CDOMObject>
 		if (isPositiveAllowed())
 		{
 			assertTrue(parse("4.5"));
-			assertEquals(new BigDecimal(4.5), primaryProf.get(getObjectKey()));
+			assertEquals(new BigDecimal("4.5"), primaryProf.get(getObjectKey()));
 			assertTrue(parse("5"));
 			assertEquals(new BigDecimal(5), primaryProf.get(getObjectKey()));
 			assertTrue(parse("1"));
@@ -203,7 +203,7 @@ public abstract class AbstractBigDecimalTokenTestCase<T extends CDOMObject>
 	@Test
 	public void testUnparseOne() throws PersistenceLayerException
 	{
-		BigDecimal val = new BigDecimal(4.5);
+		BigDecimal val = new BigDecimal("4.5");
 		if (isPositiveAllowed())
 		{
 			primaryProf.put(getObjectKey(), val);

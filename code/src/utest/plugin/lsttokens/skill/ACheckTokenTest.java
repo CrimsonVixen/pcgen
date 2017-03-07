@@ -25,15 +25,15 @@ import pcgen.core.Skill;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class ACheckTokenTest extends AbstractTokenTestCase<Skill>
+public class ACheckTokenTest extends AbstractCDOMTokenTestCase<Skill>
 {
 
 	static AcheckToken token = new AcheckToken();
-	static CDOMTokenLoader<Skill> loader = new CDOMTokenLoader<Skill>();
+	static CDOMTokenLoader<Skill> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public Class<Skill> getCDOMClass()
@@ -161,7 +161,7 @@ public class ACheckTokenTest extends AbstractTokenTestCase<Skill>
 		assertNull(getToken().unparse(primaryContext, primaryProf));
 	}
 
-	private ObjectKey<SkillArmorCheck> getObjectKey()
+	private static ObjectKey<SkillArmorCheck> getObjectKey()
 	{
 		return ObjectKey.ARMOR_CHECK;
 	}

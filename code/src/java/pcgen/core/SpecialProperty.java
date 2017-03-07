@@ -29,10 +29,9 @@ import pcgen.persistence.lst.prereq.PreParserFactory;
 import pcgen.util.Logging;
 
 /**
- * <code>SpecialProperty</code>.
+ * {@code SpecialProperty}.
  *
  * @author Devon Jones
- * @version $Revision$
  */
 public final class SpecialProperty extends TextProperty
 {

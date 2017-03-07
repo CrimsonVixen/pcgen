@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 3, 2006
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit;
@@ -48,7 +44,7 @@ import pcgen.rules.persistence.token.ParseResult;
  * &nbsp;&nbsp;This is a | (pipe) delimited list of templates that are granted
  * by the feat.<br>
  * <strong>Example:</strong><br>
- * &nbsp;&nbsp;<code>TEMPLATE:Celestial</code><br>
+ * &nbsp;&nbsp;{@code TEMPLATE:Celestial}<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;Adds the "Celestial" template to the character.<br>
  * </p>
  */
@@ -100,7 +96,7 @@ public class TemplateToken extends AbstractTokenWithSeparator<KitTemplate>
 			else
 			{
 				name = tokText.substring(0, openLoc);
-				subList = new ArrayList<CDOMSingleRef<PCTemplate>>();
+				subList = new ArrayList<>();
 				String rest = tokText.substring(openLoc + 1);
 				StringTokenizer subTok = new StringTokenizer(rest, "[]");
 				while (subTok.hasMoreTokens())

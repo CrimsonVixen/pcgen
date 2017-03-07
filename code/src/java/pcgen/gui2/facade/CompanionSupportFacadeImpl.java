@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Mar 18, 2012, 11:38:13 PM
  */
 package pcgen.gui2.facade;
 
@@ -26,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Constants;
@@ -59,11 +58,10 @@ import pcgen.util.enumeration.Tab;
 /**
  * This class implements the basic CompanionSupportFacade
  * for a given
- * <code>PlayerCharacter</code> and is
+ * {@code PlayerCharacter} and is
  * used to help implement companion support for the
  * CharacterFacade.
  * @see pcgen.gui2.facade.CharacterFacadeImpl
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListListener<CharacterFacade>
 {
@@ -94,10 +92,10 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 		this.pcFacade = pcFacade;
 		this.charDisplay = theCharacter.getDisplay();
 		this.todoManager = todoManager;
-		this.companionList = new DefaultListFacade<CompanionFacadeDelegate>();
-		this.availCompList = new DefaultListFacade<CompanionStubFacade>();
-		this.maxCompanionsMap = new DefaultMapFacade<String, Integer>();
-		this.keyToCompanionListMap = new HashMap<String, CompanionList>();
+		this.companionList = new DefaultListFacade<>();
+		this.availCompList = new DefaultListFacade<>();
+		this.maxCompanionsMap = new DefaultMapFacade<>();
+		this.keyToCompanionListMap = new HashMap<>();
 		initCompData(true);
 		CharacterManager.getCharacters().addListListener(this);
 		addMasterListeners(nameRef, fileRef);
@@ -189,7 +187,7 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 	 */
 	private void initCompData(boolean rebuildCompanionList)
 	{
-		List<CompanionStub> companions = new ArrayList<CompanionStub>();
+		List<CompanionStub> companions = new ArrayList<>();
 		for (CompanionList compList : Globals.getContext().getReferenceContext()
 				.getConstructedCDOMObjects(CompanionList.class))
 		{
@@ -270,9 +268,6 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void addCompanion(CharacterFacade companion, String companionType)
 	{
@@ -283,7 +278,7 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 
 		CharacterFacadeImpl compFacadeImpl = (CharacterFacadeImpl) companion;
 		CompanionList compList = keyToCompanionListMap.get(companionType);
-		Race compRace = (Race) compFacadeImpl.getRaceRef().getReference();
+		Race compRace = (Race) compFacadeImpl.getRaceRef().get();
 		FollowerOption followerOpt = getFollowerOpt(compList, compRace);
 		if (followerOpt == null)
 		{
@@ -311,11 +306,11 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 		compFacadeImpl.postLevellingUpdates();
 		
 		// Update the master with the new companion
-		File compFile = compFacadeImpl.getFileRef().getReference();
+		File compFile = compFacadeImpl.getFileRef().get();
 		String compFilename = StringUtils.isEmpty(compFile.getPath()) ? "" : compFile.getAbsolutePath();
 		Follower follower =
 				new Follower(compFilename, compFacadeImpl.getNameRef()
-					.getReference(), compList);
+					.get(), compList);
 		follower.setRace(compRace);
 		theCharacter.addFollower(follower);
 		theCharacter.setCalcFollowerBonus();
@@ -348,9 +343,6 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 		return followerOpt;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removeCompanion(CompanionFacade companion)
 	{
@@ -359,7 +351,7 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 			return;
 		}
 		
-		File compFile = companion.getFileRef().getReference();
+		File compFile = companion.getFileRef().get();
 		for (Follower follower : charDisplay.getFollowerList())
 		{
 			File followerFile = new File(follower.getFileName());
@@ -386,12 +378,12 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 	{
 		for (CompanionFacadeDelegate delegate : companionList)
 		{
-			File file = delegate.getFileRef().getReference();
-			String name = delegate.getNameRef().getReference();
-			RaceFacade race = delegate.getRaceRef().getReference();
-			if (file.equals(character.getFileRef().getReference())
-				&& name.equals(character.getNameRef().getReference()) 
-				&& (race == null || race.equals(character.getRaceRef().getReference())))
+			File file = delegate.getFileRef().get();
+			String name = delegate.getNameRef().get();
+			RaceFacade race = delegate.getRaceRef().get();
+			if (file.equals(character.getFileRef().get())
+				&& name.equals(character.getNameRef().get()) 
+				&& (race == null || race.equals(character.getRaceRef().get())))
 			{
 				String companionType = delegate.getCompanionType();
 				delegate.setCompanionFacade(character);
@@ -399,16 +391,16 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 				// Check for a companion being loaded that is not properly linked to the master.
 				// Note: When creating a companion we leave the linking to the create code.  
 				if (character.getMaster() == null
-					&& character.getRaceRef().getReference() != null
+					&& character.getRaceRef().get() != null
 					&& !Constants.NONESELECTED.equals(character.getRaceRef()
-						.getReference().getKeyName()))
+						.get().getKeyName()))
 				{
 					CompanionList compList = keyToCompanionListMap.get(companionType);
 					final Follower newMaster =
 							new Follower(charDisplay.getFileName(), charDisplay.getName(), compList);
 					FollowerOption followerOpt =
 							getFollowerOpt(compList, (Race) character
-								.getRaceRef().getReference());
+								.getRaceRef().get());
 					if (followerOpt != null)
 					{
 						newMaster.setAdjustment(followerOpt.getAdjustment());
@@ -418,7 +410,7 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 						Logging.log(Logging.WARNING,
 							"Failed to find FollowerOption for complist "
 								+ compList + " and race "
-								+ character.getRaceRef().getReference());
+								+ character.getRaceRef().get());
 					}
 					((CharacterFacadeImpl) character).getTheCharacter()
 						.setMaster(newMaster);
@@ -451,14 +443,14 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 	{
 		for (CompanionFacadeDelegate delegate : companionList)
 		{
-			File file = delegate.getFileRef().getReference();
-			if (file.equals(character.getFileRef().getReference()))
+			File file = delegate.getFileRef().get();
+			if (file.equals(character.getFileRef().get()))
 			{
 				CompanionFacade comp =
 						new CompanionNotLoaded(character.getNameRef()
-							.getReference(), character.getFileRef()
-							.getReference(), character.getRaceRef()
-							.getReference(), delegate.getCompanionType());
+							.get(), character.getFileRef()
+							.get(), character.getRaceRef()
+							.get(), delegate.getCompanionType());
 				delegate.setCompanionFacade(comp);
 				return;
 			}
@@ -483,27 +475,18 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 		return companionList;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void elementAdded(ListEvent<CharacterFacade> e)
 	{
 		linkCompanion(e.getElement());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void elementRemoved(ListEvent<CharacterFacade> e)
 	{
 		unlinkCompanion(e.getElement());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void elementsChanged(ListEvent<CharacterFacade> e)
 	{
@@ -515,9 +498,6 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 		// TODO: Unlink characters no longer open 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void elementModified(ListEvent<CharacterFacade> e)
 	{
@@ -525,7 +505,7 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 	}
 
 	/**
-	 * The Class <code>DelegateFileListener</code> tracks the file name of a companion and 
+	 * The Class {@code DelegateFileListener} tracks the file name of a companion and
 	 * keeps the associated Follower record up to date.
 	 */
 	private class DelegateFileListener implements ReferenceListener<File> 
@@ -537,9 +517,6 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 			this.follower = followerIn;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void referenceChanged(ReferenceEvent<File> e)
 		{
@@ -548,7 +525,7 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 	}
 
 	/**
-	 * The Class <code>DelegateNameListener</code> tracks the name of a companion and 
+	 * The Class {@code DelegateNameListener} tracks the name of a companion and
 	 * keeps the associated Follower record up to date.
 	 */
 	private class DelegateNameListener implements ReferenceListener<String> 
@@ -560,9 +537,6 @@ public class CompanionSupportFacadeImpl implements CompanionSupportFacade, ListL
 			this.follower = followerIn;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void referenceChanged(ReferenceEvent<String> e)
 		{

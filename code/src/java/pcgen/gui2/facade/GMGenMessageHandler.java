@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 21/07/2012 3:25:32 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -46,15 +44,11 @@ import pcgen.pluginmgr.messages.TransmitInitiativeValuesBetweenComponentsMessage
 import pcgen.system.CharacterManager;
 
 /**
- * The Class <code>GMGenMessageHandler</code> processes any requests 
+ * The Class {@code GMGenMessageHandler} processes any requests
  * to the main PCGen program from the GMGen bus.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class GMGenMessageHandler implements PCGenMessageHandler
 {
@@ -73,9 +67,6 @@ public class GMGenMessageHandler implements PCGenMessageHandler
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void handleMessage(PCGenMessage message)
 	{
@@ -173,7 +164,7 @@ public class GMGenMessageHandler implements PCGenMessageHandler
 		{
 			PlayerCharacter playerCharacter =
 					CharacterManager.openPlayerCharacter(pcFile, delegate,
-						delegate.getLoadedDataSetRef().getReference(),
+						delegate.getLoadedDataSetRef().get(),
 						message.isBlockLoadedMessage());
 			message.setPlayerCharacter(playerCharacter);
 			message.consume();
@@ -181,7 +172,7 @@ public class GMGenMessageHandler implements PCGenMessageHandler
 		else if (PCGFile.isPCGenPartyFile(pcFile))
 		{
 			CharacterManager.openParty(pcFile, delegate, delegate
-				.getLoadedDataSetRef().getReference());
+				.getLoadedDataSetRef().get());
 		}
 	}
 

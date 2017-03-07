@@ -17,15 +17,17 @@
  */
 package pcgen.output;
 
+import pcgen.base.format.StringManager;
 import pcgen.base.util.BasicIndirect;
 import pcgen.cdom.enumeration.FactKey;
+import pcgen.cdom.facet.CDOMWrapperInfoFacet;
+import pcgen.cdom.facet.FacetLibrary;
 import pcgen.cdom.facet.model.CheckFacet;
 import pcgen.core.PCCheck;
 import pcgen.output.actor.FactKeyActor;
 import pcgen.output.publish.OutputDB;
 import pcgen.output.testsupport.AbstractOutputTestCase;
 import pcgen.output.wrapper.CDOMObjectWrapper;
-import plugin.format.StringManager;
 
 public class FreeMarkerTest extends AbstractOutputTestCase
 {
@@ -43,7 +45,9 @@ public class FreeMarkerTest extends AbstractOutputTestCase
 			classSetUp();
 			classSetUpRun = true;
 		}
-		CDOMObjectWrapper.getInstance().clear();
+		CDOMWrapperInfoFacet wiFacet =
+				FacetLibrary.getFacet(CDOMWrapperInfoFacet.class);
+		wiFacet.initialize(dsid);
 	}
 
 	private void classSetUp()
@@ -90,7 +94,7 @@ public class FreeMarkerTest extends AbstractOutputTestCase
 		cf.add(id, pcc);
 
 		FactKeyActor<?> fka = new FactKeyActor<>(sn);
-		CDOMObjectWrapper.getInstance().load(pcc.getClass(), "shortname", fka);
+		CDOMObjectWrapper.load(dsid, pcc.getClass(), "shortname", fka);
 	}
 
 }

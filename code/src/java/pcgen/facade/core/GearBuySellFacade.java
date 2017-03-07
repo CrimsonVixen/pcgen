@@ -16,23 +16,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 11/02/2012 7:08:41 PM
  *
- * $Id$
  */
 package pcgen.facade.core;
 
 
 /**
- * <code>GearBuySellFacade</code> defines the interface required for a buy / sell 
+ * {@code GearBuySellFacade} defines the interface required for a buy / sell
  * rate scheme that can be used by the user interface.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public interface GearBuySellFacade
 {

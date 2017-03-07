@@ -15,7 +15,6 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  * 
- * Created on Mar 10, 2006
  */
 package pcgen.gui2.converter.event;
 
@@ -112,13 +111,13 @@ public class TokenProcessEvent extends EventObject
 	{
 		if (injected == null)
 		{
-			injected = new ArrayList<CDOMObject>();
+			injected = new ArrayList<>();
 		}
 		injected.add(cdo);
 	}
 
 	public List<CDOMObject> getInjected()
 	{
-		return injected == null ? null : new ArrayList<CDOMObject>(injected);
+		return injected == null ? null : new ArrayList<>(injected);
 	}
 }

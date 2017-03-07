@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jul 6, 2010, 5:08:49 PM
  */
 package pcgen.gui2.tabs;
 
@@ -35,7 +34,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,15 +53,17 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.RowSorter;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.core.BodyStructure;
 import pcgen.facade.core.BodyStructureFacade;
@@ -89,11 +89,8 @@ import pcgen.gui2.tools.PrefTableColumnModel;
 import pcgen.gui2.util.FontManipulation;
 import pcgen.gui2.util.JDynamicTable;
 import pcgen.gui2.util.JTreeTable;
-import pcgen.gui2.util.SortMode;
-import pcgen.gui2.util.SortingPriority;
 import pcgen.gui2.util.event.PopupMouseAdapter;
 import pcgen.gui2.util.table.DynamicTableColumnModel;
-import pcgen.gui2.util.table.SortableTableModel;
 import pcgen.system.LanguageBundle;
 import pcgen.util.enumeration.Load;
 import pcgen.util.enumeration.Tab;
@@ -103,11 +100,8 @@ import pcgen.util.enumeration.Tab;
  * character. Each set of distribution information is called an EquipSet.
  * Multiple EquipSets can be managed to reflect different configurations.
  *
- * <br/>
- * Last Editor: $Author: $ Last Edited: $Date: $
+ * <br>
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
- * @version $Revision: $
  */
 @SuppressWarnings("serial")
 public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab, TodoHandler
@@ -142,7 +136,23 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 	public EquipInfoTab()
 	{
 		super("Equip");
-		this.equipmentTable = new JDynamicTable();
+		//TODO: remove this when optimized sorting is implemented
+		this.equipmentTable = new JDynamicTable()
+		{
+
+			@Override
+			public void setModel(TableModel dataModel)
+			{
+				RowSorter<? extends TableModel> oldRowSorter = getRowSorter();
+				super.setModel(dataModel);
+				RowSorter<? extends TableModel> newRowSorter = getRowSorter();
+				if (newRowSorter != null && oldRowSorter != null)
+				{
+					newRowSorter.setSortKeys(oldRowSorter.getSortKeys());
+				}
+			}
+
+		};
 		this.equipViewBox = new JComboBox(EquipView.values());
 		this.infoPane = new InfoPane();
 		this.equipmentSetTable = new JTreeTable()
@@ -205,8 +215,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 
 		equipmentTable.setAutoCreateColumnsFromModel(false);
 		equipmentTable.setColumnModel(createEquipmentColumnModel());
-		equipmentTable.setSortingPriority(Collections.singletonList(new SortingPriority(0, SortMode.ASCENDING)));
-		equipmentTable.sortModel();
+		equipmentTable.setAutoCreateRowSorter(true);
 		panel.add(new JScrollPane(equipmentTable), BorderLayout.CENTER);
 
 		Box buttonsBox = Box.createHorizontalBox();
@@ -309,6 +318,9 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		column = new TableColumn(4);
 		column.setHeaderValue(LanguageBundle.getString("in_equipWeightAbbrev")); //$NON-NLS-1$
 		model.addColumn(column, true, 75);
+		column = new TableColumn(5);
+		column.setHeaderValue(LanguageBundle.getString("in_descrip")); //$NON-NLS-1$
+		model.addColumn(column, false, 75);
 		return model;
 	}
 
@@ -317,7 +329,9 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 	{
 		ModelMap models = new ModelMap();
 		models.put(EquipmentModel.class, new EquipmentModel(character, equipmentSetTable));
-		models.put(EquipmentModels.class, new EquipmentModels(character));
+		models.put(EquipmentModels.class, new EquipmentModels(character,
+				equipViewBox, equipmentTable, tableFilter, equipmentSetTable,
+				equipButton, unequipButton, moveUpButton, moveDownButton));
 		models.put(UnequipAllAction.class, new UnequipAllAction(character));
 		models.put(EquipSetBoxModel.class, new EquipSetBoxModel(character));
 		models.put(AddSetAction.class, new AddSetAction(character));
@@ -337,9 +351,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 	public void restoreModels(ModelMap models)
 	{
 		models.get(EquipmentModel.class).install();
-		models.get(EquipmentModels.class).install(
-				equipViewBox, equipmentTable, tableFilter, equipmentSetTable,
-				equipButton, unequipButton, moveUpButton, moveDownButton);
+		models.get(EquipmentModels.class).install();
 		models.get(LabelsUpdater.class).install();
 		models.get(EquipInfoHandler.class).install();
 		models.get(EquipmentRenderer.class).install();
@@ -357,11 +369,11 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 	@Override
 	public void storeModels(ModelMap models)
 	{
-		((LabelsUpdater) models.get(LabelsUpdater.class)).uninstall();
-		((EquipmentModel) models.get(EquipmentModel.class)).uninstall();
-		((EquipmentModels) models.get(EquipmentModels.class)).uninstall();
-		((EquipInfoHandler) models.get(EquipInfoHandler.class)).uninstall();
-		((OrderPopupMenuHandler) models.get(OrderPopupMenuHandler.class)).uninstall();
+		models.get(LabelsUpdater.class).uninstall();
+		models.get(EquipmentModel.class).uninstall();
+		models.get(EquipmentModels.class).uninstall();
+		models.get(EquipInfoHandler.class).uninstall();
+		models.get(OrderPopupMenuHandler.class).uninstall();
 	}
 
 	@Override
@@ -377,7 +389,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		{
 			table.setRowSelectionInterval(row, row);
 		}
-		List<Integer> targets = new ArrayList<Integer>();
+		List<Integer> targets = new ArrayList<>();
 		for (int selRow : table.getSelectedRows())
 		{
 			targets.add(selRow);
@@ -386,7 +398,6 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 	}
 
 	/**
-	 * @param load (i.e. Encumbrance) value
 	 */
 	public void setLoadLabel(String text)
 	{
@@ -419,9 +430,6 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		loadLabel.setForeground(color);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void adviseTodo(String fieldName)
 	{
@@ -466,7 +474,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			character.deleteEquipmentSet(character.getEquipmentSetRef().getReference());
+			character.deleteEquipmentSet(character.getEquipmentSetRef().get());
 		}
 
 	}
@@ -555,7 +563,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 							JOptionPane.YES_NO_OPTION);
 			if (ret == JOptionPane.YES_OPTION)
 			{
-				character.getEquipmentSetRef().getReference().removeAllEquipment();
+				character.getEquipmentSetRef().get().removeAllEquipment();
 			}
 		}
 
@@ -577,9 +585,9 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 
 		public void install()
 		{
-			weightLabel.setText(weightRef.getReference());
-			setLoadLabel(loadRef.getReference());
-			limitLabel.setText(limitRef.getReference());
+			weightLabel.setText(weightRef.get());
+			setLoadLabel(loadRef.get());
+			limitLabel.setText(limitRef.get());
 
 			weightRef.addReferenceListener(this);
 			loadRef.addReferenceListener(this);
@@ -819,11 +827,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 			{
 				equipNodeArray = (EquipNode[]) support.getTransferable().getTransferData(equipNodeArrayFlavor);
 			}
-			catch (UnsupportedFlavorException ex)
-			{
-				Logger.getLogger(EquipInfoTab.class.getName()).log(Level.SEVERE, null, ex);
-			}
-			catch (IOException ex)
+			catch (UnsupportedFlavorException | IOException ex)
 			{
 				Logger.getLogger(EquipInfoTab.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -846,7 +850,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 			{
 				return false;
 			}
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
 			for (EquipNode equipNode : nodes)
 			{
 				equipSet.removeEquipment(equipNode, 1);
@@ -906,11 +910,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 			{
 				equipmentArray = (EquipmentFacade[]) support.getTransferable().getTransferData(equipmentArrayFlavor);
 			}
-			catch (UnsupportedFlavorException ex)
-			{
-				Logger.getLogger(EquipInfoTab.class.getName()).log(Level.SEVERE, null, ex);
-			}
-			catch (IOException ex)
+			catch (UnsupportedFlavorException | IOException ex)
 			{
 				Logger.getLogger(EquipInfoTab.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -924,11 +924,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 			{
 				equipNodeArray = (EquipNode[]) support.getTransferable().getTransferData(equipNodeArrayFlavor);
 			}
-			catch (UnsupportedFlavorException ex)
-			{
-				Logger.getLogger(EquipInfoTab.class.getName()).log(Level.SEVERE, null, ex);
-			}
-			catch (IOException ex)
+			catch (UnsupportedFlavorException | IOException ex)
 			{
 				Logger.getLogger(EquipInfoTab.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -949,7 +945,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 			{
 				node = node.getParent();
 			}
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
 
 			if (support.isDataFlavorSupported(equipNodeArrayFlavor))
 			{
@@ -1003,7 +999,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 				beforeNode = node;
 				node = node.getParent();
 			}
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
 
 			if (support.isDataFlavorSupported(equipNodeArrayFlavor))
 			{
@@ -1046,9 +1042,6 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 			this.character = character;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void showPopup(MouseEvent e)
 		{
@@ -1058,9 +1051,9 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 				return;
 			}
 
-			List<EquipNode> upTargets = new ArrayList<EquipmentSetFacade.EquipNode>();
-			List<EquipNode> downTargets = new ArrayList<EquipmentSetFacade.EquipNode>();
-			List<EquipNode> sortTargets = new ArrayList<EquipmentSetFacade.EquipNode>();
+			List<EquipNode> upTargets = new ArrayList<>();
+			List<EquipNode> downTargets = new ArrayList<>();
+			List<EquipNode> sortTargets = new ArrayList<>();
 			EquipNode[] relativeNodes = filterTargets(targets, upTargets, downTargets, sortTargets);
 
 			JPopupMenu popupMenu = new JPopupMenu();
@@ -1088,8 +1081,8 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 				List<EquipNode> upTargets, List<EquipNode> downTargets,
 				List<EquipNode> sortTargets)
 		{
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
-			SortableTableModel equipSetModel = equipmentSetTable.getModel();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
+			TableModel equipSetModel = equipmentSetTable.getModel();
 			int beforeRow = equipSetModel.getRowCount();
 			int afterRow = 0;
 			for (Integer selRow : targetRows)
@@ -1203,7 +1196,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		public void actionPerformed(ActionEvent e)
 		{
 			EquipmentSetFacade equipSet
-					= character.getEquipmentSetRef().getReference();
+					= character.getEquipmentSetRef().get();
 			for (EquipNode equipNode : targets)
 			{
 				equipSet.moveEquipment(equipNode, -1);
@@ -1242,7 +1235,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		public void actionPerformed(ActionEvent e)
 		{
 			EquipmentSetFacade equipSet
-					= character.getEquipmentSetRef().getReference();
+					= character.getEquipmentSetRef().get();
 			for (EquipNode equipNode : targets)
 			{
 				equipSet.moveEquipment(equipNode, 1);
@@ -1279,7 +1272,7 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		public void actionPerformed(ActionEvent e)
 		{
 			EquipmentSetFacade equipSet
-					= character.getEquipmentSetRef().getReference();
+					= character.getEquipmentSetRef().get();
 			for (EquipNode equipNode : targets)
 			{
 				equipSet.sortEquipment(equipNode);
@@ -1287,4 +1280,5 @@ public class EquipInfoTab extends FlippingSplitPane implements CharacterInfoTab,
 		}
 
 	}
+
 }

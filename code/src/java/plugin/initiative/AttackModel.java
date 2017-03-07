@@ -16,7 +16,6 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- *  Created on May 24, 2003
  */
 package plugin.initiative;
 
@@ -36,7 +35,6 @@ import pcgen.base.lang.StringUtil;
  * primary and off-hand by a slash, and the same with crit multiples
  * and ranges.</p>
  *
- * @author Ross M. Lodge
  */
 public class AttackModel extends PObjectModel
 {
@@ -136,13 +134,13 @@ public class AttackModel extends PObjectModel
 	 * bonus) at index 0.  If the toHit field is not set, returns an array with a single element
 	 * with the bonuse of 0.</p>
 	 *
-	 * @return <code>int[]</code> containing the integer bonuses for a full attack action
+	 * @return {@code int[]} containing the integer bonuses for a full attack action
 	 */
 	public int[] getBonusList()
 	{
 		int[] returnValue = null;
 
-		if ((toHit != null) && (toHit.size() > 0))
+		if ((toHit != null) && (!toHit.isEmpty()))
 		{
 			returnValue = new int[toHit.size()];
 
@@ -167,13 +165,13 @@ public class AttackModel extends PObjectModel
 	 */
 	public void setCritMultiple(String string)
 	{
-		if ((string != null) && (string.length() > 0))
+		if ((string != null) && (!string.isEmpty()))
 		{
 			StringTokenizer tok = new StringTokenizer(string, "/");
 
 			if (critMultiple == null)
 			{
-				critMultiple = new ArrayList<String>(tok.countTokens());
+				critMultiple = new ArrayList<>(tok.countTokens());
 			}
 			else
 			{
@@ -189,7 +187,7 @@ public class AttackModel extends PObjectModel
 		{
 			if (critMultiple == null)
 			{
-				critMultiple = new ArrayList<String>(1);
+				critMultiple = new ArrayList<>(1);
 			}
 			else
 			{
@@ -212,7 +210,7 @@ public class AttackModel extends PObjectModel
 
 	/**
 	 * <p>Gets the crit multiple at the specified attack bonus index, based
-	 * on whether or not the index > or < the first off hand attack index.</p>
+	 * on whether or not the index is greater than or less than the first off hand attack index.</p>
 	 *
 	 * @param index
 	 * @return The crit multiple value.
@@ -235,7 +233,7 @@ public class AttackModel extends PObjectModel
 		{
 			returnValue = critMultiple.get(lookupAt);
 		}
-		else if ((critMultiple != null) && (critMultiple.size() > 0))
+		else if ((critMultiple != null) && (!critMultiple.isEmpty()))
 		{
 			returnValue = critMultiple.get(0);
 		}
@@ -255,13 +253,13 @@ public class AttackModel extends PObjectModel
 	 */
 	public void setCritRange(String string)
 	{
-		if ((string != null) && (string.length() > 0))
+		if ((string != null) && (!string.isEmpty()))
 		{
 			StringTokenizer tok = new StringTokenizer(string, "/");
 
 			if (critRange == null)
 			{
-				critRange = new ArrayList<String>(tok.countTokens());
+				critRange = new ArrayList<>(tok.countTokens());
 			}
 			else
 			{
@@ -277,7 +275,7 @@ public class AttackModel extends PObjectModel
 		{
 			if (critRange == null)
 			{
-				critRange = new ArrayList<String>(1);
+				critRange = new ArrayList<>(1);
 			}
 			else
 			{
@@ -300,7 +298,7 @@ public class AttackModel extends PObjectModel
 
 	/**
 	 * <p>Gets the crit range at the specified attack bonus index, based
-	 * on whether or not the index > or < the first off hand attack index.</p>
+	 * on whether or not the index is greater than or less than the first off hand attack index.</p>
 	 *
 	 * @param index The attack bonus index
 	 * @return The requested crit range.
@@ -323,7 +321,7 @@ public class AttackModel extends PObjectModel
 		{
 			returnValue = critRange.get(lookupAt);
 		}
-		else if ((critRange != null) && (critRange.size() > 0))
+		else if ((critRange != null) && (!critRange.isEmpty()))
 		{
 			returnValue = critRange.get(0);
 		}
@@ -362,13 +360,13 @@ public class AttackModel extends PObjectModel
 	 */
 	public void setDamage(String string)
 	{
-		if ((string != null) && (string.length() > 0))
+		if ((string != null) && (!string.isEmpty()))
 		{
 			StringTokenizer tok = new StringTokenizer(string, "/");
 
 			if (damage == null)
 			{
-				damage = new ArrayList<String>(tok.countTokens());
+				damage = new ArrayList<>(tok.countTokens());
 			}
 			else
 			{
@@ -411,7 +409,7 @@ public class AttackModel extends PObjectModel
 		{
 			if (damage == null)
 			{
-				damage = new ArrayList<String>(1);
+				damage = new ArrayList<>(1);
 			}
 			else
 			{
@@ -433,7 +431,7 @@ public class AttackModel extends PObjectModel
 
 	/**
 	 * <p>Gets the damage dice at the specified attack bonus index, based
-	 * on whether or not the index > or < the first off hand attack index.</p>
+	 * on whether or not the index is greater than or less than the first off hand attack index.</p>
 	 *
 	 * @param index The attack bonus index
 	 * @return The requested damage string.
@@ -456,7 +454,7 @@ public class AttackModel extends PObjectModel
 		{
 			returnValue = damage.get(lookupAt);
 		}
-		else if ((damage != null) && (damage.size() > 0))
+		else if ((damage != null) && (!damage.isEmpty()))
 		{
 			returnValue = damage.get(0);
 		}
@@ -488,7 +486,7 @@ public class AttackModel extends PObjectModel
 	 */
 	public void setRange(String string)
 	{
-		if ((string == null) || (string.length() > 0))
+		if ((string == null) || (!string.isEmpty()))
 		{
 			range = string;
 		}
@@ -556,9 +554,9 @@ public class AttackModel extends PObjectModel
 	 * <p>
 	 * Sets the two hit value. This method drives much of the functionality of
 	 * the attack model. The string should be in the form <br>
-	 * <code>
+	 * {@code
 	 *    Bonus/Bonus/Bonus...;off hand bonus/off hand bonus...
-	 * </code>
+	 * }
 	 * <br>
 	 * The method splits the string into primary and off-hand bonus values, and
 	 * splits the separate strings into individual bonuses. The length of the
@@ -573,7 +571,7 @@ public class AttackModel extends PObjectModel
 	{
 		if (toHit == null)
 		{
-			toHit = new ArrayList<String>();
+			toHit = new ArrayList<>();
 		}
 		else
 		{
@@ -614,7 +612,7 @@ public class AttackModel extends PObjectModel
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if ((toHit != null) && (toHit.size() > 0))
+		if ((toHit != null) && (!toHit.isEmpty()))
 		{
 			for (int i = 0; i < toHit.size(); i++)
 			{

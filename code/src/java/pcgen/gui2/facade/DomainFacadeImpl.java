@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 09/02/2011 11:12:26 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -34,16 +32,12 @@ import pcgen.core.prereq.Prerequisite;
 import pcgen.util.SortKeyAware;
 
 /**
- * The Class <code>DomainFacadeImpl</code> groups the prereqs for gaining access 
+ * The Class {@code DomainFacadeImpl} groups the prereqs for gaining access
  * to a domain with the domain. This allows these prereqs to be displayed and 
  * enforced by the UI.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class DomainFacadeImpl extends QualifiedObject<Domain> implements
 		DomainFacade, SortKeyAware
@@ -116,27 +110,18 @@ public class DomainFacadeImpl extends QualifiedObject<Domain> implements
 		return getRawObject().toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isNamePI()
 	{
 		return getRawObject().isNamePI();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getType()
 	{
 		return getRawObject().getType();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getSortKey()
 	{

@@ -1,5 +1,4 @@
 #
-# Current Ver: $Revision$
 # Last Editor: $Author$
 # Last Edited: $Date$
 #
@@ -138,7 +137,7 @@ ABILITY:Special Ability|Smite Allegiance				MAXVER:6.6.0		NEWKEY:Holy Unholy Kni
 ABILITY:Special Ability|Divine Touch				MAXVER:6.6.0		NEWKEY:Holy Unholy Knight ~ Divine Touch
 
 ###Block:Organizations
-ABILITY of Ability||Ability Name														Newkey
+#ABILITY of Ability||Ability Name														Newkey
 ABILITY:Special Ability|Member of The Black Feathers							MAXVER:6.6.0		NEWKEY:Organisation ~ Member of The Black Feathers
 ABILITY:Special Ability|Member of Cirque des Moitie							MAXVER:6.6.0		NEWKEY:Organisation ~ Member of Cirque des Moitie
 ABILITY:Special Ability|Member of the Commission for Research Into Unexplained Phenomena	MAXVER:6.6.0		NEWKEY:Organisation ~ Member of the Commission for Research Into Unexplained Phenomena
@@ -150,7 +149,7 @@ ABILITY:Special Ability|Agent of the Fellowship								MAXVER:6.6.0		NEWKEY:Orga
 ABILITY:Special Ability|Member of the Fraternal Order of Vigilance				MAXVER:6.6.0		NEWKEY:Organisation ~ Member of the Fraternal Order of Vigilance
 ABILITY:Special Ability|Instructor of the Institute for Continuous Education			MAXVER:6.6.0		NEWKEY:Organisation ~ Instructor of the Institute for Continuous Education
 ABILITY:Special Ability|Member of the International Guild of Laborers				MAXVER:6.6.0		NEWKEY:Organisation ~ Member of the International Guild of Laborers
-ABILITY:Special Ability|Monk of the Knightly Order of St. Bartholomew				MAXVER:6.6.0		NEWKEY:Organisation ~ Monk of the Knightly Order of St. Bartholomew
+#ABILITY:Special Ability|Monk of the Knightly Order of St. Bartholomew				MAXVER:6.6.0		NEWKEY:Organisation ~ Monk of the Knightly Order of St. Bartholomew
 ABILITY:Special Ability|Journalist of Markova Enterprises Intl					MAXVER:6.6.0		NEWKEY:Organisation ~ Journalist of Markova Enterprises Intl
 ABILITY:Special Ability|Member of the Mindwreckers							MAXVER:6.6.0		NEWKEY:Organisation ~ Member of the Mindwreckers
 ABILITY:Special Ability|Agent of the Paranormal Science and Investigation Agency		MAXVER:6.6.0		NEWKEY:Organisation ~ Agent of the Paranormal Science and Investigation Agency

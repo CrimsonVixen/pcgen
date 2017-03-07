@@ -17,7 +17,6 @@
  *
  *  AddDefeatedCombatant.java
  *
- *  Created on January 4, 2002, 2:10 PM
  */
 package plugin.experience.gui;
 
@@ -38,8 +37,6 @@ import plugin.experience.ExperienceAdjusterPlugin;
 import plugin.experience.ExperienceListItem;
 
 /**
- *@author     devon
- *@since    April 7, 2003
  */
 public class AddDefeatedCombatant extends AbstractDialog
 {
@@ -200,14 +197,7 @@ public class AddDefeatedCombatant extends AbstractDialog
 
 		// TODO tCR should be internationalized
 		tCR.setText("1.0");
-		tCR.addActionListener(new java.awt.event.ActionListener()
-		{
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt)
-			{
-				tCRActionPerformed(evt);
-			}
-		});
+		tCR.addActionListener(this::tCRActionPerformed);
 
 		tCR.addFocusListener(new java.awt.event.FocusAdapter()
 		{

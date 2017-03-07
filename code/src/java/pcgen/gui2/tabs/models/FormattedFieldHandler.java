@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Oct 1, 2011, 4:46:28 PM
  */
 package pcgen.gui2.tabs.models;
 
@@ -31,7 +30,6 @@ import pcgen.facade.util.event.ReferenceListener;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public abstract class FormattedFieldHandler implements PropertyChangeListener, ReferenceListener<Integer>
 {
@@ -56,7 +54,7 @@ public abstract class FormattedFieldHandler implements PropertyChangeListener, R
 	 */
 	public void install()
 	{
-		field.setValue(ref.getReference());
+		field.setValue(ref.get());
 		field.addPropertyChangeListener(this);
 		ref.addReferenceListener(this);
 	}

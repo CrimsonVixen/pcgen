@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on August 20, 2005, 1640h
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -38,10 +36,8 @@ import pcgen.core.prereq.PrereqHandler;
 import pcgen.gui2.UIPropertyContext;
 
 /**
- * <code>KitClass</code> <strong>needs documentation</strong>.
+ * {@code KitClass} <strong>needs documentation</strong>.
  *
- * @author boomer70
- * @version $Id$
  */
 public class KitClass extends BaseKit
 {
@@ -76,7 +72,7 @@ public class KitClass extends BaseKit
 		theLevel = -1;
 		doLevelAbilities = true;
 		
-		theClass = pcClass.resolvesTo();
+		theClass = pcClass.get();
 
 		theOrigSubClass = aPC.getSubClassName(theClass);
 		applySubClass(aPC);

@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on February 22, 2002, 10:29 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.persistence.lst;
@@ -39,9 +35,8 @@ import pcgen.persistence.SystemLoader;
 /**
  * ???
  * @deprecated
- * @author David Rice <david-pcgen@jcuz.com>
- * @version $Revision$
  */
+@Deprecated
 public final class LstSystemLoader implements SystemLoader
 {
 
@@ -59,7 +54,7 @@ public final class LstSystemLoader implements SystemLoader
 		List<URI> files = chosenCampaignSourcefiles.get(game.getName());
 		if (files == null)
 		{
-			files = new ArrayList<URI>();
+			files = new ArrayList<>();
 			chosenCampaignSourcefiles.put(game.getName(), files);
 		}
 		files.clear();
@@ -80,7 +75,7 @@ public final class LstSystemLoader implements SystemLoader
 		List<URI> files = chosenCampaignSourcefiles.get(game.getName());
 		if (files == null)
 		{
-			files = new ArrayList<URI>();
+			files = new ArrayList<>();
 			chosenCampaignSourcefiles.put(game.getName(), files);
 		}
 		return files;

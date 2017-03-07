@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jun 24, 2008, 7:06:58 PM
  */
 package pcgen.gui2.util;
 
@@ -29,7 +28,6 @@ import javax.swing.Icon;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class MultiLineTextIcon implements Icon
 {
@@ -41,7 +39,7 @@ public class MultiLineTextIcon implements Icon
     public MultiLineTextIcon(Component c, String text)
     {
         StringTokenizer tokenizer = new StringTokenizer(text, "\n");
-        this.icons = new ArrayList<Icon>(tokenizer.countTokens());
+        this.icons = new ArrayList<>(tokenizer.countTokens());
         this.width = 0;
         this.height = 0;
         while (tokenizer.hasMoreTokens())
@@ -55,7 +53,7 @@ public class MultiLineTextIcon implements Icon
 
     public MultiLineTextIcon(Component c, List<?> lines)
     {
-        this.icons = new ArrayList<Icon>(lines.size());
+        this.icons = new ArrayList<>(lines.size());
         this.width = 0;
         this.height = 0;
         for (Object line : lines)

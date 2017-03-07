@@ -17,23 +17,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 18-Dec-2003
  *
- * Current Ver: $Revision$
  *
- * Last Editor: $Author$
  *
- * Last Edited: $Date$
  *
  */
 package pcgen.persistence.lst.output.prereq;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import pcgen.core.prereq.Prerequisite;
 import pcgen.core.prereq.PrerequisiteOperator;
 import pcgen.persistence.PersistenceLayerException;
-
-import java.io.IOException;
-import java.io.Writer;
 
 public class PrerequisiteMultWriter extends AbstractPrerequisiteWriter
 		implements PrerequisiteWriterInterface
@@ -60,9 +56,7 @@ public class PrerequisiteMultWriter extends AbstractPrerequisiteWriter
 			PrerequisiteOperator.NEQ};
 	}
 
-	/* (non-Javadoc)
-	 * @see pcgen.persistence.lst.output.prereq.PrerequisiteWriterInterface#write(java.io.Writer, pcgen.core.prereq.Prerequisite)
-	 */
+    
     @Override
 	public void write(Writer writer, Prerequisite prereq)
 		throws PersistenceLayerException
@@ -79,7 +73,11 @@ public class PrerequisiteMultWriter extends AbstractPrerequisiteWriter
 				handleSpecialCase(writer, prereq);
 				return;
 			}
-
+			if (isNegatedPreability(prereq))
+			{
+				handleNegatedPreAbility(writer, prereq);
+				return;
+			}
 			if (prereq.getPrerequisiteCount() != 0)
 			{
 				subreq = prereq.getPrerequisites().get(0);
@@ -193,4 +191,77 @@ public class PrerequisiteMultWriter extends AbstractPrerequisiteWriter
 		return false;
 	}
 
+	/**
+	 * Identify if this is a PREABILITY which has been converted into a PREMULT 
+	 * to include a negated check, i.e. ensure a particular ability is not
+	 * present in the character.
+	 *   
+	 * @param prereq The PREMULT to be checked.
+	 * @return true if this is a negated PREABILITY, false if not.
+	 */
+	private boolean isNegatedPreability(Prerequisite prereq)
+	{
+		if (prereq.getPrerequisites().isEmpty())
+		{
+			return false;
+		}
+		boolean hasNegated = false;
+		for (Prerequisite element : prereq.getPrerequisites())
+		{
+			if (!"ability".equalsIgnoreCase(element.getKind()))
+			{
+				return false;
+			}
+			if (element.getOperator() == PrerequisiteOperator.LT
+					&& "1".equals(element.getOperand()))
+			{
+				hasNegated = true;
+			}
+		}
+		return hasNegated;
+	}
+
+	/**
+	 * Restore the format of a prereq such as 
+	 * PREABILITY:1,CATEGORY=FEAT,[Surprise Strike]
+	 * 
+	 * @param writer The output destination writer.
+	 * @param prereq The prereq to be written, must be a negated PREABILITY
+	 * @throws IOException If the output cannot be written.
+	 */
+	private void handleNegatedPreAbility(Writer writer, Prerequisite prereq)
+		throws IOException
+	{
+		writer.write("PREABILITY:");
+		writer.write(String.valueOf(Integer.parseInt(prereq.getOperand()) - 1));
+		writer.write(",");
+		String cat = prereq.getPrerequisites().get(0).getCategoryName();
+		if (cat == null)
+		{
+			writer.write("CATEGORY=ANY");
+		}
+		else
+		{
+			writer.write("CATEGORY=" + cat);
+		}
+		for (Prerequisite child : prereq.getPrerequisites())
+		{
+			writer.write(",");
+			if (child.getOperator() == PrerequisiteOperator.LT)
+			{
+				writer.write("[");
+			}
+			writer.write(child.getKey());
+			if (child.getSubKey() != null)
+			{
+				writer.write(" (");
+				writer.write(child.getSubKey());
+				writer.write(")");
+			}
+			if (child.getOperator() == PrerequisiteOperator.LT)
+			{
+				writer.write("]");
+			}
+		}
+	}
 }

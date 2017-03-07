@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 02/06/2013
  *
- * $Id$
  */
 package pcgen.io.migration;
 
@@ -34,13 +32,11 @@ import pcgen.core.system.MigrationRule.ObjectType;
  * used to allow clean loading of older characters which were saved with ability 
  * keys that have now been changed in the data.
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
-public class AbilityMigration
+public final class AbilityMigration
 {
 
-	private static Map<int[], List<MigrationRule>> abilityChangesForVer = new HashMap<int[], List<MigrationRule>>();
+	private static Map<int[], List<MigrationRule>> abilityChangesForVer = new HashMap<>();
 
 	/**
 	 * Find the new ability key to replace the provided one.
@@ -51,7 +47,7 @@ public class AbilityMigration
 	 * @return The new ability key, or the passed in one if it has not changed.
 	 */
 	public static CategorisedKey getNewAbilityKey(String abilityCategory,
-		String abilityKey, int pcgVer[], String gameModeName)
+	                                              String abilityKey, int[] pcgVer, String gameModeName)
 	{
 		List<MigrationRule> abilityChangeList =
 				abilityChangesForVer.get(pcgVer);
@@ -78,7 +74,7 @@ public class AbilityMigration
 	/**
 	 * CategorisedKey is a container for a category and a key. 
 	 */
-	public static class CategorisedKey
+	public static final class CategorisedKey
 	{
 		private final String category;
 		private final String key;

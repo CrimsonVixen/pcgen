@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.CDOMObjectUtilities;
 import pcgen.cdom.base.CDOMReference;
@@ -54,7 +55,6 @@ import pcgen.core.PCClass;
 import pcgen.core.PlayerCharacter;
 import pcgen.core.chooser.ChoiceManagerList;
 import pcgen.core.chooser.ChooserUtilities;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.persistence.lst.DeprecatedToken;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
@@ -98,6 +98,9 @@ public class RemoveFeatToken extends AbstractNonEmptyToken<CDOMObject> implement
 		Nature nature = Nature.NORMAL;
 
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String activeValue = sep.next();
 		Formula count;
 		if (!sep.hasNext())
@@ -134,10 +137,12 @@ public class RemoveFeatToken extends AbstractNonEmptyToken<CDOMObject> implement
 			return ParseResult.INTERNAL_ERROR;
 		}
 
-		List<CDOMReference<Ability>> refs = new ArrayList<CDOMReference<Ability>>();
+		List<CDOMReference<Ability>> refs = new ArrayList<>();
 		List<PrimitiveChoiceSet<CNAbilitySelection>> pcs =
-				new ArrayList<PrimitiveChoiceSet<CNAbilitySelection>>();
+				new ArrayList<>();
 		ParsingSeparator tok = new ParsingSeparator(activeValue, ',');
+		tok.addGroupingPair('[', ']');
+		tok.addGroupingPair('(', ')');
 
 		boolean foundAny = false;
 		boolean foundOther = false;
@@ -159,7 +164,7 @@ public class RemoveFeatToken extends AbstractNonEmptyToken<CDOMObject> implement
 				|| token.startsWith(Constants.LST_CLASS_EQUAL))
 			{
 				String className = token.substring(6);
-				if (className.length() == 0)
+				if (className.isEmpty())
 				{
 					return new ParseResult.Fail(getTokenName()
 							+ " must have Class name after " + token, context);
@@ -211,14 +216,14 @@ public class RemoveFeatToken extends AbstractNonEmptyToken<CDOMObject> implement
 		}
 		else
 		{
-			ascs = new CompoundOrChoiceSet<CNAbilitySelection>(pcs, Constants.COMMA);
+			ascs = new CompoundOrChoiceSet<>(pcs, Constants.COMMA);
 		}
-		ChoiceSet<CNAbilitySelection> cs = new ChoiceSet<CNAbilitySelection>(
+		ChoiceSet<CNAbilitySelection> cs = new ChoiceSet<>(
 				getTokenName(), ascs, true);
 		cs.setTitle("Select for removal");
 		PersistentTransitionChoice<CNAbilitySelection> tc =
-				new ConcretePersistentTransitionChoice<CNAbilitySelection>(
-					cs, count);
+				new ConcretePersistentTransitionChoice<>(
+						cs, count);
 		context.getObjectContext().addToList(obj, ListKey.REMOVE, tc);
 		tc.allowStack(true);
 		tc.setChoiceActor(this);
@@ -237,7 +242,7 @@ public class RemoveFeatToken extends AbstractNonEmptyToken<CDOMObject> implement
 			// Zero indicates no Token
 			return null;
 		}
-		List<String> addStrings = new ArrayList<String>();
+		List<String> addStrings = new ArrayList<>();
 		for (TransitionChoice<?> container : addedItems)
 		{
 			SelectableSet<?> cs = container.getChoices();

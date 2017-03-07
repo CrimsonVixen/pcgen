@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens;
@@ -36,14 +32,10 @@ import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.AbstractExportToken;
 
 /**
- * <code>VisionToken</code> produces the output for the output token 
+ * {@code VisionToken} produces the output for the output token
  * VISION.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author Devon Jones <soulcatcher@evilsoft.org>
- * @version $Revision$
  */
 public class VisionToken extends AbstractExportToken
 {
@@ -66,7 +58,7 @@ public class VisionToken extends AbstractExportToken
 		StringTokenizer aTok = new StringTokenizer(tokenSource, ".");
 		aTok.nextToken();
 
-		List<Vision> visionList = new ArrayList<Vision>(display.getVisionList());
+		List<Vision> visionList = new ArrayList<>(display.getVisionList());
 
 		int visionIndex = 0;
 		int startIndex = 0;
@@ -107,7 +99,7 @@ public class VisionToken extends AbstractExportToken
 			result.append(vision.getType());
 			String distStr = vision.getDistance().toString();
 			int dist = 0;
-			if ((distStr != null) && (distStr.trim().length() > 0))
+			if ((distStr != null) && (!distStr.trim().isEmpty()))
 			{
 				dist = Integer.parseInt(distStr);
 			}

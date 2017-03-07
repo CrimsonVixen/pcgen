@@ -18,7 +18,6 @@
  *
  *  AddCombatant.java
  *
- *  Created on January 4, 2002, 2:10 PM
  */
 package plugin.initiative.gui;
 
@@ -36,16 +35,11 @@ import plugin.initiative.XMLCombatant;
  * <p>
  * A dialog which adds a combatant to the initiative tracker.  It
  * allows the user to enter the basic information to construct a new
- * <code>XMLCombatant</code>; Selecting the "Save" action constructs
+ * {@code XMLCombatant}; Selecting the "Save" action constructs
  * the combatant(s) and saves them to the initiative model.
  * </p>
  *
- * <p>Current Ver: $Revision$</p>
- * <p>Last Editor: $Author$</p>
- * <p>Last Edited: $Date$</p>
  *
- * @author     devon
- * @since    April 7, 2003
  */
 public class AddCombatant extends AbstractDialog
 {
@@ -354,7 +348,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(typeCombo, gridBagConstraints);
 
-		bonusField.setValue(Integer.valueOf(0));
+		bonusField.setValue(0);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -363,7 +357,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
 		center.add(bonusField, gridBagConstraints);
 
-		hpField.setValue(Integer.valueOf(1));
+		hpField.setValue(1);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -372,7 +366,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
 		center.add(hpField, gridBagConstraints);
 
-		numberField.setValue(Integer.valueOf(1));
+		numberField.setValue(1);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -431,7 +425,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
 		center.add(chaLabel, gridBagConstraints);
 
-		conField.setValue(Integer.valueOf(10));
+		conField.setValue(10);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -440,7 +434,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(conField, gridBagConstraints);
 
-		strField.setValue(Integer.valueOf(10));
+		strField.setValue(10);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -449,7 +443,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(strField, gridBagConstraints);
 
-		dexField.setValue(Integer.valueOf(10));
+		dexField.setValue(10);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -458,7 +452,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(dexField, gridBagConstraints);
 
-		intField.setValue(Integer.valueOf(10));
+		intField.setValue(10);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -467,7 +461,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(intField, gridBagConstraints);
 
-		wisField.setValue(Integer.valueOf(10));
+		wisField.setValue(10);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -476,7 +470,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(wisField, gridBagConstraints);
 
-		chaField.setValue(Integer.valueOf(10));
+		chaField.setValue(10);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -510,7 +504,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
 		center.add(willLabel, gridBagConstraints);
 
-		fortitudeField.setValue(Integer.valueOf(0));
+		fortitudeField.setValue(0);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 3;
@@ -519,7 +513,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(fortitudeField, gridBagConstraints);
 
-		reflexField.setValue(Integer.valueOf(0));
+		reflexField.setValue(0);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 3;
@@ -528,7 +522,7 @@ public class AddCombatant extends AbstractDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		center.add(reflexField, gridBagConstraints);
 
-		willField.setValue(Integer.valueOf(0));
+		willField.setValue(0);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 3;
@@ -583,7 +577,7 @@ public class AddCombatant extends AbstractDialog
 	 */
 	private void initDropDown()
 	{
-		java.util.Vector<String> vType = new java.util.Vector<String>();
+		java.util.Vector<String> vType = new java.util.Vector<>();
 		vType.add("Enemy");
 		vType.add("Ally");
 		vType.add("PC");
@@ -596,7 +590,7 @@ public class AddCombatant extends AbstractDialog
 
 	/**
 	 * <p>Returns the integer value of the given field</p>
-	 * @param field A <code>JFormattedTextField</code> with an <code>Integer</code> value
+	 * @param field A {@code JFormattedTextField} with an <code>Integer</code> value
 	 * @param defaultValue
 	 * @return int
 	 */
@@ -612,7 +606,7 @@ public class AddCombatant extends AbstractDialog
 
 	/**
 	 * <p>Returns the float value of the given field</p>
-	 * @param field A <code>JFormattedTextField</code> with an <code>Float</code> value
+	 * @param field A {@code JFormattedTextField} with an <code>Float</code> value
 	 * @param defaultValue
 	 * @return float
 	 */

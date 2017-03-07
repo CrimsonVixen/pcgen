@@ -16,24 +16,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 16/01/2012 8:48:48 AM
  *
- * $Id$
  */
 package pcgen.facade.util.event;
 
 /**
- * The interface <code>ChangeListener</code> should be implemented by classes interested in 
+ * The interface {@code ChangeListener} should be implemented by classes interested in
  * object changes.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
+@FunctionalInterface
 public interface ChangeListener
 {
 	/**

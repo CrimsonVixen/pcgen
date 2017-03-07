@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 6, 2006
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit.gear;
@@ -149,7 +145,7 @@ public class EqmodToken extends AbstractTokenWithSeparator<KitGear> implements
 		{
 			return null;
 		}
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		for (EqModRef modRef : kitGear.getEqMods())
 		{
 			String key = modRef.getRef().getLSTformat(false);

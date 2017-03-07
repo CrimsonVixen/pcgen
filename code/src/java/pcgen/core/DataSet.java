@@ -70,7 +70,7 @@ import pcgen.util.enumeration.View;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
+ * @author Connor Petty &lt;cpmeister@users.sourceforge.net&gt;
  */
 public class DataSet implements DataSetFacade
 {
@@ -99,22 +99,22 @@ public class DataSet implements DataSetFacade
 
 	public DataSet( LoadContext context, GameMode gameMode, ListFacade<CampaignFacade> campaigns)
 	{
-		races = new DefaultListFacade<RaceFacade>();
-		classes = new DefaultListFacade<ClassFacade>();
-		deities = new DefaultListFacade<DeityFacade>();
-		skills = new DefaultListFacade<SkillFacade>();
-		templates = new DefaultListFacade<TemplateFacade>();
-		alignments = new DefaultListFacade<AlignmentFacade>();
-		stats = new DefaultListFacade<StatFacade>();
+		races = new DefaultListFacade<>();
+		classes = new DefaultListFacade<>();
+		deities = new DefaultListFacade<>();
+		skills = new DefaultListFacade<>();
+		templates = new DefaultListFacade<>();
+		alignments = new DefaultListFacade<>();
+		stats = new DefaultListFacade<>();
 //		categories = new DefaultListFacade<AbilityCategoryFacade>();
 //		abilityMap = new HashMap<AbilityCategoryFacade, ListFacade<AbilityFacade>>();
         abilityMap = new AbilityMap();
-		bodyStructures = new DefaultListFacade<BodyStructureFacade>();
-		equipment = new DefaultListFacade<EquipmentFacade>();
-		xpTableNames = new DefaultListFacade<String>();
-		characterTypes = new DefaultListFacade<String>();
-		kits = new DefaultListFacade<KitFacade>();
-		sizes = new DefaultListFacade<SizeAdjustmentFacade>();
+		bodyStructures = new DefaultListFacade<>();
+		equipment = new DefaultListFacade<>();
+		xpTableNames = new DefaultListFacade<>();
+		characterTypes = new DefaultListFacade<>();
+		kits = new DefaultListFacade<>();
+		sizes = new DefaultListFacade<>();
 		this.context = context;
 		this.gameMode = gameMode;
 		this.campaigns = campaigns;
@@ -123,8 +123,8 @@ public class DataSet implements DataSetFacade
 
 	private void initLists()
 	{
-		List<Race> raceList = new ArrayList<Race>(context.getReferenceContext().getConstructedCDOMObjects(Race.class));
-		Collections.sort(raceList, new RaceComparator());
+		List<Race> raceList = new ArrayList<>(context.getReferenceContext().getConstructedCDOMObjects(Race.class));
+		raceList.sort(new RaceComparator());
 		for (Race race : raceList)
 		{
 			if (race.getSafe(ObjectKey.VISIBILITY).isVisibleTo(View.VISIBLE_DISPLAY))
@@ -133,8 +133,8 @@ public class DataSet implements DataSetFacade
 			}
 		}
 		
-		List<PCClass> classList = new ArrayList<PCClass>(context.getReferenceContext().getConstructedCDOMObjects(PCClass.class));
-		Collections.sort(classList, new PCClassComparator());
+		List<PCClass> classList = new ArrayList<>(context.getReferenceContext().getConstructedCDOMObjects(PCClass.class));
+		classList.sort(new PCClassComparator());
 		for (PCClass pcClass : classList)
 		{
 			if (pcClass.getSafe(ObjectKey.VISIBILITY).isVisibleTo(View.VISIBLE_DISPLAY))
@@ -184,12 +184,12 @@ public class DataSet implements DataSetFacade
 			{
 //				categories.addElement(category);
 				List<Ability> abList =
-						new ArrayList<Ability>(Globals.getContext().getReferenceContext()
-							.getManufacturer(Ability.class, category)
-							.getAllObjects());
+                        new ArrayList<>(Globals.getContext().getReferenceContext()
+                                .getManufacturer(Ability.class, category)
+                                .getAllObjects());
 				Globals.sortPObjectListByName(abList);
 				DefaultListFacade<AbilityFacade> abilityList =
-						new DefaultListFacade<AbilityFacade>(abList);
+                        new DefaultListFacade<>(abList);
 				for (Iterator<AbilityFacade> iterator = abilityList.iterator(); iterator
 					.hasNext();)
 				{
@@ -207,8 +207,8 @@ public class DataSet implements DataSetFacade
 			}
 		}
 		Map<String, BodyStructure> structMap =
-				new HashMap<String, BodyStructure>(SystemCollections
-					.getUnmodifiableBodyStructureList().size() + 3);
+                new HashMap<>(SystemCollections
+                        .getUnmodifiableBodyStructureList().size() + 3);
 		for (String name : SystemCollections.getUnmodifiableBodyStructureList())
 		{
 			// TODO i18n the display name and correct the DataSetTest
@@ -263,7 +263,7 @@ public class DataSet implements DataSetFacade
 	 */
 	private Set<Type> buildSlottedTypeList()
 	{
-		Set<Type> typeList = new HashSet<Type>();
+		Set<Type> typeList = new HashSet<>();
 		for (EquipSlot es : SystemCollections.getUnmodifiableEquipSlotList())
 		{
 			
@@ -285,7 +285,7 @@ public class DataSet implements DataSetFacade
 		BigDecimal fullPrice = new BigDecimal(100.0);
 		BigDecimal halfPrice = new BigDecimal(50.0);
 		BigDecimal free = BigDecimal.ZERO;
-		gearBuySellSchemes = new DefaultListFacade<GearBuySellFacade>();
+		gearBuySellSchemes = new DefaultListFacade<>();
 		// TODO i18n this
 		gearBuySellSchemes.addElement(new GearBuySellScheme("Market price", fullPrice, halfPrice, fullPrice));
 		gearBuySellSchemes.addElement(new GearBuySellScheme("Character build", fullPrice, fullPrice, fullPrice));
@@ -311,7 +311,7 @@ public class DataSet implements DataSetFacade
 		}
 
 		Ability ability = (Ability) abilityFacade;
-		List<AbilityFacade> prereqList = new ArrayList<AbilityFacade>();
+		List<AbilityFacade> prereqList = new ArrayList<>();
 		for (Prerequisite prereq : ability.getPrerequisiteList())
 		{
 			prereqList.addAll(getAbilitiesFromPrereq(prereq, ability.getCDOMCategory()));
@@ -321,7 +321,7 @@ public class DataSet implements DataSetFacade
 	
 	private List<AbilityFacade> getAbilitiesFromPrereq(Prerequisite prereq, Category<Ability> cat)
 	{
-		List<AbilityFacade> prereqList = new ArrayList<AbilityFacade>();
+		List<AbilityFacade> prereqList = new ArrayList<>();
 		// Exclude negated prereqs
 		if (prereq == null || (prereq.getOperator() == PrerequisiteOperator.LT && "1".equals(prereq.getOperand())))
 		{
@@ -473,10 +473,7 @@ public class DataSet implements DataSetFacade
 		return characterTypes;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-    @Override
+	@Override
 	public ListFacade<GearBuySellFacade> getGearBuySellSchemes()
 	{
 		return gearBuySellSchemes;
@@ -484,7 +481,7 @@ public class DataSet implements DataSetFacade
 
 
 	/**
-	 * The Class <code>RaceComparator</code> sorts races so that PC races come 
+	 * The Class {@code RaceComparator} sorts races so that PC races come
 	 * at the top of the list, just after <None Selected>.
 	 */
 	class RaceComparator implements Comparator<Race>
@@ -497,12 +494,12 @@ public class DataSet implements DataSetFacade
 		public int compare(Race r1, Race r2)
 		{
 		    final int BEFORE = -1;
-		    final int EQUAL = 0;
-		    final int AFTER = 1;
+			final int AFTER = 1;
 
 		    if (r1 == r2)
 		    {
-		    	return EQUAL;
+			    final int EQUAL = 0;
+			    return EQUAL;
 		    }
 
 		    final String NONE_SELECTED = "<none selected>";
@@ -556,7 +553,7 @@ public class DataSet implements DataSetFacade
 	}
 	
 	/**
-	 * The Class <code>PCClassComparator</code> sorts classes so that base  
+	 * The Class {@code PCClassComparator} sorts classes so that base
 	 * classes come at the top of the list.
 	 */
 	class PCClassComparator implements Comparator<PCClass>
@@ -569,12 +566,12 @@ public class DataSet implements DataSetFacade
 		public int compare(PCClass c1, PCClass c2)
 		{
 		    final int BEFORE = -1;
-		    final int EQUAL = 0;
-		    final int AFTER = 1;
+			final int AFTER = 1;
 
 		    if (c1 == c2)
 		    {
-		    	return EQUAL;
+			    final int EQUAL = 0;
+			    return EQUAL;
 		    }
 		    	
 		    final String BASE_TYPE = "BASE.PC";
@@ -628,9 +625,9 @@ public class DataSet implements DataSetFacade
 
         private TreeMap<AbilityCategoryFacade, ListFacade<AbilityFacade>> map;
 
-        public AbilityMap()
+        AbilityMap()
         {
-            map = new TreeMap<AbilityCategoryFacade, ListFacade<AbilityFacade>>(new AbilityCategoryComparator());
+            map = new TreeMap<>(new AbilityCategoryComparator());
         }
         
         @Override
@@ -654,9 +651,6 @@ public class DataSet implements DataSetFacade
 	class AbilityCategoryComparator implements Comparator<AbilityCategoryFacade>
 	{
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int compare(AbilityCategoryFacade f1, AbilityCategoryFacade f2)
 		{
@@ -665,9 +659,8 @@ public class DataSet implements DataSetFacade
 		    final int BEFORE = -1;
 		    final int EQUAL = 0;
 		    final int AFTER = 1;
-		    final String ORDER[] = {"FEATS", "RACIAL ABILITIES", "TRAITS", "CLASS ABILITIES"};
 
-		    if (o1 == o2)
+			if (o1 == o2)
 		    {
 		    	return EQUAL;
 		    }
@@ -687,7 +680,9 @@ public class DataSet implements DataSetFacade
 		    }
 		    if ((ac1Display != null && ac2Display != null) && !ac1Display.equals(ac2Display))
 		    {
-		    	for (String displayOrder : ORDER)
+			    final String[] ORDER =
+					    {"FEATS", "RACIAL ABILITIES", "TRAITS", "CLASS ABILITIES"};
+			    for (String displayOrder : ORDER)
 				{
 					if (ac1Display.equals(displayOrder))
 					{
@@ -719,36 +714,25 @@ public class DataSet implements DataSetFacade
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<KitFacade> getKits()
 	{
 		return kits;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<SizeAdjustmentFacade> getSizes()
 	{
 		return sizes;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("DataSet [gameMode=");
-		builder.append(gameMode);
-		builder.append(", campaigns=");
-		builder.append(campaigns);
-		builder.append("]");
-		return builder.toString();
+		return "DataSet [gameMode=" +
+				gameMode +
+				", campaigns=" +
+				campaigns +
+				"]";
 	}
 }

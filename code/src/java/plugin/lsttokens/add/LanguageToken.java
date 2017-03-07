@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.ChoiceSet;
@@ -37,7 +38,6 @@ import pcgen.cdom.choiceset.ReferenceChoiceSet;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.core.Language;
 import pcgen.core.PlayerCharacter;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.TokenUtilities;
@@ -73,6 +73,9 @@ public class LanguageToken extends AbstractNonEmptyToken<CDOMObject> implements
 		CDOMObject obj, String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		String activeValue = sep.next();
 		Formula count;
 		if (!sep.hasNext())
@@ -105,7 +108,7 @@ public class LanguageToken extends AbstractNonEmptyToken<CDOMObject> implements
 			return pr;
 		}
 
-		List<CDOMReference<Language>> refs = new ArrayList<CDOMReference<Language>>();
+		List<CDOMReference<Language>> refs = new ArrayList<>();
 		StringTokenizer tok = new StringTokenizer(activeValue, Constants.COMMA);
 		while (tok.hasMoreTokens())
 		{
@@ -121,7 +124,7 @@ public class LanguageToken extends AbstractNonEmptyToken<CDOMObject> implements
 			refs.add(lang);
 		}
 
-		ReferenceChoiceSet<Language> rcs = new ReferenceChoiceSet<Language>(
+		ReferenceChoiceSet<Language> rcs = new ReferenceChoiceSet<>(
 				refs);
 		if (!rcs.getGroupingState().isValid())
 		{
@@ -129,10 +132,10 @@ public class LanguageToken extends AbstractNonEmptyToken<CDOMObject> implements
 					+ ": Contains ANY and a specific reference: " + value, context);
 		}
 
-		ChoiceSet<Language> cs = new ChoiceSet<Language>(getTokenName(), rcs);
+		ChoiceSet<Language> cs = new ChoiceSet<>(getTokenName(), rcs);
 		cs.setTitle("Language Choice");
 		PersistentTransitionChoice<Language> tc =
-				new ConcretePersistentTransitionChoice<Language>(cs, count);
+				new ConcretePersistentTransitionChoice<>(cs, count);
 		context.getObjectContext().addToList(obj, ListKey.ADD, tc);
 		tc.setChoiceActor(this);
 		return ParseResult.SUCCESS;
@@ -150,7 +153,7 @@ public class LanguageToken extends AbstractNonEmptyToken<CDOMObject> implements
 			// Zero indicates no Token
 			return null;
 		}
-		List<String> addStrings = new ArrayList<String>();
+		List<String> addStrings = new ArrayList<>();
 		for (TransitionChoice<?> container : addedItems)
 		{
 			SelectableSet<?> cs = container.getChoices();

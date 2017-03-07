@@ -39,14 +39,14 @@ import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class SpellListTokenTest extends AbstractTokenTestCase<PCClass>
+public class SpellListTokenTest extends AbstractCDOMTokenTestCase<PCClass>
 {
 	static SpelllistToken token = new SpelllistToken();
-	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<PCClass>();
+	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public Class<? extends PCClass> getCDOMClass()
@@ -316,12 +316,12 @@ public class SpellListTokenTest extends AbstractTokenTestCase<PCClass>
 		runRoundRobin("2|TestWP1|TestWP2|DOMAIN.AestWP3");
 	}
 
-	protected ClassSpellList construct(LoadContext loadContext, String one)
+	protected static ClassSpellList construct(LoadContext loadContext, String one)
 	{
 		return loadContext.getReferenceContext().constructCDOMObject(ClassSpellList.class, one);
 	}
 
-	protected void constructDomain(LoadContext loadContext, String one)
+	protected static void constructDomain(LoadContext loadContext, String one)
 	{
 		loadContext.getReferenceContext().constructCDOMObject(DomainSpellList.class, one);
 	}
@@ -355,18 +355,18 @@ public class SpellListTokenTest extends AbstractTokenTestCase<PCClass>
 	protected PersistentTransitionChoice<CDOMListObject<Spell>> buildTC(
 			ReferenceChoiceSet<ClassSpellList> rcs)
 	{
-		ChoiceSet<ClassSpellList> cs = new ChoiceSet<ClassSpellList>(getToken()
+		ChoiceSet<ClassSpellList> cs = new ChoiceSet<>(getToken()
 				.getTokenName(), rcs);
 		cs.setTitle("Pick a SpellList");
-		PersistentTransitionChoice<CDOMListObject<Spell>> tc = new ConcretePersistentTransitionChoice<CDOMListObject<Spell>>(
+		PersistentTransitionChoice<CDOMListObject<Spell>> tc = new ConcretePersistentTransitionChoice<>(
 				cs, FormulaFactory.ONE);
 		return tc;
 	}
 
-	protected ReferenceChoiceSet<ClassSpellList> buildRCS(
+	protected static ReferenceChoiceSet<ClassSpellList> buildRCS(
 			CDOMReference<ClassSpellList>... refs)
 	{
-		ReferenceChoiceSet<ClassSpellList> rcs = new ReferenceChoiceSet<ClassSpellList>(
+		ReferenceChoiceSet<ClassSpellList> rcs = new ReferenceChoiceSet<>(
 				Arrays.asList(refs));
 		return rcs;
 	}
@@ -393,11 +393,11 @@ public class SpellListTokenTest extends AbstractTokenTestCase<PCClass>
 	public void testUnparseBadCount() throws PersistenceLayerException
 	{
 		ClassSpellList wp1 = construct(primaryContext, "TestWP1");
-		ReferenceChoiceSet<ClassSpellList> rcs = new ReferenceChoiceSet<ClassSpellList>(
+		ReferenceChoiceSet<ClassSpellList> rcs = new ReferenceChoiceSet<>(
 				Collections.singletonList(CDOMDirectSingleRef.getRef(wp1)));
-		ChoiceSet<ClassSpellList> cs = new ChoiceSet<ClassSpellList>(token.getTokenName(), rcs);
+		ChoiceSet<ClassSpellList> cs = new ChoiceSet<>(token.getTokenName(), rcs);
 		cs.setTitle("Pick a ClassSpellList");
-		PersistentTransitionChoice<CDOMListObject<Spell>> tc1 = new ConcretePersistentTransitionChoice<CDOMListObject<Spell>>(
+		PersistentTransitionChoice<CDOMListObject<Spell>> tc1 = new ConcretePersistentTransitionChoice<>(
 				cs, null);
 		primaryProf.put(ObjectKey.SPELLLIST_CHOICE, tc1);
 		assertBadUnparse();

@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens.deprecated;
@@ -31,7 +27,7 @@ import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.AbstractExportToken;
 
 /**
- * <code>UnitSetToken</code>.
+ * {@code UnitSetToken}.
  *
  * Token formats are:
  * 
@@ -40,8 +36,6 @@ import pcgen.io.exporttoken.AbstractExportToken;
  * UNITSET.DISTANCEUNIT
  * UNITSET.WEIGHTUNIT
  *
- * @author jdempsey
- * @version $Revision$
  */
 public class UnitSetToken extends AbstractExportToken
 {

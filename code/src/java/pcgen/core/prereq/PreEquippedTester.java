@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core.prereq;
@@ -34,7 +30,6 @@ import pcgen.core.character.WieldCategory;
 import pcgen.system.LanguageBundle;
 
 /**
- * @author wardc
  */
 public abstract class PreEquippedTester extends AbstractPrerequisiteTest {
 

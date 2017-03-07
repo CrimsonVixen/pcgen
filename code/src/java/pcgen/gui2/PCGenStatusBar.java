@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on May 1, 2010, 4:00:24 PM
  */
 package pcgen.gui2;
 
@@ -43,7 +42,6 @@ import pcgen.util.Logging;
  * It will show source loading progress and a corresponding error icon
  * (if there are errors)
  * TODO: add support for concurrent task execution
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public final class PCGenStatusBar extends JPanel
 {
@@ -147,7 +145,7 @@ public final class PCGenStatusBar extends JPanel
 	/**
 	 * Shows the progress bar, in indeterminate mode
 	 * 
-	 * @param Context message to show on status bar
+	 * @param msg message to show on status bar
 	 * @param indeterminate
 	 */
 	public void startShowingProgress(final String msg, boolean indeterminate)

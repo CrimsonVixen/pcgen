@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 08/06/2012 7:42:35 PM
  *
- * $Id$
  */
 package pcgen.gui2.tabs;
 
@@ -61,8 +59,6 @@ import pcgen.gui2.tools.FlippingSplitPane;
 import pcgen.gui2.tools.Icons;
 import pcgen.gui2.tools.InfoPane;
 import pcgen.gui2.util.FontManipulation;
-import pcgen.gui2.util.SortMode;
-import pcgen.gui2.util.SortingPriority;
 import pcgen.gui2.util.treeview.DataView;
 import pcgen.gui2.util.treeview.DataViewColumn;
 import pcgen.gui2.util.treeview.DefaultDataViewColumn;
@@ -73,15 +69,12 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.enumeration.Tab;
 
 /**
- * The Class <code>TempBonusInfoTab</code> allows the user to select which
+ * The Class {@code TempBonusInfoTab} allows the user to select which
  * temporary bonus should be applied to their character.
  *
- * <br/>
- * Last Editor: $Author$ Last Edited: $Date: 2014-05-17 15:43:31
+ * <br>
  * -0700 (Sat, 17 May 2014) $
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfoTab
 {
@@ -105,8 +98,8 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 	public TempBonusInfoTab()
 	{
 		super("TempBonus");
-		this.availableTable = new FilteredTreeViewTable<CharacterFacade, TempBonusFacade>();
-		this.selectedTable = new FilteredTreeViewTable<CharacterFacade, TempBonusFacade>();
+		this.availableTable = new FilteredTreeViewTable<>();
+		this.selectedTable = new FilteredTreeViewTable<>();
 		this.addButton = new JButton();
 		this.removeButton = new JButton();
 		this.infoPane = new InfoPane(LanguageBundle.getString("in_InfoTempMod")); //$NON-NLS-1$
@@ -121,14 +114,12 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 		setOrientation(VERTICAL_SPLIT);
 
 		JPanel availPanel = new JPanel(new BorderLayout());
-		FilterBar<CharacterFacade, TempBonusFacade> bar = new FilterBar<CharacterFacade, TempBonusFacade>();
+		FilterBar<CharacterFacade, TempBonusFacade> bar = new FilterBar<>();
 		bar.addDisplayableFilter(new SearchFilterPanel());
 		availPanel.add(bar, BorderLayout.NORTH);
 
 		availableTable.setDisplayableFilter(bar);
 		availableTable.setTreeCellRenderer(tempBonusRenderer);
-		availableTable.setSortingPriority(Collections.singletonList(new SortingPriority(0, SortMode.ASCENDING)));
-		availableTable.sortModel();
 		availPanel.add(new JScrollPane(availableTable), BorderLayout.CENTER);
 
 		Box box = Box.createHorizontalBox();
@@ -142,13 +133,11 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 		topPane.setLeftComponent(availPanel);
 
 		JPanel selPanel = new JPanel(new BorderLayout());
-		FilterBar<CharacterFacade, TempBonusFacade> filterBar = new FilterBar<CharacterFacade, TempBonusFacade>();
+		FilterBar<CharacterFacade, TempBonusFacade> filterBar = new FilterBar<>();
 		filterBar.addDisplayableFilter(new SearchFilterPanel());
 
 		selectedTable.setDisplayableFilter(filterBar);
 		selectedTable.setTreeCellRenderer(tempBonusRenderer);
-		selectedTable.setSortingPriority(Collections.singletonList(new SortingPriority(0, SortMode.ASCENDING)));
-		selectedTable.sortModel();
 		selPanel.add(new JScrollPane(selectedTable), BorderLayout.CENTER);
 
 		box = Box.createHorizontalBox();
@@ -160,7 +149,7 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 
 		topPane.setRightComponent(selPanel);
 		setBottomComponent(infoPane);
-		setResizeWeight(.75);
+		setResizeWeight(0.75);
 	}
 
 	@Override
@@ -421,20 +410,22 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 			this.isAvailModel = isAvailModel;
 			if (isAvailModel)
 			{
-				tempBonuses = new FilteredListFacade<CharacterFacade, TempBonusFacade>();
+				tempBonuses = new FilteredListFacade<>();
 				tempBonuses.setContext(character);
 				tempBonuses.setFilter(this);
 				tempBonuses.setDelegate(character.getAvailableTempBonuses());
 				character.getAvailableTempBonuses().addListListener(this);
 				columns = Arrays.asList(new DefaultDataViewColumn("in_itmFrom", String.class, true), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_itmTarget", String.class, true), //$NON-NLS-1$
-						new DefaultDataViewColumn("in_source", String.class, true)); //$NON-NLS-1$
+						new DefaultDataViewColumn("in_descrip", String.class, false), //$NON-NLS-1$
+						new DefaultDataViewColumn("in_source", String.class, false)); //$NON-NLS-1$
 			}
 			else
 			{
 				tempBonuses = null;
 				columns = Arrays.asList(new DefaultDataViewColumn("in_itmFrom", String.class, false), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_itmTarget", String.class, true), //$NON-NLS-1$
+						new DefaultDataViewColumn("in_descrip", String.class, false), //$NON-NLS-1$
 						new DefaultDataViewColumn("in_source", String.class, false)); //$NON-NLS-1$
 			}
 		}
@@ -479,11 +470,25 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 		}
 
 		@Override
-		public List<?> getData(TempBonusFacade obj)
+		public Object getData(TempBonusFacade obj, int column)
 		{
-			return Arrays.asList(obj.getOriginType(),
-					infoFactory.getTempBonusTarget(obj),
-					obj.getSource());
+			switch(column){
+				case 0:
+					return obj.getOriginType();
+				case 1:
+					return infoFactory.getTempBonusTarget(obj);
+				case 2:
+					return infoFactory.getDescription(obj);
+				case 3:
+					return obj.getSource();
+				default:
+					return null;
+			}
+		}
+
+		@Override
+		public void setData(Object value, TempBonusFacade element, int column)
+		{
 		}
 
 		@Override
@@ -522,9 +527,6 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 			return !context.getTempBonuses().containsElement(element);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getPrefsKey()
 		{
@@ -571,18 +573,18 @@ public class TempBonusInfoTab extends FlippingSplitPane implements CharacterInfo
 				case TARGET_NAME:
 					if (infoFactory != null)
 					{
-						return Collections.singletonList(new TreeViewPath<TempBonusFacade>(bonus,
-								infoFactory.getTempBonusTarget(bonus)));
+						return Collections.singletonList(new TreeViewPath<>(bonus,
+                                infoFactory.getTempBonusTarget(bonus)));
 					}
 				// No info factory? Treat as a name 
 				case NAME:
-					return Collections.singletonList(new TreeViewPath<TempBonusFacade>(bonus));
+					return Collections.singletonList(new TreeViewPath<>(bonus));
 				case ORIGIN_NAME:
-					return Collections.singletonList(new TreeViewPath<TempBonusFacade>(bonus,
-							bonus.getOriginType()));
+					return Collections.singletonList(new TreeViewPath<>(bonus,
+                            bonus.getOriginType()));
 				case SOURCE_NAME:
-					return Collections.singletonList(new TreeViewPath<TempBonusFacade>(bonus,
-							bonus.getSourceForNodeDisplay()));
+					return Collections.singletonList(new TreeViewPath<>(bonus,
+                            bonus.getSourceForNodeDisplay()));
 				default:
 					throw new InternalError();
 			}

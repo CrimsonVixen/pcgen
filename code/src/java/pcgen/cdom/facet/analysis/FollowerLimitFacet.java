@@ -41,7 +41,6 @@ import pcgen.cdom.list.CompanionList;
  * FollowerLimitFacet is a Facet that tracks the Follower Limits that have been
  * set for a Player Character.
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public class FollowerLimitFacet extends AbstractStorageFacet<CharID> implements
 		DataFacetChangeListener<CharID, CDOMObject>
@@ -111,13 +110,13 @@ public class FollowerLimitFacet extends AbstractStorageFacet<CharID> implements
 		{
 			throw new IllegalArgumentException("Object to add may not be null");
 		}
-		CompanionList cl = fo.getCompanionList().resolvesTo();
+		CompanionList cl = fo.getCompanionList().get();
 		Map<FollowerLimit, Set<CDOMObject>> foMap = getConstructingCachedMap(
 				id, cl);
 		Set<CDOMObject> set = foMap.get(fo);
 		if (set == null)
 		{
-			set = new WrappedMapSet<CDOMObject>(IdentityHashMap.class);
+			set = new WrappedMapSet<>(IdentityHashMap.class);
 			foMap.put(fo, set);
 		}
 		set.add(cdo);
@@ -190,13 +189,13 @@ public class FollowerLimitFacet extends AbstractStorageFacet<CharID> implements
 		Map<CompanionList, Map<FollowerLimit, Set<CDOMObject>>> componentMap = getCachedMap(id);
 		if (componentMap == null)
 		{
-			componentMap = new HashMap<CompanionList, Map<FollowerLimit, Set<CDOMObject>>>();
+			componentMap = new HashMap<>();
 			setCache(id, componentMap);
 		}
 		Map<FollowerLimit, Set<CDOMObject>> foMap = componentMap.get(cl);
 		if (foMap == null)
 		{
-			foMap = new IdentityHashMap<FollowerLimit, Set<CDOMObject>>();
+			foMap = new IdentityHashMap<>();
 			componentMap.put(cl, foMap);
 		}
 		return foMap;
@@ -241,8 +240,8 @@ public class FollowerLimitFacet extends AbstractStorageFacet<CharID> implements
 		}
 		if (ret != -1)
 		{
-			ret += bonusCheckingFacet.getBonus(id, "FOLLOWERS", cl.getKeyName()
-					.toUpperCase());
+			ret = (int) (ret + bonusCheckingFacet.getBonus(id, "FOLLOWERS", cl.getKeyName()
+					.toUpperCase()));
 		}
 		return ret;
 	}

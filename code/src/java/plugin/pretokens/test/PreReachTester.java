@@ -17,16 +17,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision: 1777 $
- * Last Editor: $Author: jdempsey $
- * Last Edited: $Date: 2006-12-17 05:36:01 +0100 (So, 17 Dez 2006) $
  *
  */
 package plugin.pretokens.test;
 
 import pcgen.cdom.base.CDOMObject;
+import pcgen.cdom.facet.FacetLibrary;
+import pcgen.cdom.facet.analysis.ReachFacet;
 import pcgen.core.display.CharacterDisplay;
 import pcgen.core.prereq.AbstractDisplayPrereqTest;
 import pcgen.core.prereq.Prerequisite;
@@ -35,7 +33,6 @@ import pcgen.core.prereq.PrerequisiteTest;
 import pcgen.system.LanguageBundle;
 
 /**
- * @author wardc
  *
  */
 public class PreReachTester extends AbstractDisplayPrereqTest implements PrerequisiteTest
@@ -53,8 +50,11 @@ public class PreReachTester extends AbstractDisplayPrereqTest implements Prerequ
 		{
 			final int targetReach = Integer.parseInt(prereq.getOperand());
 
+			int pcReach =
+					FacetLibrary.getFacet(ReachFacet.class).getReach(
+						display.getCharID());
 			runningTotal =
-					prereq.getOperator().compare(display.getReach(),
+					prereq.getOperator().compare(pcReach,
 						targetReach);
 		}
 		catch (NumberFormatException nfe)

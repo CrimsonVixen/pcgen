@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jan 25, 2011, 3:26:08 PM
  */
 package pcgen.gui2.tabs.equip;
 
@@ -47,6 +46,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 
 import pcgen.base.util.HashMapToList;
 import pcgen.base.util.MapToList;
@@ -64,7 +64,6 @@ import pcgen.gui2.filter.FilterHandler;
 import pcgen.gui2.tools.Icons;
 import pcgen.gui2.util.JTableEx;
 import pcgen.gui2.util.JTreeTable;
-import pcgen.gui2.util.table.SortableTableModel;
 import pcgen.gui2.util.table.TableCellUtilities;
 import pcgen.system.LanguageBundle;
 
@@ -73,12 +72,8 @@ import pcgen.system.LanguageBundle;
  * models for both the left and right tables of gear. It also contains the 
  * processing to manage equipping and unequipping actions.
  *
- * <br/>
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
+ * <br>
  *  
- * @author Connor Petty <cpmeister@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class EquipmentModels
 {
@@ -120,20 +115,28 @@ public class EquipmentModels
 	private final EquipFilterHandler filterHandler;
 	private EquipView selectedView;
 	private EquipmentTableModel selectedModel;
-	private JComboBox equipViewBox;
-	private JTableEx equipmentTable;
-	private JTreeTable equipmentSetTable;
+	private final JComboBox equipViewBox;
+	private final JTableEx equipmentTable;
+	private final JTreeTable equipmentSetTable;
+	private final JButton equipButton;
+	private final JButton unequipButton;
+	private final JButton moveUpButton;
+	private final JButton moveDownButton;
+	private final DisplayableFilter<? super CharacterFacade, ? super EquipmentFacade> filter;
 
-	public EquipmentModels(CharacterFacade character)
+	public EquipmentModels(CharacterFacade character, JComboBox equipBox, JTableEx eqTable,
+		DisplayableFilter<? super CharacterFacade, ? super EquipmentFacade> filter,
+		JTreeTable eqSetTable, JButton equipButton, JButton unequipButton, 
+		JButton moveUpButton, JButton moveDownButton)
 	{
 		this.character = character;
 		this.unequippedList = new UnequippedList(character);
 		this.fullModel = new EquipmentTableModel(character);
 		fullModel.setEquipmentList(character.getPurchasedEquipment());
-		fullModel.setEquipmentSet(character.getEquipmentSetRef().getReference());
+		fullModel.setEquipmentSet(character.getEquipmentSetRef().get());
 		this.unequippedModel = new EquipmentTableModel(character);
 		unequippedModel.setEquipmentList(unequippedList);
-		unequippedModel.setEquipmentSet(character.getEquipmentSetRef().getReference());
+		unequippedModel.setEquipmentSet(character.getEquipmentSetRef().get());
 		this.equippedModel = new EquippedTableModel(character);
 
 		selectedModel = fullModel;
@@ -145,16 +148,19 @@ public class EquipmentModels
 		this.moveUpAction = new MoveUpAction();
 		this.moveDownAction = new MoveDownAction();
 		this.filterHandler = new EquipFilterHandler();
-	}
-
-	public void install(JComboBox equipBox, JTableEx eqTable,
-		DisplayableFilter<? super CharacterFacade, ? super EquipmentFacade> filter,
-		JTreeTable eqSetTable, JButton equipButton, JButton unequipButton, 
-		JButton moveUpButton, JButton moveDownButton)
-	{
+		
 		this.equipViewBox = equipBox;
 		this.equipmentTable = eqTable;
 		this.equipmentSetTable = eqSetTable;
+		this.filter = filter;
+		this.equipButton = equipButton;
+		this.unequipButton = unequipButton;
+		this.moveUpButton = moveUpButton;
+		this.moveDownButton = moveDownButton;
+	}
+
+	public void install()
+	{
 		viewHandler.install();
 		equipButton.setAction(equipAction);
 		unequipButton.setAction(unequipAction);
@@ -171,20 +177,17 @@ public class EquipmentModels
 
 	public void uninstall()
 	{
-		if (equipmentTable != null)
-		{
-			equipAction.uninstall();
-			unequipAction.uninstall();
-		}
+		equipAction.uninstall();
+		unequipAction.uninstall();
 	}
 
 	private List<EquipNode> getSelectedEquipmentSetNodes()
 	{
 		int[] rows = equipmentSetTable.getSelectedRows();
-		List<EquipNode> paths = new ArrayList<EquipNode>();
-		for (int i = 0; i < rows.length; i++)
+		List<EquipNode> paths = new ArrayList<>();
+		for (int row : rows)
 		{
-			EquipNode path = (EquipNode) equipmentSetTable.getValueAt(rows[i], 0);
+			EquipNode path = (EquipNode) equipmentSetTable.getValueAt(row, 0);
 			if (path.getNodeType() == NodeType.EQUIPMENT)
 			{
 				paths.add(path);
@@ -195,7 +198,7 @@ public class EquipmentModels
 
 	private void selectNodeInEquipmentSetTable(EquipNode nodeToSelect)
 	{
-		SortableTableModel model = equipmentSetTable.getModel();
+		TableModel model = equipmentSetTable.getModel();
 		for (int i = 0; i < model.getRowCount(); i++)
 		{
 			if (nodeToSelect == model.getValueAt(i, 0))
@@ -296,8 +299,8 @@ public class EquipmentModels
 			super(character);
 			ReferenceFacade<EquipmentSetFacade> ref = character.getEquipmentSetRef();
 			ref.addReferenceListener(this);
-			setEquipmentList(ref.getReference().getEquippedItems());
-			setEquipmentSet(ref.getReference());
+			setEquipmentList(ref.get().getEquippedItems());
+			setEquipmentSet(ref.get());
 		}
 
 		@Override
@@ -322,7 +325,7 @@ public class EquipmentModels
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
 			List<EquipNode> paths = getSelectedEquipmentSetNodes();
 			if (!paths.isEmpty())
 			{
@@ -331,10 +334,9 @@ public class EquipmentModels
 				{
 					EquipNode path = paths.get(i);
 					data[i][0] = path.getEquipment();
-					data[i][1] = equipSet.getEquippedItems().getQuantity(path.getEquipment());
+					data[i][1] = equipSet.getQuantity(path);
 				}
-				Object[] columns = new Object[]
-				{
+				Object[] columns = {
 					LanguageBundle.getString("in_equipItem"), //$NON-NLS-1$
 					LanguageBundle.getString("in_equipQuantityAbbrev"), //$NON-NLS-1$
 				};
@@ -417,13 +419,13 @@ public class EquipmentModels
 		public void actionPerformed(ActionEvent e)
 		{
 			int[] selectedRows = equipmentTable.getSelectedRows();
-			MapToList<EquipmentFacade, EquipNode> equipMap = new HashMapToList<EquipmentFacade, EquipNode>();
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
-			List<EquipmentFacade> equipment = new ArrayList<EquipmentFacade>();
+			MapToList<EquipmentFacade, EquipNode> equipMap = new HashMapToList<>();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
+			List<EquipmentFacade> equipment = new ArrayList<>();
 
-			for (int i = 0; i < selectedRows.length; i++)
+			for (int selectedRow : selectedRows)
 			{
-				EquipmentFacade equipmentFacade = selectedModel.getValue(selectedRows[i]);
+				EquipmentFacade equipmentFacade = selectedModel.getValue(selectedRow);
 				for (EquipNode path : equipSet.getNodes())
 				{
 					if (equipSet.canEquip(path, equipmentFacade))
@@ -446,8 +448,7 @@ public class EquipmentModels
 					data[i][1] = unequippedList.getQuantity(equipmentFacade);
 					data[i][2] = getInitialNode(equipMap, equipSet, equipmentFacade); 
 				}
-				Object[] columns = new Object[]
-				{
+				Object[] columns = {
 					LanguageBundle.getString("in_equipItem"), //$NON-NLS-1$
 					LanguageBundle.getString("in_equipQuantityAbbrev"), //$NON-NLS-1$
 					LanguageBundle.getString("in_equipContainer") //$NON-NLS-1$
@@ -516,10 +517,10 @@ public class EquipmentModels
 			// First see if the user has selected a suitable node in the equipped tree
 			List<EquipNode> possibleNodeList = equipMap.getListFor(equipmentFacade);
 			int[] rows = equipmentSetTable.getSelectedRows();
-			List<EquipNode> paths = new ArrayList<EquipNode>();
-			for (int i = 0; i < rows.length; i++)
+			List<EquipNode> paths = new ArrayList<>();
+			for (int row : rows)
 			{
-				EquipNode path = (EquipNode) equipmentSetTable.getValueAt(rows[i], 0);
+				EquipNode path = (EquipNode) equipmentSetTable.getValueAt(row, 0);
 				if (possibleNodeList.contains(path))
 				{
 					return path;
@@ -552,7 +553,7 @@ public class EquipmentModels
 
 	}
 
-	private class SpinnerEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener
+	private static class SpinnerEditor extends AbstractCellEditor implements TableCellEditor, ChangeListener
 	{
 
 		private JSpinner spinner = new JSpinner();
@@ -658,7 +659,7 @@ public class EquipmentModels
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
 			List<EquipNode> paths = getSelectedEquipmentSetNodes();
 			if (!paths.isEmpty())
 			{
@@ -695,7 +696,7 @@ public class EquipmentModels
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			EquipmentSetFacade equipSet = character.getEquipmentSetRef().getReference();
+			EquipmentSetFacade equipSet = character.getEquipmentSetRef().get();
 			List<EquipNode> paths = getSelectedEquipmentSetNodes();
 			if (!paths.isEmpty())
 			{

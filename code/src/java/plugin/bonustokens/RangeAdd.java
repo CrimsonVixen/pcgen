@@ -16,16 +16,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 13, 2002, 9:19 AM
  *
- * Current Ver: $Revision: 1777 $
- * Last Editor: $Author: jdempsey $
- * Last Edited: $Date: 2006-12-16 23:36:01 -0500 (Sat, 16 Dec 2006) $
  *
  */
 package plugin.bonustokens;
 
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.bonus.MultiTagBonusObj;
+import pcgen.rules.context.LoadContext;
+import pcgen.util.Logging;
 
 /**
  * Handles the BONUS:RANGEADD token.
@@ -65,5 +65,18 @@ public final class RangeAdd extends MultiTagBonusObj
 	protected int getBonusTagLength()
 	{
 		return BONUS_TAGS.length;
+	}
+
+	@Override
+	protected boolean parseToken(LoadContext context, String token)
+	{
+		if (ControlUtilities.hasControlToken(context, CControl.EQRANGE))
+		{
+			Logging.errorPrint(
+				"BONUS:RANGEADD is disabled when EQRANGE control is used: "
+					+ token, context);
+			return false;
+		}
+		return super.parseToken(context, token);
 	}
 }

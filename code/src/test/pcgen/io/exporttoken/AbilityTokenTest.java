@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 17/08/2008 14:04:19
  *
- * $Id: $
  */
 package pcgen.io.exporttoken;
 
@@ -50,11 +48,7 @@ import pcgen.util.enumeration.Visibility;
  * <code>AbilityTokenTest</code> tests the functioning of the ABILITY 
  * token processing code. 
  *
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: $
  */
 public class AbilityTokenTest extends AbstractCharacterTestCase
 {
@@ -83,13 +77,13 @@ public class AbilityTokenTest extends AbstractCharacterTestCase
 		Ability ab1 = TestHelper.makeAbility("Perform (Dance)", AbilityCategory.FEAT, "General.Fighter");
 		ab1.put(ObjectKey.MULTIPLE_ALLOWED, Boolean.FALSE);
 		ab1.put(ObjectKey.VISIBILITY, Visibility.DEFAULT);
-		List<Aspect> colourList = new ArrayList<Aspect>();
+		List<Aspect> colourList = new ArrayList<>();
 		colourList.add(new Aspect("Colour", "Green"));
 		ab1.addToMapFor(MapKey.ASPECT, AspectName.getConstant("Colour"), colourList);
-		List<Aspect> sizeList = new ArrayList<Aspect>();
+		List<Aspect> sizeList = new ArrayList<>();
 		sizeList.add(new Aspect("Size", "L"));
 		ab1.addToMapFor(MapKey.ASPECT, AspectName.getConstant("Size"), sizeList);
-		List<Aspect> shapeList = new ArrayList<Aspect>();
+		List<Aspect> shapeList = new ArrayList<>();
 		Aspect cube = new Aspect("Shape", "Cube");
 		Prerequisite prereq = new Prerequisite();
 		prereq.setKind("ALIGN");
@@ -99,10 +93,10 @@ public class AbilityTokenTest extends AbstractCharacterTestCase
 		shapeList.add(cube);
 		shapeList.add(new Aspect("Shape", "Icosahedron"));
 		ab1.addToMapFor(MapKey.ASPECT, AspectName.getConstant("Shape"), shapeList);
-		List<Aspect> sidesList = new ArrayList<Aspect>();
+		List<Aspect> sidesList = new ArrayList<>();
 		sidesList.add(new Aspect("Sides", "20"));
 		ab1.addToMapFor(MapKey.ASPECT, AspectName.getConstant("Sides"), sidesList);
-		List<Aspect> ageList = new ArrayList<Aspect>();
+		List<Aspect> ageList = new ArrayList<>();
 		ageList.add(new Aspect("Age In Years", "2000"));
 		ab1.addToMapFor(MapKey.ASPECT, AspectName.getConstant("Age In Years"), ageList);
 		addAbility(AbilityCategory.FEAT, ab1);
@@ -264,11 +258,11 @@ public class AbilityTokenTest extends AbstractCharacterTestCase
 
 		assertEquals("",
 			tok.getToken("ABILITY.FEAT.0.ASSOCIATED", character, eh));
-		assertEquals("KEY_Bluff,KEY_Listen",
+		assertEquals("Bluff,Listen",
 			tok.getToken("ABILITY.FEAT.1.ASSOCIATED", character, eh));
-		assertEquals("KEY_Bluff",
+		assertEquals("Bluff",
 			tok.getToken("ABILITY.FEAT.1.ASSOCIATED.0", character, eh));
-		assertEquals("KEY_Listen",
+		assertEquals("Listen",
 			tok.getToken("ABILITY.FEAT.1.ASSOCIATED.1", character, eh));
 	}
 

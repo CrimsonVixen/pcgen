@@ -16,9 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Current Ver: $Revision$
- * Last Editor: $Author: $
- * Last Edited: $Date$
  */
 package pcgen.core.npcgen;
 
@@ -31,8 +28,6 @@ import pcgen.util.Logging;
 /**
  * This class represents a particular alignment generator option.
  * 
- * @author boomer70 <boomer70@yahoo.com>
- * @since 5.11.1
  */
 public class AlignGeneratorOption extends GeneratorOption
 {
@@ -46,7 +41,7 @@ public class AlignGeneratorOption extends GeneratorOption
 	{
 		if ( theChoices == null )
 		{
-			theChoices = new WeightedCollection<PCAlignment>();
+			theChoices = new WeightedCollection<>();
 		}
 		
 		if ( aValue.equals("*") ) //$NON-NLS-1$

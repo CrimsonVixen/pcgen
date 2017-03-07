@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on April 12, 2003, 3:20 AM
  */
 package pcgen.util;
 
@@ -24,21 +23,9 @@ import java.math.BigDecimal;
 
 /**
  * This contains helper functions for BigDecimal.
- * @author     Jonas Karlsson <jujutsunerd@sf.net>
- * @version    $Revision$
  */
 public class BigDecimalHelper
 {
-	/**
-	 * Sets [n] to [dp] decimal places.
-	 * @param n the BigDecimal to format
-	 * @param dp the wanted number of decimal places
-	 * @return the formated BigDecimal
-	 */
-	public static BigDecimal formatBigDecimal(BigDecimal n, int dp)
-	{
-		return n.setScale(dp, BigDecimal.ROUND_HALF_UP); // Sets scale and rounds up if most significant (cut off) number >= 5
-	}
 
 	/**
 	 * trimBigDecimal ( (BigDecimal) a) to cut off all trailing zeros.
@@ -72,7 +59,7 @@ public class BigDecimalHelper
 
 	/**
 	 * Returns a string with the trimmed number.
-	 * E.g. numberToTrim=3.1000 > 3.1
+	 * E.g. {@literal numberToTrim=3.1000 > 3.1 }
 	 * If numberToTrim is non-numeric, 0 is returned (should be changed.)
 	 * @param numberToTrim The value to trim.
 	 * @return String

@@ -15,9 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on April 21, 2001, 2:15 PM
  *
- * $Id$
  */
 package pcgen.core.spell;
 
@@ -36,10 +34,8 @@ import pcgen.facade.core.InfoFacade;
 import pcgen.persistence.lst.output.prereq.PrerequisiteWriter;
 
 /**
- * <code>Spell</code> represents a magic spell from the games rules.
+ * {@code Spell} represents a magic spell from the games rules.
  *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public final class Spell extends PObject implements InfoFacade, Ungranted
@@ -99,9 +95,6 @@ public final class Spell extends PObject implements InfoFacade, Ungranted
 		return allowed || !prohibited;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

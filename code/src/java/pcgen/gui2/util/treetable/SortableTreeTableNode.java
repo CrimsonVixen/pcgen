@@ -21,14 +21,15 @@
 package pcgen.gui2.util.treetable;
 
 import java.util.Comparator;
+import pcgen.gui2.util.table.Row;
 
 /**
  *
- * @author Connor Petty <mistercpp2000@gmail.com>
+ * @author Connor Petty &lt;mistercpp2000@gmail.com&gt;
  */
 public interface SortableTreeTableNode extends TreeTableNode
 {
 
-    public void sortChildren(Comparator<TreeTableNode> comparator);
+    public void sortChildren(Comparator<Row> comparator);
 
 }

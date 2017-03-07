@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 11, 2002, 8:30 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.io;
@@ -38,11 +34,10 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.content.CNAbility;
@@ -50,10 +45,12 @@ import pcgen.cdom.enumeration.Nature;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.cdom.inst.PCClassLevel;
 import pcgen.core.AbilityCategory;
+import pcgen.core.Equipment;
 import pcgen.core.GameMode;
 import pcgen.core.PCClass;
 import pcgen.core.PlayerCharacter;
 import pcgen.core.SpecialAbility;
+import pcgen.core.character.EquipSet;
 import pcgen.facade.core.CampaignFacade;
 import pcgen.facade.core.SourceSelectionFacade;
 import pcgen.system.LanguageBundle;
@@ -62,22 +59,24 @@ import pcgen.system.PCGenSettings;
 import pcgen.util.FileHelper;
 import pcgen.util.Logging;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
+
 /**
- * <code>PCGIOHandler</code><br>
+ * {@code PCGIOHandler}<br>
  * Reading and Writing PlayerCharacters in PCGen's own format (PCG).
  *
- * @author Thomas Behr 11-03-02
- * @version $Revision$
  */
 public final class PCGIOHandler extends IOHandler
 {
 
-	private final List<String> errors = new ArrayList<String>();
-	private final List<String> warnings = new ArrayList<String>();
+	private final List<String> errors = new ArrayList<>();
+	private final List<String> warnings = new ArrayList<>();
 
 	/**
 	 * Selector
-	 * <p/>
+	 * <p>
 	 * <br>author: Thomas Behr 18-03-02
 	 *
 	 * @return a list of error messages
@@ -89,14 +88,14 @@ public final class PCGIOHandler extends IOHandler
 
 	/**
 	 * Convenience Method
-	 * <p/>
+	 * <p>
 	 * <br>author: Thomas Behr 18-03-02
 	 *
 	 * @return a list of messages
 	 */
 	public List<String> getMessages()
 	{
-		final List<String> messages = new ArrayList<String>();
+		final List<String> messages = new ArrayList<>();
 
 		messages.addAll(errors);
 		messages.addAll(warnings);
@@ -106,7 +105,7 @@ public final class PCGIOHandler extends IOHandler
 
 	/**
 	 * Selector
-	 * <p/>
+	 * <p>
 	 * <br>author: Thomas Behr 15-03-02
 	 *
 	 * @return a list of warning messages
@@ -135,7 +134,7 @@ public final class PCGIOHandler extends IOHandler
 			aPost = aChoice.substring(iOffs + 1);
 		}
 
-		final List<String> saNames = new ArrayList<String>();
+		final List<String> saNames = new ArrayList<>();
 		final StringTokenizer aTok = new StringTokenizer(aString, ",");
 
 		while (aTok.hasMoreTokens())
@@ -197,7 +196,7 @@ public final class PCGIOHandler extends IOHandler
 
 	/**
 	 * Reads the contents of the given PlayerCharacter from a stream
-	 * <p/>
+	 * <p>
 	 * <br>author: Thomas Behr 11-03-02
 	 *
 	 * @param pcToBeRead the PlayerCharacter to store the read data
@@ -275,7 +274,7 @@ public final class PCGIOHandler extends IOHandler
 	 */
 	private List<String> readPcgLines(InputStream in)
 	{
-		final List<String> lines = new ArrayList<String>();
+		final List<String> lines = new ArrayList<>();
 
 		// try reading in all the lines in the .pcg file
 		BufferedReader br = null;
@@ -315,7 +314,7 @@ public final class PCGIOHandler extends IOHandler
 
 	/**
 	 * Writes the contents of the given PlayerCharacter to a stream
-	 * <p/>
+	 * <p>
 	 * <br>author: Thomas Behr 11-03-02
 	 * 
 	 * @deprecated The write to a file method should be used in preference as it has safe backup handling.
@@ -323,7 +322,8 @@ public final class PCGIOHandler extends IOHandler
 	 * @param pcToBeWritten the PlayerCharacter to write
 	 * @param out           the stream to be written to
 	 */
-    @Override
+    @Deprecated
+	@Override
 	public void write(PlayerCharacter pcToBeWritten, GameMode mode, List<CampaignFacade> campaigns, OutputStream out)
 	{
 		final String pcgString;
@@ -366,7 +366,6 @@ public final class PCGIOHandler extends IOHandler
 	 * the save fails, the file system is untouched.
 	 * 
 	 * @param pcToBeWritten the PlayerCharacter to write
-	 * @param out           the stream to be written to
 	 * @param mode          The character's game mode.
 	 * @param campaigns     The character's sources.
 	 * @param outFile       The file to write the character to.
@@ -420,8 +419,10 @@ public final class PCGIOHandler extends IOHandler
 	private void sanityChecks(PlayerCharacter currentPC, PCGParser parser)
 	{
 		// Hit point sanity check
-		boolean bFixMade = false;
+		boolean fixMade = false;
 
+		resolveDuplicateEquipmentSets(currentPC);
+		
 		// First make sure the "working" equipment list
 		// is in effect for all the bonuses it may add
 		currentPC.setCalcEquipmentList();
@@ -484,14 +485,14 @@ public final class PCGIOHandler extends IOHandler
 
 					if (iRoll > iSides)
 					{
-						currentPC.setHP(pcl, Integer.valueOf(iSides));
-						bFixMade = true;
+						currentPC.setHP(pcl, iSides);
+						fixMade = true;
 					}
 				}
 			}
 		}
 
-		if (bFixMade)
+		if (fixMade)
 		{
 			final String message =
 					"Fixed illegal value in hit points. "
@@ -500,7 +501,6 @@ public final class PCGIOHandler extends IOHandler
 			warnings.add(message);
 		}
 
-		//
 		// Sometimes another class, feat, item, whatever can affect
 		// what spells or whatever would have been available for a
 		// class, so this simply lets the level advancement routine
@@ -523,6 +523,94 @@ public final class PCGIOHandler extends IOHandler
 
 		// make sure we are not dirty
 		currentPC.setDirty(false);
+	}
+
+	/**
+	 * Check all equipment sets to ensure there are no duplicate paths. Where a 
+	 * duplicate path is found, report it and try to move one non-container to 
+	 * a new path.
+	 * 
+	 * @param currentPC The character being loaded.
+	 */
+	private void resolveDuplicateEquipmentSets(PlayerCharacter currentPC)
+	{
+		boolean anyMoved = false;
+		Iterable<EquipSet> equipSetList =
+				new ArrayList<>(currentPC.getDisplay().getEquipSet());
+		Map<String, EquipSet> idMap = new HashMap<>();
+		for (final EquipSet es : equipSetList)
+		{
+			String idPath = es.getIdPath();
+			if (idMap.containsKey(idPath))
+			{
+				EquipSet existingEs = idMap.get(idPath);
+				EquipSet esToBeMoved = chooseItemToBeMoved(existingEs, es);
+				if (esToBeMoved == null)
+				{
+					warnings.add(String.format(
+						"Found two equipment items equipped to the "
+							+ "path %s. Items were %s and %s.", idPath,
+						es.getItem(), existingEs.getItem()));
+					continue;
+				}
+
+				// change the item's location
+				currentPC.moveEquipSetToNewPath(esToBeMoved);
+				EquipSet esStaying = esToBeMoved == es ? existingEs : es;
+
+				// As we always move the non container, move any items it 
+				// erroneously held to the item remaining in place
+				for (int j =
+						esToBeMoved.getItem().getContainedEquipmentCount() - 1; j >= 0; j--)
+				{
+					Equipment containedItem =
+							esToBeMoved.getItem().getContainedEquipment(j);
+					esToBeMoved.getItem().removeChild(currentPC, containedItem);
+					esStaying.getItem().insertChild(currentPC, containedItem);
+				}
+
+				Logging.log(Logging.WARNING, String.format(
+					"Moved item %s from path %s to %s as it "
+						+ "clashed with %s", esToBeMoved.getItem(), idPath,
+					esToBeMoved.getIdPath(),
+					esToBeMoved == es ? existingEs.getItem() : es.getItem()));
+				idMap.put(es.getIdPath(), es);
+				idMap.put(existingEs.getIdPath(), existingEs);
+				anyMoved = true;
+					
+			}
+			else
+			{
+				idMap.put(idPath, es);
+			}
+		}
+		
+		if (anyMoved)
+		{
+			warnings.add("Some equipment was moved as it was incorrectly stored."
+				+ " Please see the log for details.");
+		}
+	}
+
+	/**
+	 * Pick one of two equipment sets sharing a path to be moved to a new path. 
+	 * Only non containers will be moved to avoid issues with contents.   
+	 * @param equipSet1 The first equipment set at a path.
+	 * @param equipSet2 The second equipment set at a path.
+	 * @return The equipment set that should be move,d or null if none are safe.
+	 */
+	private EquipSet chooseItemToBeMoved(EquipSet equipSet1, EquipSet equipSet2)
+	{
+		if (!equipSet2.getItem().isContainer())
+		{
+			return equipSet2;
+		}
+		if (!equipSet1.getItem().isContainer())
+		{
+			return equipSet1;
+		}
+		// Currently be really conservative
+		return null;
 	}
 
 	/**
@@ -554,8 +642,8 @@ public final class PCGIOHandler extends IOHandler
 		String charFiles = lines.get(1);
 		String[] files = charFiles.split(",");
 
-		List<File> fileList = new ArrayList<File>();
-		for (String fileName : files)
+		List<File> fileList = new ArrayList<>();
+		for (final String fileName : files)
 		{
 			// try to find it in the party's directory
 			File characterFile = new File(partyFile.getParent(), fileName);
@@ -581,7 +669,7 @@ public final class PCGIOHandler extends IOHandler
 		return fileList;
 	}
 
-	public void write(File partyFile, List<File> characterFiles)
+	public static void write(File partyFile, List<File> characterFiles)
 	{
 		String versionLine = "VERSION:" + PCGenPropBundle.getVersionNumber();
 		String[] files = new String[characterFiles.size()];
@@ -640,6 +728,7 @@ public final class PCGIOHandler extends IOHandler
 		return null;
 	}
 
+	@Nullable
 	private SourceSelectionFacade internalReadSources(InputStream in)
 	{
 		// Read lines from file

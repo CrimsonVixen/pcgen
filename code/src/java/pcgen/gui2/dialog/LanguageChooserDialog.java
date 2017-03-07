@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jul 8, 2010, 3:35:32 PM
  */
 package pcgen.gui2.dialog;
 
@@ -65,7 +64,6 @@ import pcgen.system.LanguageBundle;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class LanguageChooserDialog extends JDialog implements ActionListener, ReferenceListener<Integer>
 {
@@ -81,11 +79,11 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 	{
 		super(frame, true);
 		this.chooser = chooser;
-		this.availTable = new JTreeViewTable<LanguageFacade>();
+		this.availTable = new JTreeViewTable<>();
 		this.remainingLabel = new JLabel();
 		this.treeViewModel = new LangTreeViewModel();
 		this.list = new JListEx();
-		this.listModel = new FacadeListModel<LanguageFacade>();
+		this.listModel = new FacadeListModel<>();
 
 		treeViewModel.setDelegate(chooser.getAvailableList());
 		listModel.setListFacade(chooser.getSelectedList());
@@ -118,7 +116,9 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 		JSplitPane split = new JSplitPane();
 		JPanel leftPane = new JPanel(new BorderLayout());
 		//leftPane.add(new JLabel("Available Languages"), BorderLayout.NORTH);
+		availTable.setAutoCreateRowSorter(true);
 		availTable.setTreeViewModel(treeViewModel);
+		availTable.getRowSorter().toggleSortOrder(0);
 		availTable.addActionListener(this);
 		leftPane.add(new JScrollPane(availTable), BorderLayout.CENTER);
 
@@ -139,7 +139,7 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		labelPane.add(new JLabel(LanguageBundle.getString("in_sumLangRemain")), //$NON-NLS-1$
 			new GridBagConstraints());
-		remainingLabel.setText(chooser.getRemainingSelections().getReference().toString());
+		remainingLabel.setText(chooser.getRemainingSelections().get().toString());
 		labelPane.add(remainingLabel, gbc);
 		labelPane.add(new JLabel(LanguageBundle.getString("in_sumSelectedLang")), gbc); //$NON-NLS-1$
 		rightPane.add(labelPane, BorderLayout.NORTH);
@@ -221,7 +221,7 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 			DataView<LanguageFacade>//, TreeView<LanguageFacade>
 	{
 		private static final ListFacade<TreeView<LanguageFacade>> views =
-				new DefaultListFacade<TreeView<LanguageFacade>>(Arrays.asList(LanguageTreeView.values()));
+                new DefaultListFacade<>(Arrays.asList(LanguageTreeView.values()));
 
 		@Override
 		public ListFacade<? extends TreeView<LanguageFacade>> getTreeViews()
@@ -248,9 +248,14 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 		}
 
 		@Override
-		public List<?> getData(LanguageFacade obj)
+		public Object getData(LanguageFacade element, int column)
 		{
-			return Collections.emptyList();
+			return null;
+		}
+
+		@Override
+		public void setData(Object value, LanguageFacade element, int column)
+		{
 		}
 
 		@Override
@@ -259,9 +264,6 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 			return Collections.emptyList();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getPrefsKey()
 		{
@@ -275,7 +277,7 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 		NAME("in_nameLabel"), //$NON-NLS-1$
 		TYPE_NAME("in_typeName"); //$NON-NLS-1$
 		
-		private String name;
+		private final String name;
 
 		private LanguageTreeView(String name)
 		{
@@ -291,15 +293,15 @@ public class LanguageChooserDialog extends JDialog implements ActionListener, Re
 		@Override
 		public List<TreeViewPath<LanguageFacade>> getPaths(LanguageFacade pobj)
 		{
-			List<TreeViewPath<LanguageFacade>> paths = new ArrayList<TreeViewPath<LanguageFacade>>();
+			List<TreeViewPath<LanguageFacade>> paths = new ArrayList<>();
 			switch (this)
 			{
 				case NAME:
-					return Collections.singletonList(new TreeViewPath<LanguageFacade>(pobj));
+					return Collections.singletonList(new TreeViewPath<>(pobj));
 				case TYPE_NAME:
 					for(String type : pobj.getTypes())
 					{
-						paths.add(new TreeViewPath<LanguageFacade>(pobj, type));
+						paths.add(new TreeViewPath<>(pobj, type));
 					}
 					return paths;
 				default:

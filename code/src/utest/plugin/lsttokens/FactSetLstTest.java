@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
+import pcgen.base.format.StringManager;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.content.factset.FactSetDefinition;
 import pcgen.cdom.list.ClassSkillList;
@@ -31,7 +32,6 @@ import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.util.enumeration.Visibility;
-import plugin.format.StringManager;
 import plugin.lsttokens.testsupport.AbstractGlobalTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
@@ -40,14 +40,13 @@ import plugin.lsttokens.testsupport.TokenRegistration;
 public class FactSetLstTest extends AbstractGlobalTokenTestCase
 {
 	private static FactSetLst token = new FactSetLst();
-	private static CDOMTokenLoader<Domain> loader = new CDOMTokenLoader<Domain>();
+	private static CDOMTokenLoader<Domain> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public void setUp() throws PersistenceLayerException, URISyntaxException
 	{
 		TokenRegistration.clearTokens();
 		super.setUp();
-		TokenRegistration.register(new StringManager());
 		FactSetDefinition fd = new FactSetDefinition();
 		fd.setName("DEITY.Possibility");
 		fd.setFactSetName("Possibility");
@@ -180,14 +179,6 @@ public class FactSetLstTest extends AbstractGlobalTokenTestCase
 	@Override
 	protected ConsolidationRule getConsolidationRule()
 	{
-		return new ConsolidationRule()
-		{
-
-            @Override
-			public String[] getAnswer(String... strings)
-			{
-				return new String[] { "Possibility|TestWP1|TestWP2" };
-			}
-		};
+		return strings -> new String[] { "Possibility|TestWP1|TestWP2" };
 	}
 }

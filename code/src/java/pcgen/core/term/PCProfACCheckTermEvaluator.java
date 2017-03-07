@@ -18,17 +18,17 @@
  *
  * Created 09-Aug-2008 23:53:33
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
 package pcgen.core.term;
 
-import pcgen.core.PlayerCharacter;
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.Equipment;
 import pcgen.core.Globals;
+import pcgen.core.PlayerCharacter;
+import pcgen.util.Logging;
 
 public class PCProfACCheckTermEvaluator 
 		extends BasePCTermEvaluator implements TermEvaluator
@@ -44,18 +44,30 @@ public class PCProfACCheckTermEvaluator
 	@Override
 	public Float resolve(PlayerCharacter pc)
 	{
+		if (ControlUtilities.hasControlToken(Globals.getContext(),
+			CControl.EQACCHECK))
+		{
+			Logging.errorPrint(originalText
+				+ " term is deprecated (does not function)"
+				+ " when EQACCHECK CodeControl is used");
+		}
 		if ("".equals(eqKey))
 		{
-			return 0f;
+			return 0.0f;
 		}
 		else
 		{
 			final Equipment eq = Globals.getContext().getReferenceContext()
 					.silentlyGetConstructedCDOMObject(Equipment.class, eqKey);
 
-			return (eq == null || pc.isProficientWith(eq)) ?
-						   0f :
-						   eq.acCheck(pc);
+			if (eq == null || pc.isProficientWith(eq))
+			{
+				return 0.0f;
+			}
+			else
+			{
+				return (float) eq.preFormulaAcCheck(pc);
+			}
 		}
 	}
 

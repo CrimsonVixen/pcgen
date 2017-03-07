@@ -33,17 +33,17 @@ import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import plugin.lsttokens.ChooseLst;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 import plugin.lsttokens.testsupport.TokenRegistration;
 
-public class StringTokenTest extends AbstractTokenTestCase<CDOMObject>
+public class StringTokenTest extends AbstractCDOMTokenTestCase<CDOMObject>
 {
 
 	static ChooseLst token = new ChooseLst();
 	static StringToken subtoken = new StringToken();
-	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<CDOMObject>();
+	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public void setUp() throws PersistenceLayerException, URISyntaxException
@@ -73,12 +73,6 @@ public class StringTokenTest extends AbstractTokenTestCase<CDOMObject>
 	public CDOMPrimaryToken<CDOMObject> getToken()
 	{
 		return token;
-	}
-
-	@Test
-	public void testEmpty()
-	{
-		// Just to get Eclipse to recognize this as a JUnit 4.0 Test Case
 	}
 
 	@Test
@@ -225,10 +219,10 @@ public class StringTokenTest extends AbstractTokenTestCase<CDOMObject>
 
 	private void parseForUnparse(String value)
 	{
-		SimpleChoiceSet<String> scs = new SimpleChoiceSet<String>(Arrays
+		SimpleChoiceSet<String> scs = new SimpleChoiceSet<>(Arrays
 				.asList(value.split("\\|")), Constants.PIPE);
 		assertTrue(scs.getGroupingState().isValid());
-		BasicChooseInformation<String> cs = new BasicChooseInformation<String>(getSubTokenName(), scs);
+		BasicChooseInformation<String> cs = new BasicChooseInformation<>(getSubTokenName(), scs);
 		cs.setTitle("Choose an Item");
 		primaryProf.put(ObjectKey.CHOOSE_INFO, cs);
 	}

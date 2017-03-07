@@ -21,7 +21,6 @@ import pcgen.base.util.Indirect;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Reducible;
 import pcgen.cdom.enumeration.FactKey;
-import pcgen.core.Globals;
 import pcgen.core.PlayerCharacter;
 import pcgen.core.prereq.AbstractPrerequisiteTest;
 import pcgen.core.prereq.Prerequisite;
@@ -32,7 +31,7 @@ import pcgen.output.publish.OutputDB;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>PreFactTester</code> is responsible for testing FACT values on an object.
+ * The Class {@code PreFactTester} is responsible for testing FACT values on an object.
  */
 public class PreFactTester extends AbstractPrerequisiteTest implements PrerequisiteTest
 {
@@ -66,7 +65,7 @@ public class PreFactTester extends AbstractPrerequisiteTest implements Prerequis
 
 		String[] factinfo = prereq.getKey().split("=");
 		FactKey<?> fk = FactKey.valueOf(factinfo[0]);
-		Object targetVal = fk.getFormatManager().convertIndirect(Globals.getContext(), factinfo[1]);
+		Object targetVal = fk.getFormatManager().convertIndirect(factinfo[1]);
 
 		int runningTotal = 0;
 		for (Reducible r : objModel)
@@ -106,8 +105,8 @@ public class PreFactTester extends AbstractPrerequisiteTest implements Prerequis
 
 		final String foo = LanguageBundle.getFormattedString(
 				"PreFact.toHtml", //$NON-NLS-1$
-				new Object[] { prereq.getOperator().toDisplayString(),
-						prereq.getOperand(), prereq.getKey() });
+				prereq.getOperator().toDisplayString(),
+				prereq.getOperand(), prereq.getKey());
 		return foo;
 	}
 

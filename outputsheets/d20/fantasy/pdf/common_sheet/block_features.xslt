@@ -177,7 +177,7 @@
 	<xsl:template match="martial_arts">
 		<xsl:if test="count(martial_art) &gt; 0">
 			<xsl:call-template name="bold.list">
-				<xsl:with-param name="attribute" select="'martial_arts'"/>
+				<xsl:with-param name="attribute" select="'special_qualities'"/>
 				<xsl:with-param name="title" select="'Martial Arts'"/>
 				<xsl:with-param name="list" select="martial_art"/>
 				<xsl:with-param name="name.tag" select="'name'"/>
@@ -194,7 +194,7 @@
 	<xsl:template match="mystic_artists">
 		<xsl:if test="count(mystic_artist) &gt; 0">
 			<xsl:call-template name="bold.list">
-				<xsl:with-param name="attribute" select="'mystic_artists'"/>
+				<xsl:with-param name="attribute" select="'special_qualities'"/>
 				<xsl:with-param name="title" select="'Mystic Artist Abilities'"/>
 				<xsl:with-param name="list" select="mystic_artist"/>
 				<xsl:with-param name="name.tag" select="'name'"/>
@@ -211,7 +211,7 @@
 	<xsl:template match="witchcrafts">
 		<xsl:if test="count(witchcraft) &gt; 0">
 			<xsl:call-template name="bold.list">
-				<xsl:with-param name="attribute" select="'witchcrafts'"/>
+				<xsl:with-param name="attribute" select="'special_qualities'"/>
 				<xsl:with-param name="title" select="'Witchcraft Abilities'"/>
 				<xsl:with-param name="list" select="witchcraft"/>
 				<xsl:with-param name="name.tag" select="'name'"/>
@@ -314,7 +314,7 @@
 	<xsl:template match="eclipse_abilities">
 		<xsl:if test="count(eclipse_ability) &gt; 0">
 			<xsl:call-template name="bold.list">
-				<xsl:with-param name="attribute" select="'eclipse_abilities'" />
+				<xsl:with-param name="attribute" select="'special_qualities'" />
 				<xsl:with-param name="title" select="'Eclipse Abilities'" />
 				<xsl:with-param name="list" select="eclipse_ability"/>
 				<xsl:with-param name="name.tag" select="'name'"/>
@@ -624,7 +624,23 @@
 		</xsl:if>
 	</xsl:template>
 
-
+	<!--
+====================================
+====================================
+	TEMPLATE - Drawbacks
+====================================
+====================================-->
+	<xsl:template match="drawbacks">
+		<xsl:if test="count(drawback) &gt; 0">
+			<xsl:call-template name="bold.list">
+				<xsl:with-param name="attribute" select="'drawbacks'" />
+				<xsl:with-param name="title" select="'Drawbacks'" />
+				<xsl:with-param name="list" select="drawback"/>
+				<xsl:with-param name="name.tag" select="'name'"/>
+				<xsl:with-param name="desc.tag" select="'description'"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
 
 	<!--
 ====================================
@@ -679,6 +695,23 @@
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
+	<!--
+====================================
+====================================
+	TEMPLATE - PFS BOONS
+====================================
+====================================-->
+	<xsl:template match="pfs_boons">
+		<xsl:if test="count(pfs_boon) &gt; 0">
+			<xsl:call-template name="bold.list">
+				<xsl:with-param name="attribute" select="'pfs_boons'" />
+				<xsl:with-param name="title" select="'PFS Boons'" />
+				<xsl:with-param name="list" select="pfs_boon"/>
+				<xsl:with-param name="name.tag" select="'name'"/>
+				<xsl:with-param name="desc.tag" select="'description'"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
 <!--
 ====================================
 ====================================
@@ -688,7 +721,7 @@
 	<xsl:template match="racial_traits">
 	<xsl:for-each select="racial_traits">
 		<!-- BEGIN Use Per Day Ability table -->
-		<fo:table table-layout="fixed" space-before="2mm" keep-together="always" border-collapse="collapse" >
+		<fo:table table-layout="fixed" width="100%" space-before="2mm" keep-together="always" border-collapse="collapse" >
 			<xsl:call-template name="attrib"><xsl:with-param name="attribute" select="'checklist.border'"/></xsl:call-template>
 			<fo:table-column column-width="23mm"/>
 			<fo:table-column column-width="63mm"/>

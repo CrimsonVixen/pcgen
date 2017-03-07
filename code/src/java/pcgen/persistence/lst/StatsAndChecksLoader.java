@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on October 13, 2003, 11:50 AM
  *
- * Current Ver: $Revision$ <br>
- * Last Editor: $Author$ <br>
- * Last Edited: $Date$
  */
 package pcgen.persistence.lst;
 
@@ -103,7 +99,7 @@ public class StatsAndChecksLoader extends SimpleLoader<Loadable>
 			return null;
 		}
 		String name = token.substring(colonLoc + 1);
-		if ((name == null) || (name.length() == 0))
+		if ((name == null) || (name.isEmpty()))
 		{
 			Logging.errorPrint("Invalid Token '" + key + "' had no value in "
 					+ sourceURI);

@@ -28,7 +28,6 @@ import java.util.Observable;
  * This is a facade for gui objects in the core code.
  *
  * @author     Jonas Karlsson
- * @version    $Revision$
  */
 public final class ShowMessageDelegate extends Observable
 {
@@ -53,7 +52,7 @@ public final class ShowMessageDelegate extends Observable
 	{
 		instance.setChanged();
 		instance.notifyObservers(messageWrapper);
-		if (instance.countObservers() == 0 && messageWrapper.getMessage() != null && messageWrapper.getMessage().toString().length() > 0)
+		if (instance.countObservers() == 0 && messageWrapper.getMessage() != null && !messageWrapper.getMessage().toString().isEmpty())
 		{
 			System.out.println(messageWrapper.getTitle() + ": " + messageWrapper.getMessage());
 		}

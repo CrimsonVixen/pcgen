@@ -11,16 +11,10 @@
  * it only in accordance with the terms of the license agreement
  * you entered into with Sun.
  *
- * Current Ver: $Revision: 5184 $
- * Last Editor: $Author: cpmeister $
- * Last Edited: $Date: 2008-02-13 17:03:32 -0800 (Wed, 13 Feb 2008) $
  *
  **/
 package pcgen.gui2.util;
 
-import java.util.Comparator;
-import java.util.List;
-import pcgen.gui2.util.treetable.TreeTableModel;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -28,6 +22,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.EventObject;
 
@@ -57,9 +52,10 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import pcgen.gui2.util.table.Row;
 import pcgen.gui2.util.table.SortableTableModel;
-import pcgen.gui2.util.treetable.DefaultSortableTreeTableModel;
 import pcgen.gui2.util.treetable.SortableTreeTableModel;
+import pcgen.gui2.util.treetable.TreeTableModel;
 import pcgen.gui2.util.treetable.TreeTableNode;
 import pcgen.util.Logging;
 
@@ -68,10 +64,7 @@ import pcgen.util.Logging;
  * by using a JTree as a renderer (and editor) for the cells in a
  * particular column in the JTable.
  *
- * @version 1.2 10/27/98
  *
- * @author Philip Milne
- * @author Scott Violet
  **/
 public class JTreeTable extends JTableEx
 {
@@ -155,12 +148,8 @@ public class JTreeTable extends JTableEx
 
 	public void setTreeTableModel(TreeTableModel model)
 	{
-		if (model != null && !(model instanceof SortableTreeTableModel))
-		{
-			model = new DefaultSortableTreeTableModel(model);
-		}
 		tree.setModel(model);
-		adapter.setTreeTableModel((SortableTreeTableModel) model);
+		adapter.setTreeTableModel(model);
 	}
 
 	/**
@@ -207,18 +196,18 @@ public class JTreeTable extends JTableEx
 		return tree.getCellRenderer();
 	}
 
-	public void setTreeCellRenderer(TreeCellRenderer renderer)
+	public void setTreeCellRenderer(TreeColumnCellRenderer renderer)
 	{
 		tree.setCellRenderer(renderer);
 	}
 
 	/**
-	 * Forwards the <code>scrollRectToVisible()</code> message to the
-	 * <code>JComponent</code>'s parent. Components that can service
-	 * the request, such as <code>JViewport</code>,
+	 * Forwards the {@code scrollRectToVisible()} message to the
+	 * {@code JComponent}'s parent. Components that can service
+	 * the request, such as {@code JViewport},
 	 * override this method and perform the scrolling.
 	 *
-	 * @param aRect the visible <code>Rectangle</code>
+	 * @param aRect the visible {@code Rectangle}
 	 * @see javax.swing.JViewport
 	 */
 	@Override
@@ -276,9 +265,9 @@ public class JTreeTable extends JTableEx
 	 * Makes sure all the path components in path are expanded (except
 	 * for the last path component) and scrolls so that the
 	 * node identified by the path is displayed. Only works when this
-	 * <code>JTree</code> is contained in a <code>JScrollPane</code>.
+	 * {@code JTree} is contained in a {@code JScrollPane}.
 	 *
-	 * @param path  the <code>TreePath</code> identifying the node to
+	 * @param path  the {@code TreePath} identifying the node to
 	 *         bring into view
 	 */
 	private void scrollPathToVisible(TreePath path)
@@ -302,10 +291,7 @@ public class JTreeTable extends JTableEx
 	 * all of the event dispatching support provided by the superclass:
 	 * the AbstractTableModel.
 	 *
-	 * @version 1.2 10/27/98
 	 *
-	 * @author Philip Milne
-	 * @author Scott Violet
 	 */
 	private static class TreeTableModelAdapter extends AbstractTableModel
 			implements SortableTableModel, TreeModelListener,
@@ -313,7 +299,7 @@ public class JTreeTable extends JTableEx
 	{
 
 		private JTree tree;
-		private SortableTreeTableModel treeTableModel;
+		private TreeTableModel treeTableModel;
 
 		/**
 		 * Constructor
@@ -332,7 +318,7 @@ public class JTreeTable extends JTableEx
 		 * not be guaranteed the tree will have finished processing
 		 * the event before us.
 		 **/
-		public void setTreeTableModel(SortableTreeTableModel model)
+		public void setTreeTableModel(TreeTableModel model)
 		{
 			if (treeTableModel != null)
 			{
@@ -424,16 +410,17 @@ public class JTreeTable extends JTableEx
 		}
 
 		@Override
-		public void sortModel(Comparator<List<?>> comparator)
+		public void sortModel(Comparator<Row> comparator)
 		{
-			if (treeTableModel == null)
+			if (treeTableModel == null || !(treeTableModel instanceof SortableTreeTableModel))
 			{
 				return;
 			}
+			SortableTreeTableModel model = (SortableTreeTableModel) treeTableModel;
 			Enumeration<TreePath> paths = tree.getExpandedDescendants(new TreePath(
-					treeTableModel.getRoot()));
+					model.getRoot()));
 			TreePath[] selectionPaths = tree.getSelectionPaths();
-			treeTableModel.sortModel(comparator);
+			model.sortModel(comparator);
 			if (paths != null)
 			{
 				while (paths.hasMoreElements())
@@ -473,16 +460,7 @@ public class JTreeTable extends JTableEx
 		 */
 		private void fireDelayedTableDataChanged()
 		{
-			SwingUtilities.invokeLater(new Runnable()
-			{
-
-				@Override
-				public void run()
-				{
-					fireTableDataChangedPreservingSelection();					
-				}
-
-			});
+			SwingUtilities.invokeLater(this::fireTableDataChangedPreservingSelection);
 		}
 
 		@Override
@@ -571,12 +549,7 @@ public class JTreeTable extends JTableEx
 				}
 
 			};
-			//TODO: this code doesn't belong here
-			DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-			renderer.setClosedIcon(null);
-			renderer.setLeafIcon(null);
-			renderer.setOpenIcon(null);
-			this.setCellRenderer(renderer);
+			this.setCellRenderer(new TreeColumnCellRenderer());
 			this.setOpaque(false);
 		}
 
@@ -609,7 +582,7 @@ public class JTreeTable extends JTableEx
 			{
 				if ((JTreeTable.this != null) && (JTreeTable.this.getRowHeight() != aRowHeight))
 				{
-					JTreeTable.this.setRowHeight(JTreeTable.this.getRowHeight());
+					JTreeTable.this.setRowHeight(aRowHeight);
 				}
 			}
 		}
@@ -633,21 +606,14 @@ public class JTreeTable extends JTableEx
 													   int row,
 													   int column)
 		{
-			if (isSelected)
-			{
-				this.setBackground(table.getSelectionBackground());
-			}
-			else
-			{
-				this.setBackground(table.getBackground());
-			}
-
 			visibleRow = row;
 
-			return tableCellRenderer.getTableCellRendererComponent(table, value,
+			Component comp = tableCellRenderer.getTableCellRendererComponent(table, value,
 																   isSelected,
 																   hasFocus, row,
 																   column);
+			this.setBackground(comp.getBackground());
+			return comp;
 		}
 
 		/**
@@ -770,7 +736,7 @@ public class JTreeTable extends JTableEx
 		}
 
 		/**
-		 * If <code>updatingListSelectionModel</code> is false,
+		 * If {@code updatingListSelectionModel} is false,
 		 * this will reset the selected paths from the selected
 		 * rows in the list selection model.
 		 **/
@@ -888,11 +854,15 @@ public class JTreeTable extends JTableEx
 					if (getColumnClass(counter) == TreeTableNode.class)
 					{
 						MouseEvent me = (MouseEvent) e;
+						int column = JTreeTable.this.columnAtPoint(me.getPoint());
+						Rectangle cell = JTreeTable.this.getCellRect(0, column, true);
 						MouseEvent newME =
 								new MouseEvent(tree, me.getID(), me.getWhen(),
 											   me.getModifiers(), me.getX(),
 											   me.getY(), me.getClickCount(),
 											   me.isPopupTrigger());
+						//we translate the event into the tree's coordinate system
+						newME.translatePoint(-cell.x, 0);
 						tree.dispatchEvent(newME);
 
 						break;
@@ -965,7 +935,7 @@ public class JTreeTable extends JTableEx
 		addMouseListener(new PopupListener(this, aPopupMenu));
 	}
 
-	private class PopupListener extends MouseAdapter
+	private final class PopupListener extends MouseAdapter
 	{
 
 		private JPopupMenu theMenu;

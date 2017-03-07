@@ -16,28 +16,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 10 March 2007
  *
- * $Id$
  *
  */
 
 package pcgen.util;
 
-import org.junit.Test;
-import org.nfunk.jep.ParseException;
+import java.util.regex.Matcher;
+
 import pcgen.PCGenTestCase;
 
-import java.util.regex.Matcher;
+import org.junit.Test;
+import org.nfunk.jep.ParseException;
 
 /**
  * <code>ParameterTreeTest</code> is ...
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author andrew wilson <nuance@users.sourceforge.net>
- * @version $Revision$
  */
 public class ParameterTreeTest extends PCGenTestCase 
 {

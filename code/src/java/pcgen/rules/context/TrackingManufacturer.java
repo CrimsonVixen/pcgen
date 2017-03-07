@@ -20,6 +20,8 @@ package pcgen.rules.context;
 import java.util.Collection;
 import java.util.List;
 
+import pcgen.base.util.FormatManager;
+import pcgen.base.util.Indirect;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.Loadable;
 import pcgen.cdom.reference.CDOMGroupRef;
@@ -29,14 +31,14 @@ import pcgen.cdom.reference.ReferenceManufacturer;
 import pcgen.cdom.reference.UnconstructedListener;
 import pcgen.cdom.reference.UnconstructedValidator;
 
-public class TrackingManufacturer<T extends Loadable> implements ReferenceManufacturer<T>
+class TrackingManufacturer<T extends Loadable> implements ReferenceManufacturer<T>
 {
 
 	private final ReferenceManufacturer<T> rm;
 	private final TrackingReferenceContext context;
 
-	public TrackingManufacturer(TrackingReferenceContext trc,
-			ReferenceManufacturer<T> mfg)
+	protected TrackingManufacturer(TrackingReferenceContext trc,
+	                               ReferenceManufacturer<T> mfg)
 	{
 		context = trc;
 		rm = mfg;
@@ -243,5 +245,41 @@ public class TrackingManufacturer<T extends Loadable> implements ReferenceManufa
 	public Collection<T> getDerivativeObjects()
 	{
 		return rm.getDerivativeObjects();
+	}
+
+	@Override
+	public T convert(String arg0)
+	{
+		return rm.convert(arg0);
+	}
+
+	@Override
+	public Indirect<T> convertIndirect(String arg0)
+	{
+		return rm.convertIndirect(arg0);
+	}
+
+	@Override
+	public String getIdentifierType()
+	{
+		return rm.getIdentifierType();
+	}
+
+	@Override
+	public Class<T> getManagedClass()
+	{
+		return rm.getManagedClass();
+	}
+
+	@Override
+	public String unconvert(T arg0)
+	{
+		return rm.unconvert(arg0);
+	}
+	
+	@Override
+	public FormatManager<?> getComponentManager()
+	{
+		return null;
 	}
 }

@@ -20,8 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pcgen.cdom.base.Loadable;
+import pcgen.cdom.content.DefaultVarValue;
+import pcgen.cdom.content.UserFunction;
 import pcgen.cdom.content.fact.FactDefinition;
 import pcgen.cdom.content.factset.FactSetDefinition;
+import pcgen.cdom.inst.DynamicCategory;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.persistence.SystemLoader;
 import pcgen.persistence.lst.LstLineFileLoader;
@@ -36,7 +39,7 @@ import pcgen.util.Logging;
 public class CDOMControlLoader extends LstLineFileLoader
 {
 	private final Map<String, CDOMSubLineLoader<?>> loadMap =
-			new HashMap<String, CDOMSubLineLoader<?>>();
+            new HashMap<>();
 
 	public CDOMControlLoader()
 	{
@@ -44,9 +47,13 @@ public class CDOMControlLoader extends LstLineFileLoader
 		addLineLoader(new CDOMSubLineLoader<>("FACTDEF", FactDefinition.class));
 		addLineLoader(new CDOMSubLineLoader<>("FACTSETDEF",
 			FactSetDefinition.class));
+		addLineLoader(new CDOMSubLineLoader<>("DEFAULTVARIABLEVALUE",
+                DefaultVarValue.class));
+		addLineLoader(new CDOMSubLineLoader<>("FUNCTION", UserFunction.class));
+		addLineLoader(new CDOMSubLineLoader<>("DYNAMICSCOPE", DynamicCategory.class));
 	}
 
-	public void addLineLoader(CDOMSubLineLoader<?> loader)
+	private void addLineLoader(CDOMSubLineLoader<?> loader)
 	{
 		if (loader == null)
 		{
@@ -61,7 +68,7 @@ public class CDOMControlLoader extends LstLineFileLoader
 		loadMap.put(loader.getPrefix(), loader);
 	}
 
-	public boolean parseSubLine(LoadContext context, String val, URI source)
+	private boolean parseSubLine(LoadContext context, String val, URI source)
 	{
 		int sepLoc = val.indexOf('\t');
 		String firstToken = (sepLoc == -1) ? val : val.substring(0, sepLoc);
@@ -126,7 +133,7 @@ public class CDOMControlLoader extends LstLineFileLoader
 		}
 
 		AbstractReferenceContext refContext = context.getReferenceContext();
-		CC obj = refContext.constructNowIfNecessary(loader.getLoadedClass(), name.replace('|', ' '));
+		CC obj = refContext.constructNowIfNecessary(loader.getLoadedClass(), name.replace('|', ' ').replace(',', ' '));
 		return loader.parseLine(context, obj, line);
 	}
 

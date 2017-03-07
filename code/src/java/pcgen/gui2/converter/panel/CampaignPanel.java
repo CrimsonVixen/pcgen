@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 17/01/2009 10:59:55 PM
  *
- * $Id: $
  */
 package pcgen.gui2.converter.panel;
 
@@ -38,7 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.enumeration.ListKey;
@@ -51,14 +49,10 @@ import pcgen.gui2.tools.Utility;
 import pcgen.system.PCGenSettings;
 
 /**
- * The Class <code>CampaignPanel</code> displays a panel allowing 
+ * The Class {@code CampaignPanel} displays a panel allowing
  * the user to select the campaigns to be converted.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class CampaignPanel extends ConvertSubPanel
 {
@@ -91,7 +85,7 @@ public class CampaignPanel extends ConvertSubPanel
 	public boolean performAnalysis(CDOMObject pc)
 	{
 		GameMode game = pc.get(ObjectKey.GAME_MODE);
-		List<String> gameModeList = new ArrayList<String>();
+		List<String> gameModeList = new ArrayList<>();
 		gameModeList.addAll(game.getAllowedModes());
 		
 		File sourceFolder = pc.get(ObjectKey.DIRECTORY);
@@ -99,7 +93,7 @@ public class CampaignPanel extends ConvertSubPanel
 
 		// Only add those campaigns in the user's chosen folder and game mode
 		List<Campaign> allCampaigns = Globals.getCampaignList();
-		gameModeCampaigns = new ArrayList<Campaign>();
+		gameModeCampaigns = new ArrayList<>();
 		for (Campaign campaign : allCampaigns)
 		{
 			if (campaign.containsAnyInList(ListKey.GAME_MODE, gameModeList))

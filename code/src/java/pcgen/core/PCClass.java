@@ -31,7 +31,7 @@ import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.base.lang.StringUtil;
 import pcgen.cdom.base.AssociatedPrereqObject;
@@ -87,9 +87,9 @@ import pcgen.util.Logging;
 import pcgen.util.enumeration.AttackType;
 
 /**
- * <code>PCClass</code>.
+ * {@code PCClass}.
  *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
+ * @author Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt;
  */
 public class PCClass extends PObject implements ClassFacade
 {
@@ -244,7 +244,7 @@ public class PCClass extends PObject implements ClassFacade
 				{
 					final String aString = breakOnPipes.nextToken();
 					final List<Prerequisite> localPreReqList =
-							new ArrayList<Prerequisite>();
+                            new ArrayList<>();
 					if (bonus.hasPrerequisites())
 					{
 						localPreReqList.addAll(bonus.getPrerequisiteList());
@@ -359,7 +359,7 @@ public class PCClass extends PObject implements ClassFacade
 		}
 		CDOMSingleRef<PCStat> ss = get(ObjectKey.SPELL_STAT);
 		//TODO This could be null, do we need to worry about it?
-		return ss.resolvesTo().getKeyName();
+		return ss.get().getKeyName();
 	}
 
 	/*
@@ -460,12 +460,6 @@ public class PCClass extends PObject implements ClassFacade
 		for (PCClass pcClass : aPC.getClassSet())
 		{
 			aPC.calculateKnownSpellsForClassLevel(this);
-		}
-
-		// check to see if we have dropped a level.
-		if (curLevel > newLevel)
-		{
-			aPC.resetEpicCache();
 		}
 	}
 
@@ -634,10 +628,7 @@ public class PCClass extends PObject implements ClassFacade
 			return 0;
 		}
 
-		int i = (int) getBonusTo("COMBAT", "BAB", aPC.getLevel(this), aPC);
-		i += (int) getBonusTo("COMBAT", "BASEAB", aPC.getLevel(this), aPC);
-
-		return i;
+		return (int) getBonusTo("COMBAT", "BASEAB", aPC.getLevel(this), aPC);
 	}
 
 	/**
@@ -665,7 +656,7 @@ public class PCClass extends PObject implements ClassFacade
 		CDOMSingleRef<PCStat> ss = get(ObjectKey.SPELL_STAT);
 		if (ss != null)
 		{
-			return ss.resolvesTo();
+			return ss.get();
 		}
 		if (Logging.isDebugMode())
 		{
@@ -697,7 +688,7 @@ public class PCClass extends PObject implements ClassFacade
 			CDOMSingleRef<PCStat> bssref = get(ObjectKey.BONUS_SPELL_STAT);
 			if (bssref != null)
 			{
-				return bssref.resolvesTo();
+				return bssref.get();
 			}
 		}
 		return null;
@@ -732,7 +723,7 @@ public class PCClass extends PObject implements ClassFacade
 				}
 			}
 
-			aClass.levelMap = new TreeMap<Integer, PCClassLevel>();
+			aClass.levelMap = new TreeMap<>();
 			for (Map.Entry<Integer, PCClassLevel> me : levelMap.entrySet())
 			{
 				aClass.levelMap.put(me.getKey(), me.getValue().clone());
@@ -834,7 +825,7 @@ public class PCClass extends PObject implements ClassFacade
 		//
 		// Check the UDAM list for monk-like damage
 		//
-		List<CDOMObject> classObjects = new ArrayList<CDOMObject>();
+		List<CDOMObject> classObjects = new ArrayList<>();
 		//Negative increment to start at highest level until an UDAM is found
 		for (int i = aLevel; i >= 1; i--)
 		{
@@ -1224,7 +1215,7 @@ public class PCClass extends PObject implements ClassFacade
 				// level
 
 				final List<PCLevelInfoStat> moddedStats =
-						new ArrayList<PCLevelInfoStat>();
+                        new ArrayList<>();
 				if (pcl.getModifiedStats(true) != null)
 				{
 					moddedStats.addAll(pcl.getModifiedStats(true));
@@ -1445,14 +1436,14 @@ public class PCClass extends PObject implements ClassFacade
 		put(ObjectKey.LEVEL_HITDIE, otherClass.get(ObjectKey.LEVEL_HITDIE));
 	}
 
-	private SortedMap<Integer, PCClassLevel> levelMap = new TreeMap<Integer, PCClassLevel>();
+	private SortedMap<Integer, PCClassLevel> levelMap = new TreeMap<>();
 
 	public PCClassLevel getOriginalClassLevel(int lvl)
 	{
 		if (!levelMap.containsKey(lvl))
 		{
 			PCClassLevel classLevel = new PCClassLevel();
-			classLevel.put(IntegerKey.LEVEL, Integer.valueOf(lvl));
+			classLevel.put(IntegerKey.LEVEL, lvl);
 			classLevel.setName(getDisplayName() + "(" + lvl + ")");
 			classLevel.put(StringKey.QUALIFIED_KEY, getQualifiedKey());
 			classLevel.put(ObjectKey.SOURCE_CAMPAIGN, get(ObjectKey.SOURCE_CAMPAIGN));
@@ -1528,9 +1519,6 @@ public class PCClass extends PObject implements ClassFacade
 		}
 	}
 
-	/**
-	 * @{inheritdoc}
-	 */
 	@Override
 	public boolean qualifies(PlayerCharacter aPC, Object owner)
 	{
@@ -1570,4 +1558,11 @@ public class PCClass extends PObject implements ClassFacade
 		String type = getType();
 		return type.split("\\.");
 	}
+
+	public String getClassType()
+	{
+		FactKey<String> fk = FactKey.valueOf("ClassType");
+		return getResolved(fk);
+	}
+	
 }

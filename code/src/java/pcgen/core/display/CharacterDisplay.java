@@ -30,7 +30,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import pcgen.base.formula.Formula;
-import pcgen.base.geom.OrderedPair;
 import pcgen.base.util.NamedValue;
 import pcgen.cdom.base.CDOMList;
 import pcgen.cdom.base.CDOMObject;
@@ -80,10 +79,8 @@ import pcgen.cdom.facet.analysis.ArmorClassFacet;
 import pcgen.cdom.facet.analysis.BaseMovementFacet;
 import pcgen.cdom.facet.analysis.ChallengeRatingFacet;
 import pcgen.cdom.facet.analysis.ChangeProfFacet;
-import pcgen.cdom.facet.analysis.FaceFacet;
 import pcgen.cdom.facet.analysis.FavoredClassFacet;
 import pcgen.cdom.facet.analysis.FollowerOptionFacet;
-import pcgen.cdom.facet.analysis.HandsFacet;
 import pcgen.cdom.facet.analysis.HasAnyFavoredClassFacet;
 import pcgen.cdom.facet.analysis.InitiativeFacet;
 import pcgen.cdom.facet.analysis.LegsFacet;
@@ -96,7 +93,6 @@ import pcgen.cdom.facet.analysis.NonAbilityFacet;
 import pcgen.cdom.facet.analysis.NonProficiencyPenaltyFacet;
 import pcgen.cdom.facet.analysis.RaceTypeFacet;
 import pcgen.cdom.facet.analysis.RacialSubTypesFacet;
-import pcgen.cdom.facet.analysis.ReachFacet;
 import pcgen.cdom.facet.analysis.SpecialAbilityFacet;
 import pcgen.cdom.facet.analysis.SubRaceFacet;
 import pcgen.cdom.facet.analysis.TotalWeightFacet;
@@ -144,7 +140,6 @@ import pcgen.core.Deity;
 import pcgen.core.Domain;
 import pcgen.core.Equipment;
 import pcgen.core.FollowerOption;
-import pcgen.core.Globals;
 import pcgen.core.Kit;
 import pcgen.core.Language;
 import pcgen.core.NoteItem;
@@ -213,8 +208,6 @@ public class CharacterDisplay
 	private GenderFacet genderFacet = FacetLibrary.getFacet(GenderFacet.class);
 	private LoadFacet loadFacet = FacetLibrary.getFacet(LoadFacet.class);
 	private StatFacet statFacet = FacetLibrary.getFacet(StatFacet.class);
-	private ReachFacet reachFacet = FacetLibrary.getFacet(ReachFacet.class);
-	private HandsFacet handsFacet = FacetLibrary.getFacet(HandsFacet.class);
 	private TotalWeightFacet totalWeightFacet = FacetLibrary.getFacet(TotalWeightFacet.class);
 	private MultiClassFacet multiClassFacet = FacetLibrary.getFacet(MultiClassFacet.class);
 	private LevelTableFacet levelTableFacet = FacetLibrary.getFacet(LevelTableFacet.class);
@@ -252,7 +245,6 @@ public class CharacterDisplay
 	private RacialSubTypesFacet subTypesFacet = FacetLibrary.getFacet(RacialSubTypesFacet.class);
 	private SizeFacet sizeFacet = FacetLibrary.getFacet(SizeFacet.class);
 	private WeaponProfModelFacet weaponProfFacet = FacetLibrary.getFacet(WeaponProfModelFacet.class);
-	private FaceFacet faceFacet = FacetLibrary.getFacet(FaceFacet.class);
 	private LanguageFacet languageFacet = FacetLibrary.getFacet(LanguageFacet.class);
 	private InitiativeFacet initiativeFacet = FacetLibrary.getFacet(InitiativeFacet.class);
 	private HandedFacet handedFacet = FacetLibrary.getFacet(HandedFacet.class);
@@ -407,7 +399,7 @@ public class CharacterDisplay
 	/**
 	 * Get the Spell Resistance granted by the given template to a character at a
 	 * given level (Class and Hit Dice). This will include the absolute
-	 * adjustment made with SR:, LEVEL:<num>:SR and HD:<num>:SR tags
+	 * adjustment made with {@literal SR:, LEVEL:<num>:SR and HD:<num>:SR tags}
 	 * 
 	 * Note: unlike DR and CR, the value returned here includes the PCs own
 	 * Spell Resistance.
@@ -499,9 +491,9 @@ public class CharacterDisplay
 
 	private List<PCTemplate> getVisibleToTemplateList(View v)
 	{
-		List<PCTemplate> tl = new ArrayList<PCTemplate>();
+		List<PCTemplate> tl = new ArrayList<>();
 
-		TreeSet<PCTemplate> treeSet = new TreeSet<PCTemplate>(CDOMObjectUtilities.CDOM_SORTER);
+		TreeSet<PCTemplate> treeSet = new TreeSet<>(CDOMObjectUtilities.CDOM_SORTER);
 		for (PCTemplate template : templateFacet.getSet(id))
 		{
 			if (template.getSafe(ObjectKey.VISIBILITY).isVisibleTo(v))
@@ -545,7 +537,7 @@ public class CharacterDisplay
 	 */
 	public List<String> getSpellBookNames()
 	{
-		return new ArrayList<String>(spellBookFacet.getBookNames(id));
+		return new ArrayList<>(spellBookFacet.getBookNames(id));
 	}
 
 	/**
@@ -560,6 +552,7 @@ public class CharacterDisplay
 		return spellBookFacet.getBookNamed(id, name);
 	}
 
+	@Deprecated
 	public int calcACOfType(String type)
 	{
 		return armorClassFacet.calcACOfType(id, type);
@@ -632,7 +625,7 @@ public class CharacterDisplay
 	@Deprecated
 	public SortedSet<PCClass> getFavoredClasses()
 	{
-		SortedSet<PCClass> favored = new TreeSet<PCClass>(CDOMObjectUtilities.CDOM_SORTER);
+		SortedSet<PCClass> favored = new TreeSet<>(CDOMObjectUtilities.CDOM_SORTER);
 		favored.addAll(favClassFacet.getSet(id));
 		return favored;
 	}
@@ -660,17 +653,13 @@ public class CharacterDisplay
 	@Deprecated
 	public Set<Language> getSortedLanguageSet()
 	{
-		return new TreeSet<Language>(languageFacet.getSet(id));
+		return new TreeSet<>(languageFacet.getSet(id));
 	}
 
-	public int initiativeMod()
+	@Deprecated
+	public int processOldInitiativeMod()
 	{
 		return initiativeFacet.getInitiative(id);
-	}
-
-	public int initiativeBonus()
-	{
-		return initiativeFacet.getInitiativeBonus(id);
 	}
 
 	public Handed getHandedObject()
@@ -678,25 +667,14 @@ public class CharacterDisplay
 		return handedFacet.getHanded(id);
 	}
 
-	public OrderedPair getFace()
-	{
-		return faceFacet.get(id);
-	}
-
 	public SortedSet<WeaponProf> getSortedWeaponProfs()
 	{
-		return Collections.unmodifiableSortedSet(new TreeSet<WeaponProf>(weaponProfFacet.getSet(id)));
+		return Collections.unmodifiableSortedSet(new TreeSet<>(weaponProfFacet.getSet(id)));
 	}
 
 	public String getSize()
 	{
 		return sizeFacet.getSizeAbb(id);
-	}
-
-	@Deprecated
-	public String getResidence()
-	{
-		return getSafeStringFor(PCStringKey.RESIDENCE);
 	}
 
 	public Collection<RaceSubType> getRacialSubTypes()
@@ -768,7 +746,7 @@ public class CharacterDisplay
 
 	public Set<Domain> getSortedDomainSet()
 	{
-		SortedSet<Domain> domains = new TreeSet<Domain>(CDOMObjectUtilities.CDOM_SORTER);
+		SortedSet<Domain> domains = new TreeSet<>(CDOMObjectUtilities.CDOM_SORTER);
 		domains.addAll(domainFacet.getSet(id));
 		return domains;
 	}
@@ -777,8 +755,7 @@ public class CharacterDisplay
 	 * Retrieve those skills in the character's skill list that match the
 	 * supplied visibility level.
 	 * 
-	 * @param vis
-	 *            What level of visibility skills are desired.
+	 * @param v What level of visibility skills are desired.
 	 * 
 	 * @return A list of the character's skills matching the visibility
 	 *         criteria.
@@ -786,7 +763,7 @@ public class CharacterDisplay
 	public List<Skill> getPartialSkillList(View v)
 	{
 		// Now select the required set of skills, based on their visibility.
-		ArrayList<Skill> aList = new ArrayList<Skill>();
+		ArrayList<Skill> aList = new ArrayList<>();
 		for (Skill po : skillFacet.getSet(id))
 		{
 			if (po.getSafe(ObjectKey.VISIBILITY).isVisibleTo(v))
@@ -817,7 +794,7 @@ public class CharacterDisplay
 		/*
 		 * TODO This is a discussion we have to have about where items are sorted
 		 */
-		return new ArrayList<PCClass>(getClassSet());
+		return new ArrayList<>(getClassSet());
 	}
 
 	/**
@@ -1054,19 +1031,9 @@ public class CharacterDisplay
 		return sizeFacet.racialSizeInt(id);
 	}
 
-	/**
-	 * Now we use the ACTYPE tag on misc info to determine the formula
-	 * 
-	 * @return ac total
-	 */
-	public int getACTotal()
-	{
-		return armorClassFacet.calcACOfType(id, "Total");
-	}
-
 	public Set<Language> getAutoLanguages()
 	{
-		Set<Language> languages = new HashSet<Language>();
+		Set<Language> languages = new HashSet<>();
 		languages.addAll(autoLangGrantedFacet.getSet(id));
 		languages.addAll(autoLangUnconditionalFacet.getSet(id));
 		return languages;
@@ -1179,16 +1146,6 @@ public class CharacterDisplay
 		return unarmedDamageFacet.getSet(id);
 	}
 
-	public int abilityAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Ability");
-	}
-
-	public int baseAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Base");
-	}
-
 	/**
 	 * Get all possible sources of Damage Resistance and calculate
 	 * 
@@ -1197,29 +1154,6 @@ public class CharacterDisplay
 	public String calcDR()
 	{
 		return drFacet.getDRString(id);
-	}
-
-	/**
-	 * Get the value of the weight token without units.
-	 *
-	 * @return The value of the weight token.
-	 */
-	public String getNoUnitToken()
-	{
-		return Globals.getGameModeUnitSet().displayWeightInUnitSet(
-			getWeight());
-	}
-
-	/**
-	 * Get the value of the weight token in units.
-	 *
-	 * @return The value of the weight token.
-	 */
-	public String getWeightToken()
-	{
-		return Globals.getGameModeUnitSet().displayWeightInUnitSet(
-			getWeight())
-			+ Globals.getGameModeUnitSet().getWeightUnit();
 	}
 
 	/*
@@ -1243,49 +1177,14 @@ public class CharacterDisplay
 		return false;
 	}
 
-	public int classAC()
-	{
-		return armorClassFacet.calcACOfType(id, "ClassDefense");
-	}
-
-	public int dodgeAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Dodge");
-	}
-
-	public int equipmentAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Equipment") + armorClassFacet.calcACOfType(id, "Armor");
-	}
-
-	public int flatfootedAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Flatfooted");
-	}
-
 	public int minXPForNextECL()
 	{
 		return levelTableFacet.minXPForLevel(levelFacet.getECL(id) + 1, id);
 	}
 
-	public int miscAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Misc");
-	}
-
 	public double multiclassXPMultiplier()
 	{
 		return multiClassFacet.getMultiClassXPMultiplier(id);
-	}
-
-	public int naturalAC()
-	{
-		return armorClassFacet.calcACOfType(id, "NaturalArmor");
-	}
-
-	public int sizeAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Size");
 	}
 
 	public int sizeInt()
@@ -1308,40 +1207,14 @@ public class CharacterDisplay
 		return totalWeightFacet.getTotalWeight(id);
 	}
 
-	public int touchAC()
-	{
-		return armorClassFacet.calcACOfType(id, "Touch");
-	}
-
 	public SizeAdjustment getSizeAdjustment()
 	{
 		return sizeFacet.get(id);
 	}
 
-	/**
-	 * Determine the number of hands the character has.
-	 * 
-	 * @return The number of hands.
-	 */
-	public int getHands()
-	{
-		return handsFacet.getHands(id);
-	}
-
 	public boolean hasKit(Kit kit)
 	{
 		return kitFacet.contains(id, kit);
-	}
-
-	/**
-	 * Determine the character's reach. This is based on their race, any applied
-	 * templates and any other bonuses to reach.
-	 * 
-	 * @return The reach radius.
-	 */
-	public int getReach()
-	{
-		return reachFacet.getReach(id);
 	}
 
 	public boolean hasSkill(Skill skill)
@@ -1590,7 +1463,7 @@ public class CharacterDisplay
 		if (pcClass != null)
 		{
 			String subClassKey = getSubClassName(pcClass);
-			if (subClassKey != null && (subClassKey.length() > 0)
+			if (subClassKey != null && (!subClassKey.isEmpty())
 					&& !subClassKey.equals(Constants.NONE))
 			{
 				SubClass sc = pcClass.getSubClassKeyed(subClassKey);
@@ -1607,7 +1480,6 @@ public class CharacterDisplay
 	/**
 	 * Get the value of the weight token in format WEIGHT.X
 	 * @param type Encumbrance type 
-	 * @param pc The character to retrieve the value for.
 	 * @return The value of the weight token.
 	 */
 	public double getLoadToken(String type)
@@ -1619,50 +1491,6 @@ public class CharacterDisplay
 			return getMaxLoad(mult).intValue();
 		}
 		return 0.0;
-	}
-
-	@Deprecated
-	public String getCharacterHeightInchPart()
-	{
-		return Integer.toString(getHeight() % 12);
-	}
-
-	@Deprecated
-	public String getCharacterHeightFootPart()
-	{
-		return Integer.toString(getHeight() / 12);
-	}
-
-	@Deprecated
-	public String getHeightString()
-	{
-		String retString;
-	
-		if ("ftin".equals(Globals.getGameModeUnitSet().getHeightUnit()))
-		{
-			retString =
-					getCharacterHeightFootPart() + "' " + getCharacterHeightInchPart() + "\"";
-		}
-		else
-		{
-			retString =
-					Globals.getGameModeUnitSet().displayHeightInUnitSet(
-						getHeight())
-						+ " " + Globals.getGameModeUnitSet().getHeightUnit();
-		}
-	
-		return retString;
-	}
-
-	@Deprecated
-	public String getAlignmentDisplayString()
-	{
-		if (Globals.getGameModeAlignmentText().length() == 0)
-		{
-			return "";
-		}
-		final PCAlignment alignment = getPCAlignment();
-		return alignment == null ? "None" : alignment.getDisplayName();
 	}
 
 	/**
@@ -1687,7 +1515,7 @@ public class CharacterDisplay
 	/**
 	 * Returns a region (including subregion) string for the character.
 	 * 
-	 * <p/> Build on-the-fly so removing templates won't mess up region
+	 * <p> Build on-the-fly so removing templates won't mess up region
 	 * 
 	 * @return character region
 	 */
@@ -1706,9 +1534,9 @@ public class CharacterDisplay
 		return substitutionClassFacet.get(id, lvl);
 	}
 
-	public Integer getStat(PCStat stat)
+	public int getStat(PCStat stat)
 	{
-		return statValueFacet.get(id, stat);
+		return statValueFacet.get(id, stat).intValue();
 	}
 
 	public boolean containsRacialSubType(RaceSubType st)
@@ -1721,7 +1549,7 @@ public class CharacterDisplay
 	 * 
 	 * @return The number of legs.
 	 */
-	public int getLegs()
+	public int getPreFormulaLegs()
 	{
 		return legsFacet.getLegs(id);
 	}
@@ -1866,8 +1694,8 @@ public class CharacterDisplay
 	 * 
 	 * @param deity
 	 *            Deity to check for.
-	 * @return <code>true</code> if the character has the Deity,
-	 *         <code>false</code> otherwise.
+	 * @return {@code true} if the character has the Deity,
+	 *         {@code false} otherwise.
 	 */
 	public boolean hasDeity(final Deity deity)
 	{
@@ -1920,4 +1748,15 @@ public class CharacterDisplay
 		return armorProfFacet.isProficientWithArmor(id, eq);
 	}
 
+	/**
+	 * WARNING: Use this method SPARINGLY... and only for transition to the
+	 * facet model. It is NOT an excuse to throw around a CharacterDisplay
+	 * object when unnecessary
+	 * 
+	 * @return The id of the character as used by the facets.
+	 */
+	public CharID getCharID()
+	{
+		return id;
+	}
 }

@@ -48,7 +48,7 @@ public class EqModCost
 	{
 		double val = 0;
 
-		Set<String> typesToGetBonusesFor = new HashSet<String>();
+		Set<String> typesToGetBonusesFor = new HashSet<>();
 
 		for (BonusObj bonus : eqMod.getBonusList(parent))
 		{
@@ -132,11 +132,11 @@ public class EqModCost
 		String costFormula = eqMod.getSafe(FormulaKey.COST).toString();
 		String modChoice = "";
 
-		while (costFormula.indexOf("%SPELLLEVEL") >= 0)
+		while (costFormula.contains("%SPELLLEVEL"))
 		{
 			final int idx = costFormula.indexOf("%SPELLLEVEL");
 
-			if (modChoice.length() == 0)
+			if (modChoice.isEmpty())
 			{
 				final int iLevel = EqModSpellInfo.getSpellInfo(listEntry,
 						"SPELLLEVEL");
@@ -169,11 +169,11 @@ public class EqModCost
 	{
 		String modChoice = "";
 
-		while (costFormula.indexOf("%CASTERLEVEL") >= 0)
+		while (costFormula.contains("%CASTERLEVEL"))
 		{
 			final int idx = costFormula.indexOf("%CASTERLEVEL");
 
-			if (modChoice.length() == 0)
+			if (modChoice.isEmpty())
 			{
 				final int iCasterLevel = EqModSpellInfo.getSpellInfo(
 						listEntry, "CASTERLEVEL");
@@ -185,7 +185,7 @@ public class EqModCost
 				final String castClassKey = EqModSpellInfo
 						.getSpellInfoString(listEntry, "CASTER");
 
-				if (castClassKey.length() != 0)
+				if (!castClassKey.isEmpty())
 				{
 					final PCClass castClass = Globals.getContext().getReferenceContext()
 							.silentlyGetConstructedCDOMObject(PCClass.class,
@@ -196,7 +196,7 @@ public class EqModCost
 						final StringBuilder multiple = new StringBuilder(200);
 						String aString = castClass.get(StringKey.ITEMCREATE);
 
-						if (aString != null && aString.length() != 0)
+						if (aString != null && !aString.isEmpty())
 						{
 							final StringTokenizer aTok = new StringTokenizer(
 									aString, "+-*/()", true);
@@ -247,11 +247,11 @@ public class EqModCost
 	{
 		String modChoice = "";
 
-		while (costFormula.indexOf("%" + s_CHARGES) >= 0)
+		while (costFormula.contains("%" + s_CHARGES))
 		{
 			final int idx = costFormula.indexOf("%" + s_CHARGES);
 
-			if (modChoice.length() == 0)
+			if (modChoice.isEmpty())
 			{
 				modChoice = Integer.toString(EqModSpellInfo.getSpellInfo(
 						listEntry, s_CHARGES));
@@ -269,15 +269,16 @@ public class EqModCost
 	{
 		String modChoice = "";
 
-		while (costFormula.indexOf("%SPELLCOST") >= 0)
+		while (costFormula.contains("%SPELLCOST"))
 		{
 			final int idx = costFormula.indexOf("%SPELLCOST");
 
-			if (modChoice.length() == 0)
+			if (modChoice.isEmpty())
 			{
 				final String spellName = EqModSpellInfo.getSpellInfoString(
 						listEntry, "SPELLNAME");
-				final Spell aSpell = Globals.getSpellKeyed(spellName);
+				final Spell aSpell = Globals.getContext().getReferenceContext()
+						.silentlyGetConstructedCDOMObject(Spell.class, spellName);
 
 				if (aSpell != null)
 				{
@@ -297,11 +298,11 @@ public class EqModCost
 	{
 		String modChoice = "";
 
-		while (costFormula.indexOf("%CHOICE") >= 0)
+		while (costFormula.contains("%CHOICE"))
 		{
 			final int idx = costFormula.indexOf("%CHOICE");
 
-			if (modChoice.length() == 0)
+			if (modChoice.isEmpty())
 			{
 				final int offs = listEntry.lastIndexOf('|');
 				int modValue = 0;
@@ -330,15 +331,16 @@ public class EqModCost
 	{
 		String modChoice = "";
 
-		while (costFormula.indexOf("%SPELLXPCOST") >= 0)
+		while (costFormula.contains("%SPELLXPCOST"))
 		{
 			final int idx = costFormula.indexOf("%SPELLXPCOST");
 
-			if (modChoice.length() == 0)
+			if (modChoice.isEmpty())
 			{
 				final String spellName = EqModSpellInfo.getSpellInfoString(
 						listEntry, "SPELLNAME");
-				final Spell aSpell = Globals.getSpellKeyed(spellName);
+				final Spell aSpell = Globals.getContext().getReferenceContext()
+						.silentlyGetConstructedCDOMObject(Spell.class, spellName);
 
 				if (aSpell != null)
 				{

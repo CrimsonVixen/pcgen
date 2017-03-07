@@ -31,6 +31,9 @@ import pcgen.core.PlayerCharacter;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.PrimitiveToken;
 
+/**
+ * AlignToken is a Primitive that represents the Alignment of a Deity.
+ */
 public class AlignToken implements PrimitiveToken<Deity>, PrimitiveFilter<Deity>
 {
 
@@ -74,7 +77,7 @@ public class AlignToken implements PrimitiveToken<Deity>, PrimitiveFilter<Deity>
 	public boolean allow(PlayerCharacter pc, Deity deity)
 	{
 		CDOMSingleRef<PCAlignment> alignRef = deity.get(ObjectKey.ALIGNMENT);
-		return (alignRef != null) && alignment.resolvesTo().equals(alignRef.resolvesTo());
+		return (alignRef != null) && alignment.get().equals(alignRef.get());
 	}
 
 	@Override

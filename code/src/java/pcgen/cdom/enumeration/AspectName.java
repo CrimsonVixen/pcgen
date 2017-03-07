@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/08/2008 20:04:21
  *
- * $Id: $
  */
 
 package pcgen.cdom.enumeration;
@@ -34,10 +32,7 @@ import pcgen.base.util.CaseInsensitiveMap;
  * names in a type-safe fashion, so that they can be quickly compared and use
  * less memory when identical Aspect names exist in two CDOMObjects.
  * 
- * Last Editor: $Author: $ Last Edited: $Date: $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: $
  */
 public final class AspectName implements TypeSafeConstant,
 		Comparable<AspectName>
@@ -123,7 +118,7 @@ public final class AspectName implements TypeSafeConstant,
 	{
 		if (nameMap == null)
 		{
-			nameMap = new CaseInsensitiveMap<AspectName>();
+			nameMap = new CaseInsensitiveMap<>();
 		}
 	}
 

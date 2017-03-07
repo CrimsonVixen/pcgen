@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Feb 22, 2006
  *
- * $Id$
  *
  */
 package plugin.lsttokens.equipment;
@@ -33,13 +31,10 @@ import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * <code>PageUsageToken</code> deals with PAGEUSAGE token
+ * {@code PageUsageToken} deals with PAGEUSAGE token
  * 
- * Last Editor: $Author$ Last Edited: $Date: 2006-03-14 18:16:52 -0400
  * (Tue, 14 Mar 2006) $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class PageUsageToken extends AbstractNonEmptyToken<Equipment> implements
 		CDOMPrimaryToken<Equipment>

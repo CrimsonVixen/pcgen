@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 27/12/2007
  *
- * $Id$
  */
 package pcgen.persistence.lst;
 
@@ -31,7 +29,7 @@ import java.util.Date;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import pcgen.PCGenTestCase;
+import junit.framework.TestCase;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.enumeration.ObjectKey;
 import pcgen.cdom.enumeration.StringKey;
@@ -42,7 +40,7 @@ import pcgen.util.TestHelper;
 /**
  * A collection of tests to validate the functioning of the InstallLoader class.
  */
-public final class InstallLoaderTest extends PCGenTestCase
+public final class InstallLoaderTest extends TestCase
 {
 	private static final String PUBNAMESHORT = "PCGen";
 	private static final String PUBNAMELONG = "PCGen Open Source Team";

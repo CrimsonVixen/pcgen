@@ -18,9 +18,6 @@
  *
  * Created 05-Aug-2008 00:21:49
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
@@ -53,7 +50,7 @@ public class PCCountEqTypeTermEvaluator
 	@Override
 	public Float resolve(PlayerCharacter pc) {
 
-		List<Equipment> aList = new ArrayList<Equipment>();
+		List<Equipment> aList = new ArrayList<>();
 		
 		int cur = 0;
 		String aType = types[cur];
@@ -85,7 +82,7 @@ public class PCCountEqTypeTermEvaluator
 					pc.getEquipmentListInOutputOrder(merge);
 			for ( Equipment eq : equipList )
 			{
-				if (eq.hasBonusWithInfo(pc, "AC") && !eq.isArmor() && !eq.isShield())
+				if (eq.altersAC(pc) && !eq.isArmor() && !eq.isShield())
 				{
 					aList.add(eq);
 				}

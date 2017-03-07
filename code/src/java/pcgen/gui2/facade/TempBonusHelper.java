@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 09/06/2012 12:41:49 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -53,15 +51,11 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>TempBonusHelper</code> splits out processing for temporary 
+ * The Class {@code TempBonusHelper} splits out processing for temporary
  * bonuses from CnaracterFacadeImpl.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class TempBonusHelper
 {
@@ -90,7 +84,7 @@ public class TempBonusHelper
 	{
 		List<InfoFacade> possibleTargets =
 				getListOfApplicableEquipment(originObj, theCharacter);
-		boolean canApplyToPC = hasCharacterTempBonus(originObj, theCharacter);
+		boolean canApplyToPC = hasCharacterTempBonus(originObj);
 		if (possibleTargets.isEmpty())
 		{
 			if (canApplyToPC)
@@ -109,14 +103,11 @@ public class TempBonusHelper
 		{
 			possibleTargets.add(new CharacterInfoFacade(theCharacter.getDisplay()));
 		}
-		final ArrayList<InfoFacade> selectedList = new ArrayList<InfoFacade>();
+		final ArrayList<InfoFacade> selectedList = new ArrayList<>();
 		GeneralChooserFacadeBase chooserFacade =
 				new GeneralChooserFacadeBase(label, possibleTargets,
-					new ArrayList<InfoFacade>(), 1, infoFactory)
+                        new ArrayList<>(), 1, infoFactory)
 				{
-					/**
-					 * {@inheritDoc}
-					 */
 					@Override
 					public void commit()
 					{
@@ -172,7 +163,7 @@ public class TempBonusHelper
 		PlayerCharacter theCharacter)
 	{
 		CharacterDisplay charDisplay = theCharacter.getDisplay();
-		List<InfoFacade> possibleEquipment = new ArrayList<InfoFacade>();
+		List<InfoFacade> possibleEquipment = new ArrayList<>();
 		if (originObj == null)
 		{
 			return possibleEquipment;
@@ -251,7 +242,7 @@ public class TempBonusHelper
 			BonusObj aBonus = eb.bonus;
 			String oldValue = aBonus.toString();
 			String newValue = oldValue;
-			if (originObj.getSafe(StringKey.TEMPVALUE).length() > 0)
+			if (!originObj.getSafe(StringKey.TEMPVALUE).isEmpty())
 			{
 				BonusInfo bi =
 						TempBonusHelper.getBonusChoice(oldValue, originObj,
@@ -307,11 +298,11 @@ public class TempBonusHelper
 	{
 		TempBonusFacadeImpl appliedBonus = null;
 		String repeatValue = EMPTY_STRING;
-		for (BonusObj aBonus : getTempCharBonusesFor(originObj, theCharacter))
+		for (BonusObj aBonus : getTempCharBonusesFor(originObj))
 		{
 			String oldValue = aBonus.toString();
 			String newValue = oldValue;
-			if (originObj.getSafe(StringKey.TEMPVALUE).length() > 0)
+			if (!originObj.getSafe(StringKey.TEMPVALUE).isEmpty())
 			{
 				BonusInfo bi =
 						TempBonusHelper.getBonusChoice(oldValue, originObj,
@@ -347,10 +338,9 @@ public class TempBonusHelper
 		return appliedBonus;
 	}
 	
-	private static List<BonusObj> getTempCharBonusesFor(CDOMObject originObj,
-		PlayerCharacter theCharacter)
+	private static List<BonusObj> getTempCharBonusesFor(CDOMObject originObj)
 	{
-		List<BonusObj> list = new ArrayList<BonusObj>(5);
+		List<BonusObj> list = new ArrayList<>(5);
 		list.addAll(originObj.getSafeListFor(ListKey.BONUS_ANYPC));
 		list.addAll(originObj.getSafeListFor(ListKey.BONUS_PC));
 		return list;
@@ -404,11 +394,11 @@ public class TempBonusHelper
 
 		// If repeatValue is set, this is a multi BONUS and they all
 		// should get the same value as the first choice
-		if (repeatValue.length() > 0)
+		if (!repeatValue.isEmpty())
 		{
 			// need to parse the aChoice string
 			// and replace %CHOICE with choice
-			if (value.indexOf("%CHOICE") >= 0) //$NON-NLS-1$
+			if (value.contains("%CHOICE")) //$NON-NLS-1$
 			{
 				value = value.replaceAll(
 						Pattern.quote("%CHOICE"), //$NON-NLS-1$ 
@@ -420,7 +410,6 @@ public class TempBonusHelper
 
 		String aChoice = source.getSafe(StringKey.TEMPVALUE);
 		StringTokenizer aTok = new StringTokenizer(aChoice, "|"); //$NON-NLS-1$
-		aTok.nextToken(); // skip TEMPVALUE
 
 		String minString = aTok.nextToken().substring(4); //Take off MIN=
 		String maxString = aTok.nextToken().substring(4); //Take off MAX=
@@ -440,7 +429,7 @@ public class TempBonusHelper
 			return null;
 		}
 
-		List<Integer> numberList = new ArrayList<Integer>();
+		List<Integer> numberList = new ArrayList<>();
 
 		for (int i = min; i <= max; i++)
 		{
@@ -448,17 +437,17 @@ public class TempBonusHelper
 		}
 
 		// let them choose the number from a radio list
-		List<Integer> selectedList = new ArrayList<Integer>();
+		List<Integer> selectedList = new ArrayList<>();
 		selectedList =
 				Globals.getChoiceFromList(titleString, numberList,
 					selectedList, 1, false, true, pc);
-		if (selectedList.size() > 0)
+		if (!selectedList.isEmpty())
 		{
 			final String aI = String.valueOf(selectedList.get(0));
 
 			// need to parse the bonus.getValue()
 			// string and replace %CHOICE
-			if (oldValue.indexOf("%CHOICE") >= 0) //$NON-NLS-1$
+			if (oldValue.contains("%CHOICE")) //$NON-NLS-1$
 			{
 				value = oldValue.replaceAll(Pattern.quote("%CHOICE"), //$NON-NLS-1$
 					aI);
@@ -495,7 +484,7 @@ public class TempBonusHelper
 	}
 
 	/**
-	 * The Class <code>CharacterInfoFacade</code> presents a character as an InfoFacade.
+	 * The Class {@code CharacterInfoFacade} presents a character as an InfoFacade.
 	 */
 	static class CharacterInfoFacade implements InfoFacade
 	{
@@ -507,45 +496,30 @@ public class TempBonusHelper
 			
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getSource()
 		{
 			return EMPTY_STRING;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getSourceForNodeDisplay()
 		{
 			return EMPTY_STRING;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getKeyName()
 		{
 			return "PC"; //$NON-NLS-1$
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean isNamePI()
 		{
 			return false;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String toString()
 		{
@@ -553,9 +527,6 @@ public class TempBonusHelper
 				charDisplay.getName());
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String getType()
 		{
@@ -567,42 +538,36 @@ public class TempBonusHelper
 	//        Public Accessors and Mutators       //
 	////////////////////////////////////////////////
 
-	public static boolean hasAnyPCTempBonus(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	public static boolean hasAnyPCTempBonus(CDOMObject obj)
 	{
 		return obj.containsListFor(ListKey.BONUS_ANYPC);
 	}
 
-	public static boolean hasPCTempBonus(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	public static boolean hasPCTempBonus(CDOMObject obj)
 	{
 		return obj.containsListFor(ListKey.BONUS_PC);
 	}
 
-	public static boolean hasNonPCTempBonus(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	public static boolean hasNonPCTempBonus(CDOMObject obj)
 	{
-		return hasEquipmentTempBonus(obj, theCharacter)
-			|| hasAnyPCTempBonus(obj, theCharacter);
+		return hasEquipmentTempBonus(obj)
+			|| hasAnyPCTempBonus(obj);
 	}
 
-	public static boolean hasCharacterTempBonus(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	public static boolean hasCharacterTempBonus(CDOMObject obj)
 	{
-		return hasAnyPCTempBonus(obj, theCharacter)
-			|| hasPCTempBonus(obj, theCharacter);
+		return hasAnyPCTempBonus(obj)
+			|| hasPCTempBonus(obj);
 	}
 
-	public static boolean hasEquipmentTempBonus(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	public static boolean hasEquipmentTempBonus(CDOMObject obj)
 	{
 		return obj.containsListFor(ListKey.BONUS_EQUIP);
 	}
 
-	public static Set<String> getEquipmentApplyString(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	public static Set<String> getEquipmentApplyString(CDOMObject obj)
 	{
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new HashSet<>();
 		//Should use hasEquipmentTempBonus first, so we do NOT do getSafeListFor
 		for (EquipBonus bonus : obj.getListFor(ListKey.BONUS_EQUIP))
 		{
@@ -611,12 +576,11 @@ public class TempBonusHelper
 		return set;
 	}
 
-	public static boolean hasTempBonus(CDOMObject obj,
-		PlayerCharacter theCharacter)
+	static boolean hasTempBonus(CDOMObject obj)
 	{
-		return hasEquipmentTempBonus(obj, theCharacter)
-			|| hasAnyPCTempBonus(obj, theCharacter)
-			|| hasPCTempBonus(obj, theCharacter);
+		return hasEquipmentTempBonus(obj)
+			|| hasAnyPCTempBonus(obj)
+			|| hasPCTempBonus(obj);
 	}
 
 }

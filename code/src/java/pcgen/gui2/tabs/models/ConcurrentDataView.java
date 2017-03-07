@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Feb 3, 2013, 2:22:26 PM
  */
 package pcgen.gui2.tabs.models;
 
@@ -36,7 +35,6 @@ import pcgen.util.Logging;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public abstract class ConcurrentDataView<E> implements DataView<E>
 {
@@ -55,16 +53,7 @@ public abstract class ConcurrentDataView<E> implements DataView<E>
 		}
 
 	});
-	private final Runnable refreshRunnable = new Runnable()
-	{
-
-		@Override
-		public void run()
-		{
-			refreshTableData();
-		}
-
-	};
+	private final Runnable refreshRunnable = this::refreshTableData;
 	private final Map<E, List<?>> dataMap;
 	private boolean installed = false;
 
@@ -73,7 +62,7 @@ public abstract class ConcurrentDataView<E> implements DataView<E>
 		this.dataMap = Collections.synchronizedMap(new WeakHashMap<E, List<?>>());
 	}
 
-	@Override
+//	@Override
 	public final List<?> getData(final E obj)
 	{
 		Future<List<?>> future = executor.submit(new Callable<List<?>>()
@@ -99,11 +88,7 @@ public abstract class ConcurrentDataView<E> implements DataView<E>
 			{
 				return future.get();
 			}
-			catch (InterruptedException ex)
-			{
-				Logging.errorPrint(null, ex);
-			}
-			catch (ExecutionException ex)
+			catch (InterruptedException | ExecutionException ex)
 			{
 				Logging.errorPrint(null, ex);
 			}

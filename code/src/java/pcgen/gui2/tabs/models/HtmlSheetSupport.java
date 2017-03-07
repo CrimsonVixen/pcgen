@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Mar 10, 2011, 1:35:43 PM
  */
 package pcgen.gui2.tabs.models;
 
@@ -46,7 +45,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.EditorKit;
 import javax.swing.text.html.HTMLDocument;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.base.lang.UnreachableError;
 import pcgen.facade.core.CharacterFacade;
@@ -55,7 +54,6 @@ import pcgen.util.Logging;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class HtmlSheetSupport
 {
@@ -104,7 +102,7 @@ public class HtmlSheetSupport
 
 	public void setCharacter(CharacterFacade character)
 	{
-		this.characterRef = new WeakReference<CharacterFacade>(character);
+		this.characterRef = new WeakReference<>(character);
 	}
 
 	public void install()
@@ -270,7 +268,7 @@ public class HtmlSheetSupport
 	private static class ImageCache extends Dictionary<URL, Image>
 	{
 
-		private HashMap<URL, Image> cache = new HashMap<URL, Image>();
+		private HashMap<URL, Image> cache = new HashMap<>();
 
 		@Override
 		public int size()

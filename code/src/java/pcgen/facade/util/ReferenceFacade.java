@@ -16,10 +16,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Apr 25, 2010, 3:37:16 PM
  */
 package pcgen.facade.util;
 
+import pcgen.base.util.Reference;
 import pcgen.facade.util.event.ReferenceListener;
 
 /**
@@ -27,15 +27,12 @@ import pcgen.facade.util.event.ReferenceListener;
  * but with the object that it holds a reference to can be changed by
  * an implementor of this interface. When the reference changes a
  * reference change event is fired to all registered listeners.
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
-public interface ReferenceFacade<E>
+public interface ReferenceFacade<E> extends Reference<E>
 {
 
 	void addReferenceListener(ReferenceListener<? super E> listener);
 
 	void removeReferenceListener(ReferenceListener<? super E> listener);
-
-	E getReference();
 
 }

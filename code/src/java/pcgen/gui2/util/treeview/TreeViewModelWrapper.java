@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jul 2, 2008, 4:13:52 PM
  */
 package pcgen.gui2.util.treeview;
 
@@ -26,7 +25,6 @@ import pcgen.facade.util.ListFacades;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class TreeViewModelWrapper<E> implements TreeViewModel<E>
 {
@@ -36,7 +34,7 @@ public class TreeViewModelWrapper<E> implements TreeViewModel<E>
 
     public TreeViewModelWrapper(TreeViewModel<E> treeviewModel)
     {
-        this(treeviewModel, new DefaultListFacade<E>());
+        this(treeviewModel, new DefaultListFacade<>());
 		dataModel.setContents(ListFacades.wrap(treeviewModel.getDataModel()));
     }
 

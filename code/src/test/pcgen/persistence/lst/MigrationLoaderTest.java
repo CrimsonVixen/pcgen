@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 01/06/2013
  *
- * $Id$
  */
 package pcgen.persistence.lst;
 
@@ -44,8 +42,6 @@ import pcgen.util.TestHelper;
  * MigrationLoaderTest checks the function of the MigrationLoader class.
  * 
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class MigrationLoaderTest
 {
@@ -123,7 +119,7 @@ public class MigrationLoaderTest
 	@Test
 	public void testParseFirstTokenValidCharsInSourceKey()
 	{
-		String sourceKey = "Paizo - Second Darkness, Chapter 6: Descent into Midnight";
+		String sourceKey = "Paizo - Second Darkness, Chapter 6: Descent into Midnight.";
 		MigrationRule migrationRule = migrationLoader.parseFirstToken("SOURCE:" + sourceKey, "", sourceURI);
 		assertNotNull("Key should have been accepted.", migrationRule);
 		assertEquals("Source key should have been recorded", sourceKey, migrationRule.getOldKey());
@@ -135,7 +131,7 @@ public class MigrationLoaderTest
 	@Test
 	public void testParseFirstTokenInValidCharsInAbilityCategory()
 	{
-		String invalidChars = ",|\\:;.%*=[]";
+		String invalidChars = ",|\\:;%*=[]";
 		for (char invalid : invalidChars.toCharArray())
 		{
 			MigrationRule migrationRule = migrationLoader.parseFirstToken("ABILITY:Old"+invalid+"|Key", "", sourceURI);
@@ -149,7 +145,7 @@ public class MigrationLoaderTest
 	@Test
 	public void testParseFirstTokenInValidCharsInAbilityKey()
 	{
-		String invalidChars = ",|\\:;.%*=[]";
+		String invalidChars = ",|\\:;%*=[]";
 		for (char invalid : invalidChars.toCharArray())
 		{
 			MigrationRule migrationRule = migrationLoader.parseFirstToken("ABILITY:Old|Key"+invalid, "", sourceURI);

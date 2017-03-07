@@ -22,23 +22,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import pcgen.base.util.ObjectContainer;
+import pcgen.base.util.FormatManager;
+import pcgen.base.util.Indirect;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.enumeration.FactSetKey;
+import pcgen.rules.context.AbstractObjectContext;
 import pcgen.rules.context.Changes;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractTokenWithSeparator;
 import pcgen.rules.persistence.token.CDOMSecondaryToken;
 import pcgen.rules.persistence.token.ParseResult;
-import pcgen.rules.types.FormatManager;
 
 /**
  * A FactSetParser is a dynamically built subtoken created when a FACTSET: is
  * defined
  * 
  * @param <T>
- *            The type of of object upon which the FactSetParser can be used
+ *            The type of object upon which the FactSetParser can be used
  * @param <F>
  *            The format of the data stored in the FactSet
  */
@@ -79,10 +80,11 @@ public class FactSetParser<T extends CDOMObject, F> extends
 	protected ParseResult parseTokenWithSeparator(LoadContext context, T obj,
 		String value)
 	{
-		FormatManager<F> tm = def.getFormatManager();
-		FactSetKey<F> fk = def.getFactSetKey();
+		FormatManager<F> fmtManager = def.getFormatManager();
+		FactSetKey<F> fsk = def.getFactSetKey();
 		StringTokenizer st = new StringTokenizer(value, Constants.PIPE);
 		boolean firstToken = true;
+		AbstractObjectContext objContext = context.getObjectContext();
 		while (st.hasMoreTokens())
 		{
 			String token = st.nextToken();
@@ -96,11 +98,11 @@ public class FactSetParser<T extends CDOMObject, F> extends
 						+ ": When used, .CLEARALL must be the first argument",
 						context);
 				}
-				context.getObjectContext().removeSet(obj, fk);
+				objContext.removeSet(obj, fsk);
 			}
 
-			ObjectContainer<F> indirect = tm.convertObjectContainer(context, token);
-			context.getObjectContext().addToSet(obj, fk, indirect);
+			Indirect<F> indirect = fmtManager.convertIndirect(token);
+			objContext.addToSet(obj, fsk, indirect);
 		}
 		return ParseResult.SUCCESS;
 	}
@@ -127,10 +129,10 @@ public class FactSetParser<T extends CDOMObject, F> extends
 	public String[] unparse(LoadContext context, T obj)
 	{
 		FactSetKey<F> fk = def.getFactSetKey();
-		Changes<ObjectContainer<F>> changes =
+		Changes<Indirect<F>> changes =
 				context.getObjectContext().getSetChanges(obj, fk);
-		Collection<ObjectContainer<F>> removedItems = changes.getRemoved();
-		List<String> results = new ArrayList<String>(2);
+		Collection<Indirect<F>> removedItems = changes.getRemoved();
+		List<String> results = new ArrayList<>(2);
 		if (changes.includesGlobalClear())
 		{
 			results.add(Constants.LST_DOT_CLEAR_ALL);
@@ -141,18 +143,18 @@ public class FactSetParser<T extends CDOMObject, F> extends
 				+ Constants.LST_DOT_CLEAR_DOT);
 			return null;
 		}
-		Collection<ObjectContainer<F>> added = changes.getAdded();
-		if (added != null && added.size() > 0)
+		Collection<Indirect<F>> added = changes.getAdded();
+		if (added != null && !added.isEmpty())
 		{
 			StringBuilder sb = new StringBuilder();
 			boolean needsPipe = false;
-			for (ObjectContainer<F> oc : added)
+			for (Indirect<F> indirect : added)
 			{
 				if (needsPipe)
 				{
 					sb.append(Constants.PIPE);
 				}
-				sb.append(oc.getLSTformat(false));
+				sb.append(indirect.getUnconverted());
 				needsPipe = true;
 			}
 			results.add(sb.toString());

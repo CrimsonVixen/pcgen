@@ -16,15 +16,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on September 26, 2005, 10:32 PM
  *
  * @author	Greg Bingleman <byngl@hotmail.com>
  *
- * Current Ver: $Revision$
  *
- * Last Editor: $Author$
  *
- * Last Edited: $Date$
  *
  */
 package pcgen.persistence.lst.output.prereq;
@@ -32,10 +28,12 @@ package pcgen.persistence.lst.output.prereq;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import pcgen.base.format.StringManager;
+import pcgen.cdom.enumeration.FactKey;
+import pcgen.cdom.enumeration.FactSetKey;
 import pcgen.core.GameMode;
 import pcgen.core.Globals;
 import pcgen.core.SettingsHandler;
@@ -45,12 +43,15 @@ import pcgen.persistence.GameModeFileLoader;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.persistence.lst.prereq.PreParserFactory;
 import pcgen.util.TestHelper;
+import util.Alignment;
 
 /**
  * Tests PrerequisiteWriter code
  */
 public class PrerequisiteWriterTest extends TestCase
 {
+	private static final StringManager STR_MGR = new StringManager();
+
 	/**
 	 * Constructs a test case with the given name.
 	 * @param name
@@ -399,6 +400,8 @@ public class PrerequisiteWriterTest extends TestCase
 		"PRESTAT:should_be_numeric,STR=18",												"PRESTAT:1,STR=18",
 		"PRESTAT:1,Strength=18",														"PRESTAT:1,Str=18",
 		"PREABILITY:1,CATEGORY=Special Ability,Dire Animal (Dire Rat)_Companion",		"PREABILITY:1,CATEGORY=Special Ability,Dire Animal (Dire Rat)_Companion",
+		"PREABILITY:1,CATEGORY=FEAT,[Surprise Strike]",									"PREABILITY:1,CATEGORY=FEAT,[Surprise Strike]",
+		"PREABILITY:1,CATEGORY=FEAT,Sneak Attack,[Alertness]",							"PREABILITY:1,CATEGORY=FEAT,Sneak Attack,[Alertness]",
 
 	//
 	// To cause exceptions
@@ -459,8 +462,11 @@ public class PrerequisiteWriterTest extends TestCase
 		SystemCollections.addToGameModeList(gamemode);
 		GameModeFileLoader.addDefaultTabInfo(gamemode);
 		SettingsHandler.setGame("3.5");
-		TestHelper.createAllAlignments();
+		Alignment.createAllAlignments();
 		TestHelper.makeSizeAdjustments();
+		FactKey.getConstant("IsPC", STR_MGR);
+		FactKey.getConstant("LEGS", STR_MGR);
+		FactSetKey.getConstant("PANTHEONS", STR_MGR);
 	}
 
 	/**

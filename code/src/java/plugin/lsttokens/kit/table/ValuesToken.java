@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 6, 2006
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 
 package plugin.lsttokens.kit.table;
@@ -29,12 +25,12 @@ import java.util.Collection;
 import java.util.List;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.text.ParsingSeparator;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.base.FormulaFactory;
 import pcgen.core.kit.KitGear;
 import pcgen.core.kit.KitTable;
 import pcgen.core.kit.KitTable.TableEntry;
-import pcgen.core.utils.ParsingSeparator;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
@@ -70,10 +66,13 @@ public class ValuesToken extends AbstractNonEmptyToken<KitTable> implements
 		KitTable kitTable, String value)
 	{
 		ParsingSeparator sep = new ParsingSeparator(value, '|');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
+
 		while (sep.hasNext())
 		{
 			String thing = sep.next();
-			if (thing.length() == 0)
+			if (thing.isEmpty())
 			{
 				return new ParseResult.Fail(getTokenName()
 						+ " arguments has invalid pipe separator: " + value, context);
@@ -81,7 +80,7 @@ public class ValuesToken extends AbstractNonEmptyToken<KitTable> implements
 			KitGear optionInfo = new KitGear();
 			for (String s : thing.split("[\\[\\]]"))
 			{
-				if (s.length() == 0)
+				if (s.isEmpty())
 				{
 					continue;
 				}
@@ -131,6 +130,8 @@ public class ValuesToken extends AbstractNonEmptyToken<KitTable> implements
 			return false;
 		}
 		ParsingSeparator sep = new ParsingSeparator(range, ',');
+		sep.addGroupingPair('[', ']');
+		sep.addGroupingPair('(', ')');
 		String minString = sep.next();
 		String maxString;
 		if (sep.hasNext())

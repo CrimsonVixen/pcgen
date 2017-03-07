@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Jan 23, 2011, 5:35:52 PM
  */
 package pcgen.gui2.facade;
 
@@ -32,7 +31,6 @@ import pcgen.facade.util.AbstractListFacade;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class EquipmentListFacadeImpl extends AbstractListFacade<EquipmentFacade>
 		implements EquipmentListFacade
@@ -43,14 +41,14 @@ public class EquipmentListFacadeImpl extends AbstractListFacade<EquipmentFacade>
 
 	public EquipmentListFacadeImpl()
 	{
-		equipmentList = new ArrayList<EquipmentFacade>();
-		quantityMap = new HashMap<EquipmentFacade, Integer>();
+		equipmentList = new ArrayList<>();
+		quantityMap = new HashMap<>();
 	}
 
 	public EquipmentListFacadeImpl(List<Equipment> list)
 	{
-		equipmentList = new ArrayList<EquipmentFacade>(list);
-		quantityMap = new HashMap<EquipmentFacade, Integer>();
+		equipmentList = new ArrayList<>(list);
+		quantityMap = new HashMap<>();
 		for (Equipment equipment : list)
 		{
 			quantityMap.put(equipment, equipment.getQty().intValue());
@@ -63,8 +61,8 @@ public class EquipmentListFacadeImpl extends AbstractListFacade<EquipmentFacade>
 	 */
 	public void refresh(List<Equipment> list)
 	{
-		equipmentList = new ArrayList<EquipmentFacade>(list);
-		quantityMap = new HashMap<EquipmentFacade, Integer>();
+		equipmentList = new ArrayList<>(list);
+		quantityMap = new HashMap<>();
 		for (Equipment equipment : list)
 		{
 			quantityMap.put(equipment, equipment.getQty().intValue());
@@ -146,9 +144,6 @@ public class EquipmentListFacadeImpl extends AbstractListFacade<EquipmentFacade>
 		return equipmentList.size();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void modifyElement(EquipmentFacade equipment)
 	{

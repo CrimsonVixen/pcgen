@@ -22,7 +22,7 @@ package pcgen.core.analysis;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.cdom.base.CDOMObjectUtilities;
 import pcgen.cdom.base.PersistentTransitionChoice;
@@ -103,7 +103,7 @@ public class SkillRankControl
 			aPC.removeSkillRankValue(sk, aClass);
 			String aResp = modRanks(-rank, aClass, false, aPC, sk);
 
-			if (aResp.length() != 0)
+			if (!aResp.isEmpty())
 			{
 				// error or debug? XXX
 				Logging.debugPrint(aResp);
@@ -332,7 +332,7 @@ public class SkillRankControl
 	 * <li>or taking them off the remainder for the highest class level.</li>
 	 * </ol>
 	 * 
-	 * @param playerCharacter The character being updated.
+	 * @param pc The character being updated.
 	 * @param classBeingLevelledDown The class we are removing a level of.
 	 * @param currentLevel The character;s level before the removal.
 	 * @param pointsToRemove The number of points that need to be refunded.

@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.io.exporttoken;
@@ -28,15 +24,24 @@ package pcgen.io.exporttoken;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
+import pcgen.base.lang.StringUtil;
 import pcgen.cdom.base.Constants;
+import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.enumeration.EquipmentLocation;
 import pcgen.cdom.enumeration.FactKey;
 import pcgen.cdom.enumeration.FormulaKey;
 import pcgen.cdom.enumeration.IntegerKey;
+import pcgen.cdom.enumeration.MapKey;
 import pcgen.cdom.enumeration.ObjectKey;
+import pcgen.cdom.inst.EquipmentHead;
 import pcgen.cdom.reference.CDOMSingleRef;
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.Equipment;
 import pcgen.core.Globals;
 import pcgen.core.PlayerCharacter;
@@ -526,6 +531,57 @@ public class WeaponToken extends Token
 		{
 			return getIsLightToken(pc, eq);
 		}
+		else if (token.equals("QUALITY"))
+		{
+			Map<String, String> qualityMap = eq.getMapFor(MapKey.QUALITY);
+			if (qualityMap != null)
+			{
+				if (aTok.hasMoreTokens())
+				{
+					String next = aTok.nextToken();
+					try
+					{
+						int idx = Integer.parseInt(next);
+						for (String value : qualityMap.values())
+						{
+							idx--;
+							if (idx == 0)
+							{
+								return value;
+							}
+						}
+					}
+					catch (NumberFormatException e)
+					{
+						String value = qualityMap.get(next);
+						if (value != null)
+						{
+							return value;
+						}
+					}
+					return "";
+				}
+				Set<String> qualities = new TreeSet<>();
+				for (Map.Entry<String, String> me : qualityMap.entrySet())
+				{
+					qualities.add(new StringBuilder().append(me.getKey())
+							.append(": ").append(me.getValue()).toString());
+				}
+				return StringUtil.join(qualities, ", ");
+			}
+			return "";
+		}
+		else if (token.equals("CHARGES"))
+		{
+			String retString = "";
+			int charges = eq.getRemainingCharges();
+			if (charges >= 0)
+			{
+				retString = charges + "";
+			}
+			return retString;
+
+		}
 		Logging.errorPrint("Invalid WEAPON token: " + tokenSource, new Throwable());
 		return "";
 	}
@@ -737,6 +793,13 @@ public class WeaponToken extends Token
 	 */
 	public static String getMultToken(PlayerCharacter pc, Equipment eq)
 	{
+		String critMultVar =
+				ControlUtilities.getControlToken(Globals.getContext(),
+					CControl.CRITMULT);
+		if (critMultVar != null)
+		{
+			return WeaponToken.getNewCritMultString(pc, eq, critMultVar);
+		}
 		String profName = getProfName(eq);
 		StringBuilder sb = new StringBuilder();
 		boolean isDouble =
@@ -766,6 +829,25 @@ public class WeaponToken extends Token
 		return sb.toString();
 	}
 
+	public static String getNewCritMultString(PlayerCharacter pc,
+		Equipment eq, String critMultVar)
+	{
+		CharID id = pc.getCharID();
+		Object critMult1 =
+				eq.getEquipmentHead(1).getLocalVariable(id, critMultVar);
+		Object critMult2 =
+				eq.getEquipmentHead(2).getLocalVariable(id, critMultVar);
+		if (critMult1.equals(critMult2))
+		{
+			return critMult1.toString();
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(critMult1);
+		sb.append("/");
+		sb.append(critMult2);
+		return sb.toString();
+	}
+
 	/**
 	 * Retrieve the proficiency name for the provided item of equipment. That is
 	 * the name of the weapon proficiency that is required to correctly use the 
@@ -783,11 +865,11 @@ public class WeaponToken extends Token
 		}
 		else
 		{
-			profName = ref.resolvesTo().getKeyName();
+			profName = ref.get().getKeyName();
 		}
 		return profName;
 	}
-
+	
 	/**
 	 * Get the range list token
 	 * @param eq
@@ -821,7 +903,7 @@ public class WeaponToken extends Token
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(Globals.getGameModeUnitSet().displayDistanceInUnitSet(
-			eq.getRange(pc).intValue()));
+			EqToken.getRange(pc, eq).intValue()));
 
 		if (units)
 		{
@@ -1144,16 +1226,26 @@ public class WeaponToken extends Token
 	 */
 	public static String getReachToken(PlayerCharacter pc, Equipment eq)
 	{
-		int dist = eq.getVariableValue(
-			SettingsHandler.getGame().getWeaponReachFormula(), "", pc)
-			.intValue();
-		String profName = getProfName(eq);
-		int iAdd =
-				(int) pc.getTotalBonusTo("WEAPONPROF=" + profName,
-					"REACH")
-					+ getWeaponProfTypeBonuses(pc, eq, "REACH",
-						WPTYPEBONUS_PC);
-		return Globals.getGameModeUnitSet().displayDistanceInUnitSet(dist+iAdd);
+		String eqReach = pc.getControl("EQREACH");
+		int sum;
+		if (eqReach == null)
+		{
+			int dist = eq.getVariableValue(
+				SettingsHandler.getGame().getWeaponReachFormula(), "", pc)
+				.intValue();
+			String profName = getProfName(eq);
+			int iAdd =
+					(int) pc.getTotalBonusTo("WEAPONPROF=" + profName,
+						"REACH")
+						+ getWeaponProfTypeBonuses(pc, eq, "REACH",
+							WPTYPEBONUS_PC);
+			sum = dist+iAdd;
+		}
+		else
+		{
+			sum = ((Number) eq.getLocalVariable(pc.getCharID(), eqReach)).intValue();
+		}
+		return Globals.getGameModeUnitSet().displayDistanceInUnitSet(sum);
 	}
 
 	/**
@@ -1222,6 +1314,15 @@ public class WeaponToken extends Token
 	public static String getCritToken(PlayerCharacter pc, Equipment eq)
 	{
 		StringBuilder sb = new StringBuilder();
+		String critRangeVar =
+				ControlUtilities.getControlToken(Globals.getContext(),
+					CControl.CRITRANGE);
+		if (critRangeVar != null)
+		{
+			EquipmentHead head = eq.getEquipmentHead(1);
+			return getCritRangeHead(pc, head, critRangeVar).toString();
+		}
+
 		boolean isDouble =
 				(eq.isDouble() && (eq.getLocation() == EquipmentLocation.EQUIPPED_TWO_HANDS));
 		int rawCritRange = eq.getRawCritRange(true);
@@ -1253,7 +1354,7 @@ public class WeaponToken extends Token
 			sb.append("-20");
 		}
 
-		if (isDouble && (pc.getCritRange(eq, false) > 0))
+		if (isDouble && (EqToken.getOldBonusedCritRange(pc, eq, false) > 0))
 		{
 			eqDbl = dbl + (int) eq.bonusTo(pc, "EQMWEAPON", "CRITRANGEDOUBLE", false);
 
@@ -1781,7 +1882,7 @@ public class WeaponToken extends Token
 		}
 		else
 		{
-			prof = ref.resolvesTo();
+			prof = ref.get();
 			profKey = prof.getKeyName();
 		}
 
@@ -2047,9 +2148,8 @@ public class WeaponToken extends Token
 							(int) eq.bonusTo(pc, "WEAPON", "TOHIT-SHORTRANGE",
 								true);
 				}
-
 				// Long Range To-Hit Modifier
-				int defaultRange = Integer.parseInt(eq.getRange(pc).toString());
+				int defaultRange = Integer.parseInt(EqToken.getRange(pc, eq).toString());
 				int rangePenalty = SettingsHandler.getGame().getRangePenalty();
 				rangePenalty += pc.getTotalBonusTo("COMBAT", "RANGEPENALTY");
 
@@ -2085,7 +2185,7 @@ public class WeaponToken extends Token
 		baseBonus += (int) pc.getTotalBonusTo("COMBAT", "TOHIT");
 
 		// subtract Armor and Shield non-proficiency
-		baseBonus += pc.modFromArmorOnWeaponRolls();
+		baseBonus += modFromArmorOnWeaponRolls(pc);
 
 		// include bonuses from Item itself
 		baseBonus += eq.getBonusToHit(pc, true);
@@ -2272,6 +2372,37 @@ public class WeaponToken extends Token
 		return totalAttack.toString();
 	}
 
+	private static int modFromArmorOnWeaponRolls(PlayerCharacter pc)
+	{
+		int bonus = 0;
+
+		/*
+		 * Equipped some armor that we're not proficient in? acCheck penalty to
+		 * attack rolls
+		 */
+		for (Equipment eq : pc.getEquipmentOfType("Armor", 1))
+		{
+			if ((eq != null) && (!pc.isProficientWith(eq)))
+			{
+				bonus += EqToken.getAcCheckTokenInt(pc, eq);
+			}
+		}
+
+		/*
+		 * Equipped a shield that we're not proficient in? acCheck penalty to
+		 * attack rolls
+		 */
+		for (Equipment eq : pc.getEquipmentOfType("Shield", 1))
+		{
+			if ((eq != null) && (!pc.isProficientWith(eq)))
+			{
+				bonus += EqToken.getAcCheckTokenInt(pc, eq);
+			}
+		}
+
+		return bonus;
+	}
+
 	/**
 	 * Calculate the correction required to cancel out all enhancement bonuses
 	 * other than the highest one. This is because in some game modes, the
@@ -2449,7 +2580,7 @@ public class WeaponToken extends Token
 			 * the secondary head
 			 */
 			eqbonus = eq.getBonusToDamage(pc, false);
-			if (eq.getAltDamage(pc).length() > 0)
+			if (!eq.getAltDamage(pc).isEmpty())
 			{
 				totalBonus = 0;
 				damString = eq.getAltDamage(pc);
@@ -2773,7 +2904,7 @@ public class WeaponToken extends Token
 		{
 			return 0;
 		}
-		WeaponProf wp = ref.resolvesTo();
+		WeaponProf wp = ref.get();
 
 		StringTokenizer aTok = new StringTokenizer(wp.getType(), ".");
 
@@ -2872,7 +3003,7 @@ public class WeaponToken extends Token
 	}
 
 	/**
-	 * Get the ranged attack string for this <code>pc</code>
+	 * Get the ranged attack string for this {@code pc}
 	 *
 	 * @param pc The character that this ranged attack string is for
 	 * @return   The ranged attack string affected only by BAB
@@ -2883,9 +3014,9 @@ public class WeaponToken extends Token
 	}
 
 	/**
-	 * Get the ranged attack string for this <code>pc</code>.  Use
-	 * <code>bonus</code> to affect the size of attacks e.g.  +9/+4 with
-	 * bonus 2 becomes +11/+6.  Use <code>BABbonus</code> to affect the
+	 * Get the ranged attack string for this {@code pc}.  Use
+	 * {@code bonus} to affect the size of attacks e.g.  +9/+4 with
+	 * bonus 2 becomes +11/+6.  Use {@code BABbonus} to affect the
 	 * size and number of attacks e.g.  +9/+4 with BABBonus 2 becomes
 	 * +11/+6/+1.
 	 *
@@ -2904,7 +3035,7 @@ public class WeaponToken extends Token
 	}
 
 	/**
-	 * Get the melee attack string for this <code>pc</code>
+	 * Get the melee attack string for this {@code pc}
 	 *
 	 * @param pc The character that this melee attack string is for
 	 * @return   The melee attack string affected only by BAB
@@ -2915,9 +3046,9 @@ public class WeaponToken extends Token
 	}
 
 	/**
-	 * Get the melee attack string for this <code>pc</code>.  Use
-	 * <code>bonus</code> to affect the size of attacks e.g.  +9/+4 with
-	 * bonus 2 becomes +11/+6.  Use <code>BABbonus</code> to affect the
+	 * Get the melee attack string for this {@code pc}.  Use
+	 * {@code bonus} to affect the size of attacks e.g.  +9/+4 with
+	 * bonus 2 becomes +11/+6.  Use {@code BABbonus} to affect the
 	 * size and number of attacks e.g.  +9/+4 with BABBonus 2 becomes
 	 * +11/+6/+1.
 	 *
@@ -2936,7 +3067,7 @@ public class WeaponToken extends Token
 	}
 
 	/**
-	 * Get the unarmed attack string for this <code>pc</code>
+	 * Get the unarmed attack string for this {@code pc}
 	 *
 	 * @param pc The character that this unarmed attack string is for
 	 * @return   The unarmed attack string affected only by BAB
@@ -2947,9 +3078,9 @@ public class WeaponToken extends Token
 	}
 
 	/**
-	 * Get the unarmed attack string for this <code>pc</code>.  Use
-	 * <code>bonus</code> to affect the size of attacks e.g.  +9/+4 with
-	 * bonus 2 becomes +11/+6.  Use <code>BABbonus</code> to affect the
+	 * Get the unarmed attack string for this {@code pc}.  Use
+	 * {@code bonus} to affect the size of attacks e.g.  +9/+4 with
+	 * bonus 2 becomes +11/+6.  Use {@code BABbonus} to affect the
 	 * size and number of attacks e.g.  +9/+4 with BABBonus 2 becomes
 	 * +11/+6/+1.
 	 *
@@ -3008,8 +3139,8 @@ public class WeaponToken extends Token
 	 */
 	public static List<String> getRangeList(Equipment eq, boolean addShortRange, final PlayerCharacter aPC)
 	{
-		final List<String> aList = new ArrayList<String>();
-		final int baseRange = eq.getRange(aPC).intValue();
+		final List<String> aList = new ArrayList<>();
+		final int baseRange = EqToken.getRange(aPC, eq).intValue();
 		int aRange = baseRange;
 		int maxIncrements = 0;
 
@@ -3043,5 +3174,36 @@ public class WeaponToken extends Token
 		}
 
 		return aList;
+	}
+
+	public static String getNewCritRangeString(PlayerCharacter pc, Equipment eq,
+		String critRangeVar)
+	{
+		StringBuilder sb = new StringBuilder();
+		boolean needSlash = false;
+		for (EquipmentHead head : eq.getEquipmentHeads())
+		{
+			if (needSlash)
+			{
+				sb.append("/");
+			}
+			sb.append(getCritRangeHead(pc, head, critRangeVar));
+			needSlash = true;
+		}
+		return sb.toString();
+	}
+
+	public static StringBuilder getCritRangeHead(PlayerCharacter pc,
+		EquipmentHead head, String critRangeVar)
+	{
+		StringBuilder sb = new StringBuilder();
+		Integer range =
+				(Integer) head.getLocalVariable(pc.getCharID(), critRangeVar);
+		sb.append(range);
+		if (range < 20)
+		{
+			sb.append("-20");
+		}
+		return sb;
 	}
 }

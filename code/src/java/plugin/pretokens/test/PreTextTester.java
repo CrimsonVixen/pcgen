@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.test;
@@ -80,11 +76,8 @@ public class PreTextTester extends AbstractDisplayPrereqTest implements Prerequi
 	{
 		return LanguageBundle.getFormattedString(
 			    "AbstractPrerequisiteTest.toHtml",
-			    new Object[]
-			    {
-			    	prereq.getOperator().toDisplayString(), "",
-				    "", prereq.getKey()
-			    });
+				prereq.getOperator().toDisplayString(), "",
+				"", prereq.getKey());
 	}
 
 }

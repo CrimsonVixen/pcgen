@@ -16,13 +16,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 02/06/2013
  *
- * $Id$
  */
 package pcgen.io.migration;
 
-import pcgen.PCGenTestCase;
+import junit.framework.TestCase;
 import pcgen.core.SettingsHandler;
 import pcgen.core.SystemCollections;
 import pcgen.core.system.MigrationRule;
@@ -33,17 +31,13 @@ import pcgen.io.migration.AbilityMigration.CategorisedKey;
  * AbilityMigrationTest checks the function of AbilityMigration.
  * 
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
-public class AbilityMigrationTest extends PCGenTestCase
+public class AbilityMigrationTest extends TestCase
 {
 	
 	private String gameMode;
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
@@ -69,6 +63,7 @@ public class AbilityMigrationTest extends PCGenTestCase
 		SystemCollections.addToMigrationRulesList(abilityRuleDiffGame, "modern");
 	}
 
+	@Override
 	public void tearDown() throws Exception
 	{
 		SystemCollections.clearMigrationRuleMap();

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Nov 16, 2007
  *
- * $Id$
  *
  */
 package plugin;
@@ -32,20 +30,16 @@ import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import pcgen.PCGenTestCase;
+import junit.framework.TestCase;
 
 /**
  * <code>PluginBuildTest</code> verifies that the pluginbuild.xml file has all 
  * required data. As a result this unit test is a bit different in structure to 
  * a normal test.  
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
-public class PluginBuildTest extends PCGenTestCase
+public class PluginBuildTest extends TestCase
 {
 	/**
 	 * Array of exceptions to normal names. Each entry is a pair of
@@ -91,7 +85,7 @@ public class PluginBuildTest extends PCGenTestCase
 		File jarFolder[] = new File[]{new File("plugins/lstplugins"), new File("plugins/preplugins"), new File("plugins/bonusplugins")};
 		assertTrue("Source folder " + sourceFolder.getAbsolutePath() + " should be a directory", sourceFolder.isDirectory());
 		String[] sources = sourceFolder.list();
-		List<String> srcList = new ArrayList<String>();
+		List<String> srcList = new ArrayList<>();
 		srcList.addAll(Arrays.asList(sources));
 		srcList.remove("PreDefaultMonsterTester.java");
 		srcList.remove("PreDefaultMonsterWriter.java");
@@ -447,11 +441,23 @@ public class PluginBuildTest extends PCGenTestCase
 		File jarFolder = new File("plugins/preplugins");
 		assertTrue("Source folder " + sourceFolder.getAbsolutePath() + " should be a directory", sourceFolder.isDirectory());
 		String[] sources = sourceFolder.list();
-		List<String> srcList = new ArrayList<String>();
+		List<String> srcList = new ArrayList<>();
 		srcList.addAll(Arrays.asList(sources));
 		srcList.remove("PreSkillTotalParser.java");
 		sources = srcList.toArray(sources);
 		checkPluginJars(jarPrefix, jarFolder, "Parser", sources);
+	}
+	
+	/**
+	 * Check for the presence of all variable
+	 * token parsing plugins.
+	 */
+	public void testLstVariablePlugins()
+	{
+		String jarPrefix = "VariableLstToken-";
+		File sourceFolder = new File("code/src/java/plugin/lsttokens/variable");
+		File jarFolder = new File("plugins/lstplugins");
+		checkPluginJars(jarPrefix, sourceFolder, jarFolder);
 	}
 	
 	/**
@@ -598,7 +604,7 @@ public class PluginBuildTest extends PCGenTestCase
 		File jarFolder, String classSuffix, String[] sources)
 	{
 		assertTrue("Jar folder " + jarFolder.getAbsolutePath() + " should be a directory", jarFolder.isDirectory());
-		Set<String> jarSet = new HashSet<String>();
+		Set<String> jarSet = new HashSet<>();
 		String[] jars = jarFolder.list();
 		for (int i = 0; i < jars.length; i++)
 		{
@@ -652,7 +658,7 @@ public class PluginBuildTest extends PCGenTestCase
 		{
 			assertTrue("Jar folder " + folder.getAbsolutePath() + " should be a directory", folder.isDirectory());
 		}
-		Set<String> jarSet = new HashSet<String>();
+		Set<String> jarSet = new HashSet<>();
 		for (File folder : jarFolder)
 		{
 			String[] jars = folder.list();

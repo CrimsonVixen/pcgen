@@ -27,17 +27,17 @@ import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import plugin.lsttokens.KeyLst;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 import plugin.lsttokens.testsupport.TokenRegistration;
 
-public class AbbTokenTest extends AbstractTokenTestCase<SizeAdjustment>
+public class AbbTokenTest extends AbstractCDOMTokenTestCase<SizeAdjustment>
 {
 	static AbbToken token = new AbbToken();
 	static KeyLst keyToken = new KeyLst();
 
-	static CDOMTokenLoader<SizeAdjustment> loader = new CDOMTokenLoader<SizeAdjustment>();
+	static CDOMTokenLoader<SizeAdjustment> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public void setUp() throws PersistenceLayerException, URISyntaxException
@@ -174,7 +174,7 @@ public class AbbTokenTest extends AbstractTokenTestCase<SizeAdjustment>
 		return getToken().unparse(primaryContext, primaryProf);
 	}
 
-	private StringKey getStringKey()
+	private static StringKey getStringKey()
 	{
 		return StringKey.ABB_KR;
 	}

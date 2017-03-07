@@ -17,24 +17,36 @@
  */
 package plugin.dicebag.gui;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.AbstractTableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
+
+import pcgen.core.RollingMethods;
 import pcgen.gui2.tools.Icons;
 
 /**
  * <p>The internal frame view class for the DiceBag.</p>
  *
- * @author Ross M. Lodge
  */
 public class DiceBagView extends JInternalFrame implements Observer
 {
@@ -74,10 +86,10 @@ public class DiceBagView extends JInternalFrame implements Observer
 	/** Label for name of dice bag */
 	private JLabel m_nameFieldLabel;
 
-	/** JPanel for <code>BoxLayout.CENTER</code> of content pane */
+	/** JPanel for {@code BoxLayout.CENTER} of content pane */
 	private JPanel m_center;
 
-	/** Jpanel for top (<code>BorderLayout.NORTH</code>) region */
+	/** Jpanel for top ({@code BorderLayout.NORTH}) region */
 	private JPanel m_top;
 
 	/** JPanel for bottom of m_top. */
@@ -125,7 +137,7 @@ public class DiceBagView extends JInternalFrame implements Observer
 	/**
 	 *
 	 * <p>Handles the press of the editing button; calls
-	 * <code>setupEditMode()</code>.</p>
+	 * {@code setupEditMode()}.</p>
 	 *
 	 * @param e Event that fired handler.
 	 */
@@ -201,7 +213,7 @@ public class DiceBagView extends JInternalFrame implements Observer
 
 	/**
 	 * <p>Initializes the view and all components, and starts the bag in
-	 * editing mode.  It sets the size (<code>pack()</code>) of the
+	 * editing mode.  It sets the size ({@code pack()}) of the
 	 * internal frame, but does <b>not</b> show the frame.</p>
 	 *
 	 *
@@ -260,7 +272,7 @@ public class DiceBagView extends JInternalFrame implements Observer
 		m_editButton = new JButton("Edit");
 		m_editButton.setActionCommand("EDIT");
 		m_editButton.addActionListener(m_bagListener);
-		m_diceButtons = new ArrayList<JButton>();
+		m_diceButtons = new ArrayList<>();
 		m_exprField = new JTextField();
 		m_exprFieldLabel = new JLabel("Roll Expr: ");
 
@@ -485,7 +497,6 @@ public class DiceBagView extends JInternalFrame implements Observer
 	/**
 	 * <p>An action listener for the buttons in the GUI.</p>
 	 *
-	 * @author Ross M. Lodge
 	 */
 	private class BagListener implements ActionListener
 	{
@@ -499,8 +510,8 @@ public class DiceBagView extends JInternalFrame implements Observer
 
 			if ("ROLL".equals(command))
 			{
-				setRollResult(m_exprField.getText(), m_bag.rollDie(m_exprField
-					.getText()));
+				setRollResult(m_exprField.getText(),
+						RollingMethods.roll(m_exprField.getText()));
 			}
 			else if ("EDIT".equals(command))
 			{
@@ -542,10 +553,9 @@ public class DiceBagView extends JInternalFrame implements Observer
 	/**
 	 *
 	 * <p>Table model for displaying/editing the dice bag information.
-	 * Basically this overrides enough of <code>AbstracTableModel</code>
+	 * Basically this overrides enough of {@code AbstracTableModel}
 	 * to make the code useful.</p>
 	 *
-	 * @author Ross M. Lodge
 	 *
 	 */
 	private class BagTableModel extends AbstractTableModel
@@ -610,7 +620,7 @@ public class DiceBagView extends JInternalFrame implements Observer
 		{
 			if ((rowIndex >= 0) && (rowIndex < (getRowCount() - 1)))
 			{
-				if ((aValue == null) || (aValue.toString().length() == 0))
+				if ((aValue == null) || (aValue.toString().isEmpty()))
 				{
 					m_bag.removeDie(rowIndex);
 					fireTableRowsDeleted(rowIndex, rowIndex);

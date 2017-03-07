@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 09/01/2009 7:26:13 PM
  *
- * $Id: $
  */
 package pcgen.core.term;
 
@@ -26,14 +24,10 @@ import pcgen.core.Equipment;
 import pcgen.core.PlayerCharacter;
 
 /**
- * The Class <code>EQAltPlusTotalTermEvaluator</code> is responsible for producing 
+ * The Class {@code EQAltPlusTotalTermEvaluator} is responsible for producing
  * the value of the ALTPLUSTOTAL token for use in equipment and eqmod cost formulas. 
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class EQAltPlusTotalTermEvaluator extends BaseEQTermEvaluator implements TermEvaluator
 {

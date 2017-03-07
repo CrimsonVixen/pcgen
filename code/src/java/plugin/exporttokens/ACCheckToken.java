@@ -16,15 +16,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens;
 
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
+import pcgen.core.Globals;
 import pcgen.core.PlayerCharacter;
 import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.Token;
@@ -67,7 +66,14 @@ public class ACCheckToken extends Token
 	 */
 	public static int getACCheckToken(String tokenSource, PlayerCharacter pc)
 	{
-		int mod = pc.modToFromEquipment(tokenSource);
-		return mod;
+		String acCheckVar =
+				ControlUtilities.getControlToken(Globals.getContext(),
+					CControl.PCACCHECK);
+		if (acCheckVar == null)
+		{
+			return pc.processOldAcCheck();
+		}
+		return ((Number) pc.getGlobal(acCheckVar)).intValue();
 	}
+
 }

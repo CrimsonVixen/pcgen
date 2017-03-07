@@ -32,7 +32,6 @@ import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * @author djones4
  *
  */
 public class SrLst implements CDOMPrimaryToken<CDOMObject>
@@ -78,7 +77,7 @@ public class SrLst implements CDOMPrimaryToken<CDOMObject>
 		SpellResistance sr = context.getObjectContext().getObject(obj,
 				ObjectKey.SR);
 		boolean b = context.getObjectContext().wasRemoved(obj, ObjectKey.SR);
-		List<String> list = new LinkedList<String>();
+		List<String> list = new LinkedList<>();
 		if (b)
 		{
 			list.add(Constants.LST_DOT_CLEAR);

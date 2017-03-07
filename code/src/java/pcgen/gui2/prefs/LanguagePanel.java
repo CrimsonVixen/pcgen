@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 26/10/2008 14:51:48
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
@@ -26,7 +24,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -47,14 +44,10 @@ import pcgen.system.ConfigurationSettings;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>LanguagePanel</code> is responsible for 
+ * The Class {@code LanguagePanel} is responsible for
  * managing the language and unit set preferences.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public class LanguagePanel extends PCGenPrefsPanel
@@ -118,15 +111,7 @@ public class LanguagePanel extends PCGenPrefsPanel
 						new JRadioButton(in_langSystem), exclusiveGroup);
 
 		final SortedSet<JRadioButton> sorted =
-				new TreeSet<JRadioButton>(new Comparator<JRadioButton>()
-				{
-					@Override
-					public int compare(final JRadioButton o1,
-						final JRadioButton o2)
-					{
-						return o1.getText().compareToIgnoreCase(o2.getText());
-					}
-				});
+                new TreeSet<>((o1, o2) -> o1.getText().compareToIgnoreCase(o2.getText()));
 
 		sorted.add(langEng = new JRadioButton(in_langEnglish));
 		sorted.add(langFre = new JRadioButton(in_langFrench));
@@ -336,9 +321,6 @@ public class LanguagePanel extends PCGenPrefsPanel
 		return langCountry;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean needsRestart()
 	{

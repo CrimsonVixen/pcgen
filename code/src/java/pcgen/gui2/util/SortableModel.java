@@ -22,14 +22,14 @@
 package pcgen.gui2.util;
 
 import java.util.Comparator;
-import java.util.List;
+import pcgen.gui2.util.table.Row;
 
 /**
  *
- * @author Connor Petty <mistercpp2000@gmail.com>
+ * @author Connor Petty &lt;mistercpp2000@gmail.com&gt;
  */
 public interface SortableModel 
 {
-    void sortModel(Comparator<List<?>> comparator);
+    void sortModel(Comparator<Row> comparator);
     Class<?> getColumnClass(int column);
 }

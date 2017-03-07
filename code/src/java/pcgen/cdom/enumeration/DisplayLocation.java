@@ -24,7 +24,6 @@ import pcgen.base.enumeration.TypeSafeConstant;
 import pcgen.base.util.CaseInsensitiveMap;
 
 /**
- * @author Tom Parker (thpr [at] yahoo.com)
  * 
  * This Class is a Type Safe Constant. It is designed to hold DisplayLocations
  * in a type-safe fashion, so that they can be quickly compared and use less
@@ -36,7 +35,7 @@ public final class DisplayLocation implements TypeSafeConstant,
 	/**
 	 * This Map contains the mappings from Strings to the Type Safe Constant
 	 */
-	private static CaseInsensitiveMap<DisplayLocation> typeMap = new CaseInsensitiveMap<DisplayLocation>();
+	private static CaseInsensitiveMap<DisplayLocation> typeMap = new CaseInsensitiveMap<>();
 
 	/**
 	 * This is used to provide a unique ordinal to each constant in this class

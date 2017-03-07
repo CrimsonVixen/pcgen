@@ -17,6 +17,8 @@
  */
 package pcgen.cdom.facet;
 
+import java.util.Set;
+
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.facet.event.DataFacetChangeEvent;
@@ -38,7 +40,6 @@ import pcgen.cdom.facet.event.DataFacetChangeListener;
  * @see pcgen.cdom.facet.CDOMObjectSourceFacet
  * @see pcgen.cdom.facet.CDOMObjectBridge
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public class CDOMObjectConsolidationFacet implements
 		DataFacetChangeListener<CharID, CDOMObject>
@@ -108,7 +109,7 @@ public class CDOMObjectConsolidationFacet implements
 	 *            from this CDOMObjectConsolidationFacet
 	 */
 	public void addDataFacetChangeListener(
-			DataFacetChangeListener<CharID, ? super CDOMObject> listener)
+		DataFacetChangeListener<CharID, ? super CDOMObject> listener)
 	{
 		bridgeFacet.addDataFacetChangeListener(listener);
 	}
@@ -158,4 +159,21 @@ public class CDOMObjectConsolidationFacet implements
 		CDOMObject cdo = dfce.getCDOMObject();
 		remove(dfce.getCharID(), cdo, dfce.getSource());
 	}
+
+	/**
+	 * Returns the Set of objects contained in this
+	 * CDOMObjectConsolidationFacet.
+	 * 
+	 * @param id
+	 *            The CharID representing the Player Character for which the
+	 *            given items in this CDOMObjectConsolidationFacet should be
+	 *            returned
+	 * @return the Set of objects contained in this CDOMObjectConsolidationFacet
+	 */
+	public Set<CDOMObject> getSet(CharID id)
+	{
+		return bridgeFacet.getSet(id);
+	}
+	
+	
 }

@@ -69,7 +69,7 @@ public class SkillInfoUtilities
 		}
 		else
 		{
-			return stat.resolvesTo().getKeyName();
+			return stat.get().getKeyName();
 		}
 	}
 
@@ -82,7 +82,7 @@ public class SkillInfoUtilities
 	 */
 	public static List<PCStat> getKeyStatList(PlayerCharacter pc, Skill sk, List<Type> typeList)
 	{
-		List<PCStat> aList = new ArrayList<PCStat>();
+		List<PCStat> aList = new ArrayList<>();
 		if (Globals.getGameModeHasPointPool())
 		{
 			for (Type aType : sk.getTrueTypeList(false))
@@ -97,7 +97,7 @@ public class SkillInfoUtilities
 							BonusUtilities.getBonusFromList(stat
 								.getSafeListFor(ListKey.BONUS), "SKILL",
 								"TYPE." + aType);
-					if (bonusList.size() > 0)
+					if (!bonusList.isEmpty())
 					{
 						for (int iCount = bonusList.size() - 1; iCount >= 0; --iCount)
 						{
@@ -130,7 +130,7 @@ public class SkillInfoUtilities
 		else
 		{
 			// skip the keystat
-			ret.remove(Type.getConstant(keystat.resolvesTo().getDisplayName()));
+			ret.remove(Type.getConstant(keystat.get().getDisplayName()));
 			/*
 			 * TODO This is magic, and makes tremendous assumptions about the
 			 * DATA - BAD BAD BAD

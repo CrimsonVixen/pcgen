@@ -40,10 +40,15 @@ import pcgen.core.Campaign;
 import pcgen.core.Deity;
 import pcgen.core.Domain;
 import pcgen.core.EquipmentModifier;
+import pcgen.core.Globals;
 import pcgen.core.Language;
+import pcgen.core.PCAlignment;
+import pcgen.core.PCCheck;
+import pcgen.core.PCStat;
 import pcgen.core.PCTemplate;
 import pcgen.core.Race;
 import pcgen.core.ShieldProf;
+import pcgen.core.SizeAdjustment;
 import pcgen.core.Skill;
 import pcgen.core.WeaponProf;
 import pcgen.core.character.CompanionMod;
@@ -55,22 +60,30 @@ import pcgen.gui2.converter.loader.CopyLoader;
 import pcgen.gui2.converter.loader.EquipmentLoader;
 import pcgen.gui2.converter.loader.SelfCopyLoader;
 import pcgen.persistence.PersistenceLayerException;
+import pcgen.persistence.SourceFileLoader;
 import pcgen.persistence.lst.AbilityCategoryLoader;
 import pcgen.persistence.lst.CampaignSourceEntry;
+import pcgen.persistence.lst.GenericLoader;
 import pcgen.persistence.lst.LstFileLoader;
 import pcgen.rules.context.EditorLoadContext;
+import pcgen.rules.persistence.CDOMControlLoader;
 import pcgen.system.LanguageBundle;
 import pcgen.util.Logging;
 
 public class LSTConverter extends Observable
 {
 	private final AbilityCategoryLoader catLoader = new AbilityCategoryLoader();
+	private final GenericLoader<SizeAdjustment> sizeLoader = new GenericLoader<>(SizeAdjustment.class);
+	private final GenericLoader<PCCheck> savesLoader = new GenericLoader<>(PCCheck.class);
+	private final GenericLoader<PCAlignment> alignmentLoader = new GenericLoader<>(PCAlignment.class);
+	private final GenericLoader<PCStat> statLoader = new GenericLoader<>(PCStat.class);
+	private final CDOMControlLoader dataControlLoader = new CDOMControlLoader();
 	private final EditorLoadContext context;
 	private List<Loader> loaders;
-	private Set<URI> written = new HashSet<URI>();
+	private Set<URI> written = new HashSet<>();
 	private final String outDir;
 	private final File rootDir;
-	private final DoubleKeyMapToList<Loader, URI, CDOMObject> injected = new DoubleKeyMapToList<Loader, URI, CDOMObject>();
+	private final DoubleKeyMapToList<Loader, URI, CDOMObject> injected = new DoubleKeyMapToList<>();
 	private final ConversionDecider decider;
 	private Writer changeLogWriter;
 	
@@ -110,6 +123,7 @@ public class LSTConverter extends Observable
 	 */
 	public void initCampaigns(List<Campaign> campaigns)
 	{
+		List<CampaignSourceEntry> dataDefFileList = new ArrayList<>();
 		for (Campaign campaign : campaigns)
 		{
 			// load ability categories first as they used to only be at the game
@@ -118,13 +132,42 @@ public class LSTConverter extends Observable
 			{
 				catLoader.loadLstFiles(context, campaign
 						.getSafeListFor(ListKey.FILE_ABILITY_CATEGORY));
+				sizeLoader.loadLstFiles(context,
+					campaign.getSafeListFor(ListKey.FILE_SIZE));
+				statLoader.loadLstFiles(context,
+					campaign.getSafeListFor(ListKey.FILE_STAT));
+				savesLoader.loadLstFiles(context,
+					campaign.getSafeListFor(ListKey.FILE_SAVE));
+				alignmentLoader.loadLstFiles(context,
+					campaign.getSafeListFor(ListKey.FILE_ALIGNMENT));
+				alignmentLoader.loadLstFiles(Globals.getContext(),
+					campaign.getSafeListFor(ListKey.FILE_ALIGNMENT));
+				
 			}
 			catch (PersistenceLayerException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			dataDefFileList.addAll(campaign
+				.getSafeListFor(ListKey.FILE_DATACTRL));
+
 		}
+		
+
+		// Load using the new LstFileLoaders
+		try
+		{
+			SourceFileLoader.addDefaultDataControlIfNeeded(dataDefFileList);
+			dataControlLoader.loadLstFiles(context, dataDefFileList);
+			SourceFileLoader.processFactDefinitions(context);
+		}
+		catch (PersistenceLayerException e)
+		{
+			// TODO Auto-generated catch block
+			Logging.errorPrint("LSTConverter.initCampaigns failed", e);
+		}
+		
 	}
 	
 	public void processCampaign(Campaign campaign)
@@ -209,17 +252,7 @@ public class LSTConverter extends Observable
 						out.close();
 					}
 				}
-				catch (PersistenceLayerException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				catch (InterruptedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				catch (IOException e)
+				catch (PersistenceLayerException | IOException | InterruptedException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -230,42 +263,47 @@ public class LSTConverter extends Observable
 
 	private List<Loader> setupLoaders(EditorLoadContext context, Writer changeLogWriter)
 	{
-		List<Loader> loaderList = new ArrayList<Loader>();
-		loaderList.add(new BasicLoader<WeaponProf>(context, WeaponProf.class,
-				ListKey.FILE_WEAPON_PROF, changeLogWriter));
-		loaderList.add(new BasicLoader<ArmorProf>(context, ArmorProf.class,
-				ListKey.FILE_ARMOR_PROF, changeLogWriter));
-		loaderList.add(new BasicLoader<ShieldProf>(context, ShieldProf.class,
-				ListKey.FILE_SHIELD_PROF, changeLogWriter));
-		loaderList.add(new BasicLoader<Skill>(context, Skill.class,
-				ListKey.FILE_SKILL, changeLogWriter));
-		loaderList.add(new BasicLoader<Language>(context, Language.class,
-				ListKey.FILE_LANGUAGE, changeLogWriter));
-		loaderList.add(new BasicLoader<Ability>(context, Ability.class,
-				ListKey.FILE_FEAT, changeLogWriter));
+		List<Loader> loaderList = new ArrayList<>();
+		loaderList.add(new BasicLoader<>(context, WeaponProf.class,
+                ListKey.FILE_WEAPON_PROF, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, ArmorProf.class,
+                ListKey.FILE_ARMOR_PROF, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, ShieldProf.class,
+                ListKey.FILE_SHIELD_PROF, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Skill.class,
+                ListKey.FILE_SKILL, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Language.class,
+                ListKey.FILE_LANGUAGE, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Ability.class,
+                ListKey.FILE_FEAT, changeLogWriter));
 		loaderList.add(new AbilityLoader(context, Ability.class,
 				ListKey.FILE_ABILITY, changeLogWriter));
-		loaderList.add(new BasicLoader<Race>(context, Race.class,
-				ListKey.FILE_RACE, changeLogWriter));
-		loaderList.add(new BasicLoader<Domain>(context, Domain.class,
-				ListKey.FILE_DOMAIN, changeLogWriter));
-		loaderList.add(new BasicLoader<Spell>(context, Spell.class,
-				ListKey.FILE_SPELL, changeLogWriter));
-		loaderList.add(new BasicLoader<Deity>(context, Deity.class,
-				ListKey.FILE_DEITY, changeLogWriter));
-		loaderList.add(new BasicLoader<PCTemplate>(context, PCTemplate.class,
-				ListKey.FILE_TEMPLATE, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Race.class,
+                ListKey.FILE_RACE, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Domain.class,
+                ListKey.FILE_DOMAIN, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Spell.class,
+                ListKey.FILE_SPELL, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, Deity.class,
+                ListKey.FILE_DEITY, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, PCTemplate.class,
+                ListKey.FILE_TEMPLATE, changeLogWriter));
 		loaderList.add(new EquipmentLoader(context, ListKey.FILE_EQUIP,
 			changeLogWriter));
-		loaderList.add(new BasicLoader<EquipmentModifier>(context,
-				EquipmentModifier.class, ListKey.FILE_EQUIP_MOD, changeLogWriter));
-		loaderList.add(new BasicLoader<CompanionMod>(context, CompanionMod.class,
-				ListKey.FILE_COMPANION_MOD, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context,
+                EquipmentModifier.class, ListKey.FILE_EQUIP_MOD, changeLogWriter));
+		loaderList.add(new BasicLoader<>(context, CompanionMod.class,
+                ListKey.FILE_COMPANION_MOD, changeLogWriter));
 		loaderList.add(new ClassLoader(context, changeLogWriter));
 		loaderList.add(new CopyLoader(ListKey.FILE_ABILITY_CATEGORY));
 		loaderList.add(new CopyLoader(ListKey.LICENSE_FILE));
 		loaderList.add(new CopyLoader(ListKey.FILE_KIT));
 		loaderList.add(new CopyLoader(ListKey.FILE_BIO_SET));
+		loaderList.add(new CopyLoader(ListKey.FILE_DATACTRL));
+		loaderList.add(new CopyLoader(ListKey.FILE_STAT));
+		loaderList.add(new CopyLoader(ListKey.FILE_SAVE));
+		loaderList.add(new CopyLoader(ListKey.FILE_SIZE));
+		loaderList.add(new CopyLoader(ListKey.FILE_ALIGNMENT));
 		loaderList.add(new CopyLoader(ListKey.FILE_PCC));
 		loaderList.add(new SelfCopyLoader());
 		return loaderList;
@@ -320,7 +358,7 @@ public class LSTConverter extends Observable
 		for (int line = 0; line < fileLines.length; line++)
 		{
 			String lineString = fileLines[line];
-			if ((lineString.length() == 0)
+			if ((lineString.isEmpty())
 					|| (lineString.charAt(0) == LstFileLoader.LINE_COMMENT_CHAR)
 					|| lineString.startsWith("SOURCE"))
 			{

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/02/2012 7:31:38 AM
  *
- * $Id$
  */
 package pcgen.gui2;
 
@@ -44,8 +42,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -56,11 +54,7 @@ import org.junit.Test;
  * verifying the properties files.  
  *
  * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class ScanForUnusedIl8nKeys
@@ -71,7 +65,7 @@ public class ScanForUnusedIl8nKeys
 	private static final String PROPERTIES_FILE = "LanguageBundle.properties";
 	private static final String NEW_PROPERTIES_FILE = "cleaned.properties";
 	private static final String UNUSED_PROPERTIES_FILE = "unused.properties";
-	private static final String[] PACKAGES = new String[]{"pcgen/gui2",
+	private static final String[] PACKAGES = {"pcgen/gui2",
 		"pcgen/core", "pcgen/system", "gmgen", "plugin", "pcgen/io",
 		"pcgen/persistence", "pcgen/cdom", "pcgen/rules/context", "pcgen/util", };
 	
@@ -82,7 +76,7 @@ public class ScanForUnusedIl8nKeys
 		//Read in bundle, grab all keys
 		Properties p = new Properties();
 		p.load(new FileInputStream(CODE_PATH + PROPERTIES_PATH + PROPERTIES_FILE));
-		Set<String> keys = new TreeSet<String>();
+		Set<String> keys = new TreeSet<>();
 		for (Entry e : p.entrySet())
 		{
 			keys.add((String)e.getKey());
@@ -92,7 +86,7 @@ public class ScanForUnusedIl8nKeys
 		List<File> fileList = buildFileList();
 		
 		// Scan each file marking each found entry
-		Set<String> missingKeys = new TreeSet<String>(keys);
+		Set<String> missingKeys = new TreeSet<>(keys);
 		actionWhitelistedKeys(missingKeys);
 		for (File file : fileList)
 		{
@@ -130,7 +124,7 @@ public class ScanForUnusedIl8nKeys
 	{
 		for (Iterator<String> iterator = missingKeys.iterator(); iterator.hasNext();)
 		{
-			String key = (String) iterator.next();
+			String key = iterator.next();
 			if (key.startsWith("in_mnu") || key.startsWith("in_mn_mnu")
 				|| key.startsWith("in_EqBuilder_")
 				|| key.startsWith("PrerequisiteOperator.display"))
@@ -270,7 +264,7 @@ public class ScanForUnusedIl8nKeys
 	 */
 	private List<File> buildFileList() throws IOException
 	{
-		List<File> allFiles = new ArrayList<File>();
+		List<File> allFiles = new ArrayList<>();
 		JavaFileLister lister = new JavaFileLister();
 		
 		for (String pkg : PACKAGES)
@@ -281,35 +275,14 @@ public class ScanForUnusedIl8nKeys
 		return allFiles;
 	}
 
-	public class JavaFileLister extends DirectoryWalker
+	private static class JavaFileLister extends DirectoryWalker
 	{
 
-		public JavaFileLister()
-		{
-			super();
-		}
-
-		public List getJavaFileList(File startDirectory) throws IOException
+		private List getJavaFileList(File startDirectory) throws IOException
 		{
 			List results = new ArrayList();
 			walk(startDirectory, results);
 			return results;
-		}
-
-        @Override
-		protected boolean handleDirectory(File directory, int depth,
-			Collection results)
-		{
-			// Ignore svn directories 
-			if (".svn".equals(directory.getName()))
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-
 		}
 
         @Override

@@ -44,7 +44,7 @@ public class SpellcasterQualifierTokenTest extends
 
 	static ChooseLst token = new ChooseLst();
 	static WeaponProficiencyToken subtoken = new WeaponProficiencyToken();
-	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<CDOMObject>();
+	static CDOMTokenLoader<CDOMObject> loader = new CDOMTokenLoader<>();
 
 	private static final plugin.qualifier.weaponprof.SpellCasterToken PC_TOKEN = new plugin.qualifier.weaponprof.SpellCasterToken();
 	private WeaponProf wp1, wp2, wp3;
@@ -107,11 +107,10 @@ public class SpellcasterQualifierTokenTest extends
 	public void testGetSet() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();		
 		assertTrue(parse(getSubTokenName() + "|SPELLCASTER[ALL]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);
@@ -134,11 +133,10 @@ public class SpellcasterQualifierTokenTest extends
 	public void testGetSetFiltered() throws PersistenceLayerException
 	{
 		setUpPC();
-		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 		initializeObjects();		
 		assertTrue(parse(getSubTokenName() + "|SPELLCASTER[TYPE=Masterful]"));
-
 		finishLoad();
+		TransparentPlayerCharacter pc = new TransparentPlayerCharacter();
 
 		ChooseInformation<?> info = primaryProf.get(ObjectKey.CHOOSE_INFO);
 		Collection<?> set = info.getSet(pc);

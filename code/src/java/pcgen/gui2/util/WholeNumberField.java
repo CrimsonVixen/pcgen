@@ -33,10 +33,9 @@ import java.text.ParseException;
 import java.util.Locale;
 
 /**
- * <code>WholeNumberField</code> .
+ * {@code WholeNumberField} .
  *
- * @author Mario Bonassin <zebuleon@users.sourceforge.net>
- * @version $Revision: 14600 $
+ * @author Mario Bonassin &lt;zebuleon@users.sourceforge.net&gt;
  */
 public final class WholeNumberField extends JTextField implements Serializable
 {
@@ -85,7 +84,7 @@ public final class WholeNumberField extends JTextField implements Serializable
 		try
 		{
 			String text = getText();
-			if (text == null || text.trim().length()==0)
+			if (text == null || text.trim().isEmpty())
 			{
 				text = "0";
 			}

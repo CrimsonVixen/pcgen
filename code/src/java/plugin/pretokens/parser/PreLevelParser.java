@@ -17,13 +17,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 18-Dec-2003
  *
- * Current Ver: $Revision$
  *
- * Last Editor: $Author$
  *
- * Last Edited: $Date$
  *
  */
 package plugin.pretokens.parser;
@@ -34,14 +30,12 @@ import pcgen.core.prereq.Prerequisite;
 import pcgen.core.prereq.PrerequisiteOperator;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.persistence.lst.prereq.AbstractPrerequisiteParser;
-import pcgen.persistence.lst.prereq.PrerequisiteParserInterface;
 
 /**
  * A prerequisite parser class that handles the parsing of pre level tokens.
  *
  */
-public class PreLevelParser extends AbstractPrerequisiteParser implements
-        PrerequisiteParserInterface
+public class PreLevelParser extends AbstractPrerequisiteParser
 {
 	/**
 	 * Get the type of prerequisite handled by this token.

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 15/10/2011 4:04:57 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -37,15 +35,11 @@ import pcgen.core.spell.Spell;
 import pcgen.util.SortKeyAware;
 
 /**
- * The Class <code>SpellFacadeImplem</code> is a proxy for a spell used for 
+ * The Class {@code SpellFacadeImplem} is a proxy for a spell used for
  * displaying the spell on the UI. 
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class SpellFacadeImplem implements SpellFacade, SortKeyAware
 {
@@ -121,7 +115,7 @@ public class SpellFacadeImplem implements SpellFacade, SortKeyAware
         {
         	return new String[]{};
         }
-		return descriptors.toArray(new String[]{});
+		return descriptors.toArray(new String[descriptors.size()]);
 	}
 
 	/* (non-Javadoc)
@@ -151,9 +145,6 @@ public class SpellFacadeImplem implements SpellFacade, SortKeyAware
 		return pc.parseSpellString(charSpell, spell.getListAsString(ListKey.DURATION));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getCastTime()
 	{
@@ -295,27 +286,18 @@ public class SpellFacadeImplem implements SpellFacade, SortKeyAware
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isNamePI()
 	{
 		return spell.isNamePI();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getType()
 	{
 		return spell.getType();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getSortKey()
 	{

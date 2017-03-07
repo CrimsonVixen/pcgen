@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */package plugin.pretokens.test;
 
@@ -44,7 +40,6 @@ import pcgen.core.prereq.PrerequisiteOperator;
 import pcgen.core.prereq.PrerequisiteTest;
 import pcgen.system.LanguageBundle;
 /**
- * @author wardc
  *
  */
 public class PreSkillTester extends AbstractPrerequisiteTest implements
@@ -78,8 +73,8 @@ public class PreSkillTester extends AbstractPrerequisiteTest implements
 		// Now locate all instances of this skillname and test them
 		final int percentageSignPosition = skillKey.lastIndexOf('%');
 		
-		HashMap<Skill,Set<Skill>> serveAsSkills = new HashMap<Skill, Set<Skill>>();
-		Set<Skill> imitators = new HashSet<Skill>();
+		HashMap<Skill,Set<Skill>> serveAsSkills = new HashMap<>();
+		Set<Skill> imitators = new HashSet<>();
 		this.getImitators(serveAsSkills, imitators, display);
 		
 		int runningTotal = 0;
@@ -222,16 +217,16 @@ public class PreSkillTester extends AbstractPrerequisiteTest implements
 		HashMap<Skill, Set<Skill>> serveAsSkills, Set<Skill> imitators,
 		CharacterDisplay display)
 	{
-		Set<Skill> skillSet = new HashSet<Skill>(display.getSkillSet());
+		Set<Skill> skillSet = new HashSet<>(display.getSkillSet());
 		for (Skill aSkill : skillSet)
 		{
-			Set<Skill> servesAs = new HashSet<Skill>();
+			Set<Skill> servesAs = new HashSet<>();
 			for(CDOMReference<Skill> ref: aSkill.getSafeListFor(ListKey.SERVES_AS_SKILL))
 			{
 				servesAs.addAll(ref.getContainedObjects());
 			}
 			
-			if(servesAs.size() > 0)
+			if(!servesAs.isEmpty())
 			{
 				imitators.add(aSkill);
 				serveAsSkills.put(aSkill, servesAs);
@@ -264,8 +259,8 @@ public class PreSkillTester extends AbstractPrerequisiteTest implements
 
 		final String foo =
 				LanguageBundle.getFormattedString("PreSkill.toHtml", //$NON-NLS-1$
-					new Object[]{prereq.getOperator().toDisplayString(),
-						prereq.getOperand(), skillName});
+						prereq.getOperator().toDisplayString(),
+						prereq.getOperand(), skillName);
 		return foo;
 	}
 	/**

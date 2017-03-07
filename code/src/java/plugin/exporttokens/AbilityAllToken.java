@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 21 Nov 2006
  *
- * $$Id: $$
  */
 
 package plugin.exporttokens;
@@ -38,14 +36,10 @@ import pcgen.io.exporttoken.AbilityToken;
 import pcgen.util.enumeration.View;
 
 /**
- * <code>AbilityAllToken</code> deals with the ABILITYALL output 
+ * {@code AbilityAllToken} deals with the ABILITYALL output
  * token.
  *
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: $
  */
 public class AbilityAllToken extends AbilityToken
 {
@@ -77,7 +71,7 @@ public class AbilityAllToken extends AbilityToken
 	protected MapToList<Ability, CNAbility> getAbilityList(PlayerCharacter pc,
 		final AbilityCategory aCategory)
 	{
-		final MapToList<Ability, CNAbility> listOfAbilities = new HashMapToList<Ability, CNAbility>();
+		final MapToList<Ability, CNAbility> listOfAbilities = new HashMapToList<>();
 		Collection<AbilityCategory> allCats =
 				SettingsHandler.getGame().getAllAbilityCategories();
 		for (AbilityCategory aCat : allCats)
@@ -101,9 +95,6 @@ public class AbilityAllToken extends AbilityToken
 		return listOfAbilities;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected Nature getTargetNature()
 	{

@@ -19,6 +19,8 @@ package plugin.lsttokens.equipment;
 
 import pcgen.cdom.enumeration.IntegerKey;
 import pcgen.cdom.inst.EquipmentHead;
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.Equipment;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
@@ -42,8 +44,14 @@ public class AltcritmultToken extends AbstractNonEmptyToken<Equipment>
 	protected ParseResult parseNonEmptyToken(LoadContext context,
 		Equipment eq, String value)
 	{
+		if (ControlUtilities.hasControlToken(context, CControl.CRITMULT))
+		{
+			return new ParseResult.Fail(getTokenName()
+				+ " is disabled when CRITMULT control is used: " + value,
+				context);
+		}
 		Integer cm = null;
-		if ((value.length() > 0) && (value.charAt(0) == 'x'))
+		if ((!value.isEmpty()) && (value.charAt(0) == 'x'))
 		{
 			try
 			{
@@ -61,7 +69,7 @@ public class AltcritmultToken extends AbstractNonEmptyToken<Equipment>
 		}
 		else if ("-".equals(value))
 		{
-			cm = Integer.valueOf(-1);
+			cm = -1;
 		}
 		if (cm == null)
 		{

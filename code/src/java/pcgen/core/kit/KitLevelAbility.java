@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 21, 2005
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -34,16 +32,14 @@ import pcgen.core.PCClass;
 import pcgen.core.PlayerCharacter;
 
 /**
- * <code>KitLevelAbility</code>.
+ * {@code KitLevelAbility}.
  *
- * @author Aaron Divinsky <boomer70@yahoo.com>
- * @version $Revision$
  */
 public final class KitLevelAbility extends BaseKit
 {
 	private CDOMSingleRef<PCClass> theClassName;
 	private int theLevel;
-	private List<String> choiceList = new ArrayList<String>();
+	private List<String> choiceList = new ArrayList<>();
 	private PersistentTransitionChoice<?> add;
 
 	/**
@@ -111,7 +107,7 @@ public final class KitLevelAbility extends BaseKit
 
 	private boolean doApplication(PlayerCharacter aPC)
 	{
-		PCClass theClass = theClassName.resolvesTo();
+		PCClass theClass = theClassName.get();
 		PCClass classKeyed = aPC.getClassKeyed(theClass.getKeyName());
 		if (classKeyed == null)
 		{
@@ -138,7 +134,7 @@ public final class KitLevelAbility extends BaseKit
 	private <T> void process(PlayerCharacter pc, PCClass cl,
 		PersistentTransitionChoice<T> ch)
 	{
-		List<T> list = new ArrayList<T>();
+		List<T> list = new ArrayList<>();
 		for (String s : choiceList)
 		{
 			list.add(ch.decodeChoice(Globals.getContext(), s));

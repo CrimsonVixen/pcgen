@@ -16,17 +16,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 16/11/2008 11:00:00
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -48,15 +44,11 @@ import pcgen.system.PCGenSettings;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>SourcesPanel</code> is responsible for 
+ * The Class {@code SourcesPanel} is responsible for
  * displaying source related preferences and allowing the 
  * preferences to be edited by the user.
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public class SourcesPanel extends PCGenPrefsPanel
@@ -148,19 +140,14 @@ public class SourcesPanel extends PCGenPrefsPanel
 		loadURL.setText(LanguageBundle.getString("in_Prefs_loadURLs")); //$NON-NLS-1$
 		gridbag.setConstraints(loadURL, c);
 		this.add(loadURL);
-		loadURL.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				if (((JCheckBox) evt.getSource()).isSelected())
-				{
-					ShowMessageDelegate.showMessageDialog(LanguageBundle
-						.getString("in_Prefs_urlBlocked"), Constants.APPLICATION_NAME, //$NON-NLS-1$
-						MessageType.WARNING);
-				}
-			}
-		});
+		loadURL.addActionListener(evt -> {
+            if (((JCheckBox) evt.getSource()).isSelected())
+            {
+                ShowMessageDelegate.showMessageDialog(LanguageBundle
+                    .getString("in_Prefs_urlBlocked"), Constants.APPLICATION_NAME, //$NON-NLS-1$
+                    MessageType.WARNING);
+            }
+        });
 
 		Utility.buildConstraints(c, 0, 10, GridBagConstraints.REMAINDER, 1, 0, 0);
 		allowOverride.setText(LanguageBundle.getString("in_Prefs_allowOverride")); //$NON-NLS-1$

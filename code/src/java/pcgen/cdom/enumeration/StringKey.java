@@ -15,11 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on June 18, 2005.
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 package pcgen.cdom.enumeration;
 
@@ -46,5 +42,5 @@ public enum StringKey
 	FILE_NAME, ABB_KR, TARGET_AREA, NAME_TEXT, DAMAGE, DAMAGE_OVERRIDE, FUMBLE_RANGE, 
 	LISTTYPE, ITEMCREATE, LEVEL_TYPE, DATA_PRODUCER, DATA_FORMAT, CAMPAIGN_SETTING,
 	SOURCE_WEB, SOURCE_SHORT, SOURCE_LONG, SOURCE_PAGE, SOURCE_LINK, CONVERT_NAME, QUALIFIED_KEY, SORT_KEY,
-	ICON, ICON_URI, DISPLAY_NAME, TEMPVALUE
+	ICON, ICON_URI, DISPLAY_NAME, TEMPVALUE, SIZEFORMULA
 }

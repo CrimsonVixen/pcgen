@@ -25,14 +25,14 @@ import pcgen.cdom.enumeration.StringKey;
 import pcgen.persistence.PersistenceLayerException;
 
 public abstract class AbstractStringTokenTestCase<T extends CDOMObject> extends
-		AbstractTokenTestCase<T>
+		AbstractCDOMTokenTestCase<T>
 {
 
 	@Test
 	public void testInvalidInputEmpty() throws PersistenceLayerException
 	{
 		assertFalse(parse(""));
-		assertEquals(null, primaryProf.get(getStringKey()));
+		assertNull(primaryProf.get(getStringKey()));
 		assertNoSideEffects();
 	}
 

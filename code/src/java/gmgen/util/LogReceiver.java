@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on May 24, 2003
  */
 package gmgen.util;
 
@@ -26,8 +25,6 @@ package gmgen.util;
  * It is used by the LogUtilities class to allow log messages to be sent to any
  * number of logging destinations.
  *
- * @author Tod Milam
- *@since        GMGen 3.3
  */
 public interface LogReceiver
 {
@@ -36,7 +33,6 @@ public interface LogReceiver
 	 *
 	 * @param owner the owner of the message being logged.
 	 * @param message the message to log.
-	 *@since        GMGen 3.3
 	 */
 	public void logMessage(String owner, String message);
 
@@ -44,7 +40,6 @@ public interface LogReceiver
 	 * Logs a message not associated with a specific owner.
 	 *
 	 * @param message the message to log.
-	 *@since        GMGen 3.3
 	 */
 	public void logMessage(String message);
 }

@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 13, 2002, 9:19 AM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core.bonus;
@@ -43,14 +39,13 @@ import pcgen.persistence.lst.output.prereq.PrerequisiteWriter;
 import pcgen.rules.context.LoadContext;
 
 /**
- * <code>BonusObj</code>
+ * {@code BonusObj}
  *
- * @author  Greg Bingleman <byngl@hotmail.com>
  **/
 public abstract class BonusObj extends ConcretePrereqObject implements Serializable, Cloneable, QualifyingObject
 {
-	private List<Object> bonusInfo = new ArrayList<Object>();
-	private Map<String, String> dependMap  = new HashMap<String, String>();
+	private List<Object> bonusInfo = new ArrayList<>();
+	private Map<String, String> dependMap  = new HashMap<>();
 	private Formula bonusFormula = FormulaFactory.ZERO;
 
 	/** The name of the bonus e.g. STAT or COMBAT */
@@ -85,7 +80,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 	{
 		final StringBuilder sb = new StringBuilder(50);
 
-		if (bonusInfo.size() > 0)
+		if (!bonusInfo.isEmpty())
 		{
 			for (int i = 0; i < bonusInfo.size(); ++i)
 			{
@@ -108,7 +103,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 	 */
 	public List<String> getUnparsedBonusInfoList()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (Object info : bonusInfo)
 		{
 			list.add(unparseToken(info));
@@ -283,7 +278,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 	 */
 	public boolean hasTypeString()
 	{
-		return bonusType.length() > 0;
+		return !bonusType.isEmpty();
 	}
 
 	/**
@@ -292,7 +287,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 	 */
 	public boolean hasVariable()
 	{
-		return varPart.length() > 0;
+		return !varPart.isEmpty();
 	}
 
 	/**
@@ -309,12 +304,12 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 			final StringBuilder sb = new StringBuilder(50);
 	
 			sb.append(getTypeOfBonus());
-			if (varPart != null && varPart.length() > 0)
+			if (varPart != null && !varPart.isEmpty())
 			{
 				sb.append(varPart);
 			}
 	
-			if (bonusInfo.size() > 0)
+			if (!bonusInfo.isEmpty())
 			{
 				for (int i = 0; i < bonusInfo.size(); ++i)
 				{
@@ -329,7 +324,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 	
 			sb.append('|').append(bonusFormula.toString());
 
-			if (bonusType.length() != 0)
+			if (!bonusType.isEmpty())
 			{
 				sb.append("|TYPE=").append(bonusType);
 			}
@@ -386,7 +381,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 
 	protected boolean addType(final String typeString)
 	{
-		if (bonusType.length() == 0)
+		if (bonusType.isEmpty())
 		{
 			bonusType = typeString.toUpperCase();
 
@@ -507,7 +502,7 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 					catch (NumberFormatException e)
 					{
 						// It's a Variable!
-						if (testString.length() > 0)
+						if (!testString.isEmpty())
 						{
 							if (testString.startsWith("MOVE[")) {
 								testString =
@@ -563,9 +558,9 @@ public abstract class BonusObj extends ConcretePrereqObject implements Serializa
 	{
 		final BonusObj bonusObj = (BonusObj) super.clone();
 
-		bonusObj.bonusInfo = new ArrayList<Object>(bonusInfo);
+		bonusObj.bonusInfo = new ArrayList<>(bonusInfo);
 
-		bonusObj.dependMap = new HashMap<String, String>();
+		bonusObj.dependMap = new HashMap<>();
 		bonusObj.setValue(bonusFormula.toString());
 
 		// we want to keep the same references to these objects

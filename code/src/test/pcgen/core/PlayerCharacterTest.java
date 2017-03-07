@@ -17,13 +17,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 09-Jan-2004
  *
- * Current Ver: $Revision$
  *
- * Last Editor: $Author$
  *
- * Last Edited: $Date$
  *
  */
 package pcgen.core;
@@ -78,11 +74,7 @@ import plugin.lsttokens.testsupport.BuildUtilities;
  * The Class <code>PlayerCharacterTest</code> is responsible for testing 
  * that PlayerCharacter is working correctly.
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author Chris Ward <frugal@purplewombat.co.uk>
- * @version $Revision$
  */
 @SuppressWarnings("nls")
 public class PlayerCharacterTest extends AbstractCharacterTestCase
@@ -133,7 +125,7 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		giantClass = new PCClass();
 		giantClass.setName("Giant");
 		BuildUtilities.setFact(giantClass, "ClassType", "Monster");
-		final BonusObj babClassBonus = Bonus.newBonus(context, "COMBAT|BAB|CL*3/4");
+		final BonusObj babClassBonus = Bonus.newBonus(context, "COMBAT|BASEAB|CL*3/4");
 		giantClass.getOriginalClassLevel(1).addToListFor(ListKey.BONUS, babClassBonus);
 		context.getReferenceContext().importObject(giantClass);
 	
@@ -277,12 +269,13 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 	}
 
 	@Override
-	protected void tearDown()
+	protected void tearDown() throws Exception
 	{
 		ChooserFactory.popChooserClassname();
 		Logging.setDebugMode(false);
 		human.removeListFor(ListKey.BONUS);
 		giantRace.removeListFor(ListKey.BONUS);
+		super.tearDown();
 	}
 	
 	/**
@@ -578,12 +571,12 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		setPCStat(pc, dex, 14);
 		pc.setUseTempMods(true);
 
-		assertEquals("STR", -1.0, pc.getVariableValue("STR", "").floatValue(),
+		assertEquals("STR", -1.0, pc.getVariableValue("STR", ""),
 			0.1);
-		assertEquals("DEX", 2.0, pc.getVariableValue("DEX", "").floatValue(),
+		assertEquals("DEX", 2.0, pc.getVariableValue("DEX", ""),
 			0.1);
 		assertEquals("max(STR,DEX)", 2.0, pc.getVariableValue("max(STR,DEX)",
-			"").floatValue(), 0.1);
+				""), 0.1);
 
 		StatToken statTok = new StatToken();
 		assertEquals("Total stat.", "14", statTok.getToken("STAT.1", pc, null));
@@ -606,10 +599,10 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 			null));
 		assertEquals("Base stat.", "12", statTok.getToken(
 			"STAT.1.NOEQUIP.NOTEMP", pc, null));
-		assertEquals("DEX", 1.0, pc.getVariableValue("DEX", "").floatValue(),
+		assertEquals("DEX", 1.0, pc.getVariableValue("DEX", ""),
 			0.1);
 		assertEquals("max(STR,DEX)", 1.0, pc.getVariableValue("max(STR,DEX)",
-			"").floatValue(), 0.1);
+				""), 0.1);
 
 		Spell spell2 = new Spell();
 		spell2.setName("Concrete Boots");
@@ -628,10 +621,10 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 			null));
 		assertEquals("Base stat.", "12", statTok.getToken(
 			"STAT.1.NOEQUIP.NOTEMP", pc, null));
-		assertEquals("DEX", 0.0, pc.getVariableValue("DEX", "").floatValue(),
+		assertEquals("DEX", 0.0, pc.getVariableValue("DEX", ""),
 			0.1);
 		assertEquals("max(STR,DEX)-STR", 1.0, pc.getVariableValue(
-			"max(STR,DEX)-STR", "").floatValue(), 0.1);
+				"max(STR,DEX)-STR", ""), 0.1);
 	}
 
 	/**
@@ -1009,7 +1002,7 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		
 	}
 	
-	public void testGetPartialStatBonusFor()
+	public void testGetPartialStatFor()
 	{
 		readyToRun();
 		PlayerCharacter pc = getCharacter();
@@ -1023,14 +1016,14 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		final BonusObj strBonus = Bonus.newBonus(context, "STAT|STR|2");
 		strBonusAbility.addToListFor(ListKey.BONUS, strBonus);
 
-		assertEquals("Before bonus, no temp no equip", 0, pc.getPartialStatBonusFor(str, false, false));
-		assertEquals("Before bonus, temp no equip", 0, pc.getPartialStatBonusFor(str, true, false));
+		assertEquals("Before bonus, no temp no equip", 14, pc.getPartialStatFor(str, false, false));
+		assertEquals("Before bonus, temp no equip", 14, pc.getPartialStatFor(str, true, false));
 
 		AbstractCharacterTestCase.applyAbility(pc, AbilityCategory.FEAT, strBonusAbility, null);
 		pc.calcActiveBonuses();
 
-		assertEquals("After bonus, no temp no equip", 2, pc.getPartialStatBonusFor(str, false, false));
-		assertEquals("After bonus, temp no equip", 2, pc.getPartialStatBonusFor(str, true, false));
+		assertEquals("After bonus, no temp no equip", 16, pc.getPartialStatFor(str, false, false));
+		assertEquals("After bonus, temp no equip", 16, pc.getPartialStatFor(str, true, false));
 		
 //		final BonusObj strBonusViaList = Bonus.newBonus("STAT|%LIST|3");
 //		strBonusAbility.addBonusList(strBonusViaList);
@@ -1056,14 +1049,14 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		CharacterDisplay display = pc.getDisplay();
 		
 		addAbility(AbilityCategory.FEAT, ab);
-		CDOMSingleRef<CompanionList> ref = new CDOMSimpleSingleRef<CompanionList>(
+		CDOMSingleRef<CompanionList> ref = new CDOMSimpleSingleRef<>(
 				CompanionList.class, "Mount");
-		CDOMReference<Race> race  = new  CDOMDirectSingleRef<Race>(giantRace);
+		CDOMReference<Race> race  = new CDOMDirectSingleRef<>(giantRace);
 		FollowerOption option = new FollowerOption(race, ref);
 		mab.addToListFor(ListKey.COMPANIONLIST, option);
-		ref = new CDOMSimpleSingleRef<CompanionList>(
+		ref = new CDOMSimpleSingleRef<>(
 				CompanionList.class, "Familiar");
-		race  = new  CDOMDirectSingleRef<Race>(human);
+		race  = new CDOMDirectSingleRef<>(human);
 		option = new FollowerOption(race, ref);
 		fab.addToListFor(ListKey.COMPANIONLIST, option);
 		
@@ -1151,8 +1144,8 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		GameMode game = SettingsHandler.getGame();
 		LoadInfo li = game.getModeContext().getReferenceContext().constructNowIfNecessary(
 				LoadInfo.class, game.getName());
-		li.addLoadScoreValue(0, new BigDecimal(100.0));
-		li.addLoadScoreValue(10, new BigDecimal(100.0));
+		li.addLoadScoreValue(0, new BigDecimal("100.0"));
+		li.addLoadScoreValue(10, new BigDecimal("100.0"));
 		li.addLoadMultiplier("LIGHT", new Float(100), "100", 0);
 
 		PlayerCharacter pc = getCharacter();
@@ -1250,7 +1243,7 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		character.setStat(intel, 10);
 		character.incrementClassLevel(2, pcClass, true);
 		
-		List<PCLevelInfo> levelInfoList = new ArrayList<PCLevelInfo>(character.getLevelInfo());
+		List<PCLevelInfo> levelInfoList = new ArrayList<>(character.getLevelInfo());
 		
 		assertEquals("Level number lvl 1", 1, levelInfoList.get(0)
 			.getClassLevel());
@@ -1292,7 +1285,7 @@ public class PlayerCharacterTest extends AbstractCharacterTestCase
 		character.addTemplate(template);
 		character.incrementClassLevel(2, pcClass, true);
 		
-		List<PCLevelInfo> levelInfoList = new ArrayList<PCLevelInfo>(character.getLevelInfo());
+		List<PCLevelInfo> levelInfoList = new ArrayList<>(character.getLevelInfo());
 		
 		assertEquals("Level number lvl 1", 1, levelInfoList.get(0)
 			.getClassLevel());

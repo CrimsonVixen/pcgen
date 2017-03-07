@@ -16,12 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * @author Bryan McRoberts <merton_monk@yahoo.com>
- * Created on July 10, 2002, 11:26 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 package pcgen.core.character;
 
@@ -32,14 +27,12 @@ import pcgen.core.Ability;
 import pcgen.core.Globals;
 
 /**
- * <code>SpellInfo</code>
+ * {@code SpellInfo}
  * this is a helper-class for CharacterSpell
  * meant to contain the book, whether or not this spell
  * is in the specialtySlot for characters which have them,
  * and the list of meta-magic feats which have been applied.
  *
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
  */
 public final class SpellInfo implements Comparable<SpellInfo>
 {
@@ -135,12 +128,12 @@ public final class SpellInfo implements Comparable<SpellInfo>
 		this.timeUnit = timeUnit;
 	}
 
-	public final int getNumPages()
+	public int getNumPages()
 	{
 		return numPages;
 	}
 
-	public final void setNumPages(int numPages)
+	public void setNumPages(int numPages)
 	{
 		this.numPages = numPages;
 	}
@@ -149,7 +142,7 @@ public final class SpellInfo implements Comparable<SpellInfo>
 	{
 		if (featList == null)
 		{
-			featList = new ArrayList<Ability>(aList.size());
+			featList = new ArrayList<>(aList.size());
 		}
 
 		featList.addAll(aList);

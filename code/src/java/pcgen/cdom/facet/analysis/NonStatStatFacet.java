@@ -33,12 +33,8 @@ import pcgen.core.PCStat;
  * NonStatStatFacet is a Facet that tracks the Stats that have been locked to 
  * non stats on a Player Character.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class NonStatStatFacet extends AbstractSourcedListFacet<CharID, PCStat> implements
 		DataFacetChangeListener<CharID, CDOMObject>
@@ -69,7 +65,7 @@ public class NonStatStatFacet extends AbstractSourcedListFacet<CharID, PCStat> i
 			CharID charID = dfce.getCharID();
 			for (CDOMSingleRef<PCStat> ref : locks)
 			{
-				add(charID, ref.resolvesTo(), cdo);
+				add(charID, ref.get(), cdo);
 			}
 		}
 	}

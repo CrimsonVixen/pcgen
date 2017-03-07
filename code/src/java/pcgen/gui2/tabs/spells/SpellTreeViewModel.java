@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Sep 23, 2011, 2:02:31 PM
  */
 package pcgen.gui2.tabs.spells;
 
@@ -24,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import pcgen.facade.core.InfoFactory;
 
 import pcgen.facade.core.SpellSupportFacade.SpellNode;
 import pcgen.facade.core.SpellSupportFacade.SuperNode;
@@ -37,7 +37,6 @@ import pcgen.system.LanguageBundle;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 {
@@ -47,12 +46,13 @@ public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 	private final ListFacade<SpellTreeView> treeViews;
 	private final String prefsKey;
 
-	public SpellTreeViewModel(ListFacade<? extends SuperNode> spellNodes, boolean showcolumns, String prefsKey)
+	public SpellTreeViewModel(ListFacade<? extends SuperNode> spellNodes,
+			boolean showcolumns, String prefsKey, InfoFactory infoFactory)
 	{
 		this.spellNodes = spellNodes;
 		this.prefsKey = prefsKey;
-		this.treeViews = new DefaultListFacade<SpellTreeView>(Arrays.asList(SpellTreeView.values()));
-		this.dataView = new SpellNodeDataView(showcolumns, prefsKey);
+		this.treeViews = new DefaultListFacade<>(Arrays.asList(SpellTreeView.values()));
+		this.dataView = new SpellNodeDataView(showcolumns, prefsKey, infoFactory);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 		CLASS_LEVEL_SPELL("in_spellClassLevelSpell"), //$NON-NLS-1$
 		CLASS_LEVEL_SCHOOL_SPELL("in_spellClassLevelSchoolSpell"); //$NON-NLS-1$
 		
-		private String name;
+		private final String name;
 
 		private SpellTreeView(String name)
 		{
@@ -106,7 +106,7 @@ public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 			if (node instanceof SpellNode)
 			{
 				SpellNode pobj = (SpellNode) node;
-				LinkedList<Object> pathList = new LinkedList<Object>();
+				LinkedList<Object> pathList = new LinkedList<>();
 				switch (this)
 				{
 					case CLASS_LEVEL_SPELL:
@@ -116,7 +116,7 @@ public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 						{
 							pathList.removeLast();
 						}
-						path = new TreeViewPath<SuperNode>(pobj, pathList.toArray());
+						path = new TreeViewPath<>(pobj, pathList.toArray());
 						break;
 					case CLASS_LEVEL_SCHOOL_SPELL:
 						Collections.addAll(pathList, pobj.getRootNode(),
@@ -130,7 +130,7 @@ public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 						{
 							pathList.removeLast();
 						}
-						path = new TreeViewPath<SuperNode>(pobj, pathList.toArray());
+						path = new TreeViewPath<>(pobj, pathList.toArray());
 						break;
 					default:
 						throw new InternalError();
@@ -139,7 +139,7 @@ public class SpellTreeViewModel implements TreeViewModel<SuperNode>
 			}
 			else
 			{
-				path = new TreeViewPath<SuperNode>(node);
+				path = new TreeViewPath<>(node);
 			}
 			return Arrays.asList(path);
 		}

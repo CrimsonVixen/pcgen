@@ -16,14 +16,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Aug 26, 2011, 7:57:40 PM
  */
 package pcgen.gui2.tabs.bio;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -33,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -49,8 +48,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import pcgen.cdom.base.Constants;
 import pcgen.facade.core.CharacterFacade;
@@ -64,7 +63,6 @@ import pcgen.gui2.tools.Icons;
 /**
  * The CampaignHistoryInfoPane displays a set of chronicles that the user can fill in for his
  * character.
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 {
@@ -129,6 +127,7 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 
 		};
 		pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		add(pane);
 		add(Box.createVerticalStrut(10));
 		addButton.setAlignmentX((float) 0.5);
@@ -176,7 +175,7 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 		public ChronicleHandler(CharacterFacade character)
 		{
 			descFacade = character.getDescriptionFacade();
-			chronicles = new ArrayList<ChroniclePane>();
+			chronicles = new ArrayList<>();
 			for (ChronicleEntryFacade entry : descFacade.getChronicleEntries())
 			{
 				chronicles.add(new ChroniclePane(this, entry));
@@ -285,18 +284,30 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 		private JTextField dateField = new JTextField();
 		private JFormattedTextField xpField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		private JTextField gmField = new JTextField();
-		private JTextArea textArea = new JTextArea();
+		private JTextArea textArea = new JTextArea()
+		{
+			@Override
+			public Dimension getMinimumSize()
+			{
+				Dimension minSize = super.getMinimumSize();
+				Dimension prefSize = getPreferredSize();
+				minSize.height = prefSize.height;
+				return minSize;
+			}
+
+		};
 		private ChronicleHandler handler;
 		private ChronicleEntryFacade entry;
 
 		/**
-		 * Creates a bare ChroniclePane that initializes the layout of its components.
-		 * This is meant only for components that want to know the size of a ChroniclePane
-		 * without fully initializing it.
+		 * Creates a bare ChroniclePane that initializes the layout of its components. This is meant
+		 * only for components that want to know the size of a ChroniclePane without fully
+		 * initializing it.
 		 */
 		public ChroniclePane()
 		{
 			super(new GridBagLayout());
+			setBorder(BorderFactory.createEmptyBorder(2, 0, 5, 5));
 			initComponents();
 		}
 
@@ -308,6 +319,7 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 			populateComponents();
 			textArea.setLineWrap(true);
 			textArea.setWrapStyleWord(true);
+			textArea.setRows(5);
 
 			partyField.setColumns(10);
 			dateField.setColumns(6);
@@ -363,13 +375,12 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 		private void initComponents()
 		{
 			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.insets = new Insets(0, 1, 0, 0);
-			gbc.gridheight = 2;
-			gbc.anchor = GridBagConstraints.NORTH;
+			gbc.insets = new Insets(0, 4, 0, 0);
+			gbc.gridheight = 1;
+			gbc.anchor = GridBagConstraints.BASELINE;
 			add(checkBox, gbc);
 
 			gbc.anchor = GridBagConstraints.EAST;
-			gbc.gridheight = 1;
 			gbc.insets = new Insets(0, 10, 0, 0);
 
 			GridBagConstraints gbc2 = new GridBagConstraints();
@@ -382,22 +393,22 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 			add(new JLabel("Adventure:"), gbc);
 			gbc2.gridwidth = GridBagConstraints.REMAINDER;
 			add(adventureField, gbc2);
-
-			gbc.gridwidth = 1;
+			
+			add(new JLabel(), gbc);
 			add(new JLabel("Party Name:"), gbc);
 			gbc2.gridwidth = 1;
-			gbc2.weightx = .35;
+			gbc2.weightx = 0.35;
 			add(partyField, gbc2);
 			add(new JLabel("Date:"), gbc);
-			gbc2.weightx = .15;
+			gbc2.weightx = 0.15;
 			add(dateField, gbc2);
 			add(new JLabel("XP Gained:"), gbc);
-			gbc2.weightx = .05;
+			gbc2.weightx = 0.05;
 			add(xpField, gbc2);
 			add(new JLabel("GM:"), gbc);
 
 			gbc2.gridwidth = GridBagConstraints.REMAINDER;
-			gbc2.weightx = .45;
+			gbc2.weightx = 0.45;
 			add(gmField, gbc2);
 
 			gbc.fill = GridBagConstraints.VERTICAL;
@@ -406,9 +417,8 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			gbc.fill = GridBagConstraints.BOTH;
-			gbc.ipady = 100;
 			gbc.insets = new Insets(0, 10, 0, 0);
-			add(new JScrollPane(textArea), gbc);
+			add(textArea, gbc);
 		}
 
 		/**
@@ -530,7 +540,7 @@ public class CampaignHistoryInfoPane extends JPanel implements CharacterInfoTab
 
 		public ChroniclesPane()
 		{
-			super(new GridLayout(0, 1, 2, 10));
+			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		}
 
 		@Override

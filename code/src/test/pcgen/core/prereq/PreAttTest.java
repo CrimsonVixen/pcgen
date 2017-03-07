@@ -40,11 +40,7 @@ import pcgen.rules.context.LoadContext;
  * <code>PreAttTest</code> tests that the PREATT tag is
  * working correctly.
  *
- * Last Editor: $Author: $
- * Last Edited: $Date$
  *
- * @author Aaron Divinsky <boomer70@yahoo.com>
- * @version $Revision$
  */
 public class PreAttTest extends AbstractCharacterTestCase
 {
@@ -105,7 +101,7 @@ public class PreAttTest extends AbstractCharacterTestCase
 
 		myClass.setName("My Class");
 		myClass.put(FormulaKey.START_SKILL_POINTS, FormulaFactory.getFormulaFor(3));
-		final BonusObj babClassBonus = Bonus.newBonus(context, "COMBAT|BAB|CL+5");
+		final BonusObj babClassBonus = Bonus.newBonus(context, "COMBAT|BASEAB|CL+5");
 		myClass.getOriginalClassLevel(1).addToListFor(ListKey.BONUS, babClassBonus);
 		Globals.getContext().getReferenceContext().importObject(myClass);
 	}

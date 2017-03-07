@@ -39,6 +39,8 @@ import pcgen.cdom.enumeration.Type;
 import pcgen.cdom.inst.EquipmentHead;
 import pcgen.cdom.reference.CDOMDirectSingleRef;
 import pcgen.cdom.reference.CDOMSingleRef;
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.Equipment;
 import pcgen.core.Globals;
 import pcgen.core.SizeAdjustment;
@@ -57,7 +59,6 @@ import pcgen.rules.persistence.token.PostDeferredToken;
 import pcgen.util.Logging;
 
 /**
- * @author djones4
  *
  */
 public class NaturalattacksLst extends AbstractTokenWithSeparator<CDOMObject>
@@ -82,7 +83,7 @@ public class NaturalattacksLst extends AbstractTokenWithSeparator<CDOMObject>
 	}
 
 	/**
-	 * NATURAL WEAPONS CODE <p/>first natural weapon is primary, the rest are
+	 * NATURAL WEAPONS CODE <p>first natural weapon is primary, the rest are
 	 * secondary; NATURALATTACKS:primary weapon name,weapon type,num
 	 * attacks,damage|secondary1 weapon name,weapon type,num
 	 * attacks,damage|secondary2 format is exactly as it would be in an
@@ -220,13 +221,13 @@ public class NaturalattacksLst extends AbstractTokenWithSeparator<CDOMObject>
 		}
 
 		String numAttacks = commaTok.nextToken();
-		boolean attacksFixed = numAttacks.length() > 0
+		boolean attacksFixed = !numAttacks.isEmpty()
 				&& numAttacks.charAt(0) == '*';
 		if (attacksFixed)
 		{
 			numAttacks = numAttacks.substring(1);
 		}
-		anEquip.put(ObjectKey.ATTACKS_PROGRESS, Boolean.valueOf(!attacksFixed));
+		anEquip.put(ObjectKey.ATTACKS_PROGRESS, !attacksFixed);
 		try
 		{
 			int bonusAttacks = Integer.parseInt(numAttacks) - 1;
@@ -266,8 +267,8 @@ public class NaturalattacksLst extends AbstractTokenWithSeparator<CDOMObject>
 			{
 				try
 				{
-					handsrequired = Integer.valueOf(Integer
-							.parseInt(hString));
+					handsrequired = Integer
+							.parseInt(hString);
 				}
 				catch (NumberFormatException exc)
 				{
@@ -294,8 +295,14 @@ public class NaturalattacksLst extends AbstractTokenWithSeparator<CDOMObject>
 		anEquip.put(ObjectKey.WEAPON_PROF, wp);
 		anEquip.addToListFor(ListKey.IMPLIED_WEAPONPROF, wp);
 
-		equipHead.put(IntegerKey.CRIT_RANGE, Integer.valueOf(1));
-		equipHead.put(IntegerKey.CRIT_MULT, Integer.valueOf(2));
+		if (!ControlUtilities.hasControlToken(context, CControl.CRITRANGE))
+		{
+			equipHead.put(IntegerKey.CRIT_RANGE, 1);
+		}
+		if (!ControlUtilities.hasControlToken(context, CControl.CRITMULT))
+		{
+			equipHead.put(IntegerKey.CRIT_MULT, 2);
+		}
 
 		return anEquip;
 	}
@@ -457,7 +464,7 @@ public class NaturalattacksLst extends AbstractTokenWithSeparator<CDOMObject>
 	 */
 	private Integer getRequiredSize(CDOMObject obj)
 	{
-		Set<Prerequisite> sizePrereqs = new HashSet<Prerequisite>();
+		Set<Prerequisite> sizePrereqs = new HashSet<>();
 		for (Prerequisite prereq : obj.getPrerequisiteList())
 		{
 			sizePrereqs.addAll(PrerequisiteUtilities.getPreReqsOfKind(prereq, "SIZE"));

@@ -23,11 +23,11 @@
 package pcgen.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import pcgen.base.formula.Formula;
+import pcgen.base.formula.base.VarScoped;
 import pcgen.base.lang.StringUtil;
 import pcgen.cdom.base.ChooseDriver;
 import pcgen.cdom.base.ChooseInformation;
@@ -41,17 +41,17 @@ import pcgen.core.bonus.BonusObj;
 import pcgen.facade.core.SkillFacade;
 
 /**
- * <code>Skill</code>.
+ * {@code Skill}.
  * 
- * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
- * @version $Revision$
+ * @author Bryan McRoberts &lt;merton_monk@users.sourceforge.net&gt;
  */
-public final class Skill extends PObject implements SkillFacade, ChooseDriver
+public final class Skill extends PObject implements SkillFacade, ChooseDriver,
+		VarScoped
 {
 	public String getKeyStatAbb()
 	{
 		CDOMSingleRef<PCStat> keyStat = get(ObjectKey.KEY_STAT);
-		return keyStat == null ? "" : keyStat.resolvesTo().getKeyName();
+		return keyStat == null ? "" : keyStat.get().getKeyName();
 	}
 
 	@Override
@@ -98,8 +98,8 @@ public final class Skill extends PObject implements SkillFacade, ChooseDriver
 	@Override
 	public List<BonusObj> getRawBonusList(PlayerCharacter pc)
 	{
-		List<BonusObj> list = new ArrayList<BonusObj>(super.getRawBonusList(pc));
-		Collections.sort(list, new SkillBonusComparator(this));
+		List<BonusObj> list = new ArrayList<>(super.getRawBonusList(pc));
+		list.sort(new SkillBonusComparator(this));
 		return list;
 	}
 
@@ -107,9 +107,9 @@ public final class Skill extends PObject implements SkillFacade, ChooseDriver
 	 * A comparator for sorting bonuses which puts the bonuses in the order
 	 * bonuses to this skill, bonuses without prereqs, bonuses with prereqs.  
 	 *
-	 * @author James Dempsey <jdempsey@users.sourceforge.net>
+	 * @author James Dempsey &lt;jdempsey@users.sourceforge.net&gt;
 	 */
-	public class SkillBonusComparator implements Comparator<BonusObj>
+	public final class SkillBonusComparator implements Comparator<BonusObj>
 	{
 
 		private final Skill skill;
@@ -119,9 +119,6 @@ public final class Skill extends PObject implements SkillFacade, ChooseDriver
 			this.skill = skill;
 			
 		}
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int compare(BonusObj arg0, BonusObj arg1)
 		{
@@ -193,5 +190,11 @@ public final class Skill extends PObject implements SkillFacade, ChooseDriver
 	public Formula getNumChoices()
 	{
 		return getSafe(FormulaKey.NUMCHOICES);
+	}
+
+	@Override
+	public String getLocalScopeName()
+	{
+		return "SKILL";
 	}
 }

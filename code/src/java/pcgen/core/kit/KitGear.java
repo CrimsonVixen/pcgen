@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on September 23, 2002, 8:58 PM
  *
- * $Id$
  */
 package pcgen.core.kit;
 
@@ -47,10 +45,8 @@ import pcgen.core.SizeAdjustment;
 import pcgen.core.character.EquipSet;
 
 /**
- * <code>KitGear</code>.
+ * {@code KitGear}.
  *
- * @author Greg Bingleman <byngl@hotmail.com>
- * @version $Revision$
  */
 public final class KitGear extends BaseKit
 {
@@ -170,7 +166,7 @@ public final class KitGear extends BaseKit
 		}
 		if (gear.size != null)
 		{
-			actingSize = gear.size.resolvesTo();
+			actingSize = gear.size.get();
 		}
 	}
 
@@ -180,11 +176,11 @@ public final class KitGear extends BaseKit
 	{
 		actingQuantity = quantity;
 		actingCost = maxCost;
-		actingMods = mods == null ? null : new ArrayList<EqModRef>(mods);
+		actingMods = mods == null ? null : new ArrayList<>(mods);
 		actingLocation = theLocationStr;
 		if (size != null)
 		{
-			actingSize = size.resolvesTo();
+			actingSize = size.get();
 		}
 
 		theEquipment = null;
@@ -204,7 +200,7 @@ public final class KitGear extends BaseKit
 		}
 
 		List<Equipment> eqList =
-				new ArrayList<Equipment>(equip.getContainedObjects());
+                new ArrayList<>(equip.getContainedObjects());
 		if (actingCost != null)
 		{
 			final BigDecimal bdMaxCost =
@@ -223,7 +219,7 @@ public final class KitGear extends BaseKit
 		}
 		else
 		{
-			List<Equipment> selected = new ArrayList<Equipment>(1);
+			List<Equipment> selected = new ArrayList<>(1);
 			selected = Globals.getChoiceFromList("Choose equipment", eqList, selected, 1, aPC);
 			if (selected.size() == 1)
 			{
@@ -250,7 +246,7 @@ public final class KitGear extends BaseKit
 				|| (!theEquipment.isWeapon() && !theEquipment.isAmmunition()))
 			{
 				tryResize =
-						Globals.canResizeHaveEffect(aPC, theEquipment, null);
+						Globals.canResizeHaveEffect(theEquipment, null);
 			}
 		}
 		else
@@ -258,7 +254,7 @@ public final class KitGear extends BaseKit
 			if (sizeToPC != null && sizeToPC)
 			{
 				tryResize =
-						Globals.canResizeHaveEffect(aPC, theEquipment, null);
+						Globals.canResizeHaveEffect(theEquipment, null);
 			}
 			else
 			{
@@ -275,7 +271,7 @@ public final class KitGear extends BaseKit
 		{
 			// We need setBase() called.  The only way to do that is to resize.
 			// We will set the size to itself.
-			theEquipment.resizeItem(aPC, theEquipment.getSafe(ObjectKey.SIZE).resolvesTo());
+			theEquipment.resizeItem(aPC, theEquipment.getSafe(ObjectKey.SIZE).get());
 		}
 
 		//
@@ -289,7 +285,7 @@ public final class KitGear extends BaseKit
 				 * Going to do this the long way for now to avoid ugly entanglements
 				 */
 				StringBuilder sb = new StringBuilder(50);
-				EquipmentModifier eqMod = modref.getRef().resolvesTo();
+				EquipmentModifier eqMod = modref.getRef().get();
 				sb.append(eqMod.getKeyName());
 				for (String assoc : modref.getChoices())
 				{
@@ -532,7 +528,7 @@ public final class KitGear extends BaseKit
 	{
 		if (lookupList == null)
 		{
-			lookupList = new LinkedList<NamedFormula>();
+			lookupList = new LinkedList<>();
 		}
 		lookupList.add(new NamedFormula(tableEntry, f));
 	}
@@ -546,7 +542,7 @@ public final class KitGear extends BaseKit
 	{
 		if (mods == null)
 		{
-			mods = new LinkedList<EqModRef>();
+			mods = new LinkedList<>();
 		}
 		mods.add(modRef);
 	}

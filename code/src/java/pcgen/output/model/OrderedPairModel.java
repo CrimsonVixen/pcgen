@@ -17,19 +17,22 @@
  */
 package pcgen.output.model;
 
-import pcgen.base.geom.OrderedPair;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.TemplateHashModel;
+import pcgen.base.math.OrderedPair;
+import pcgen.base.util.Reference;
+import pcgen.output.base.SimpleWrapperLibrary;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
+import freemarker.template.TemplateSequenceModel;
 
 /**
  * A OrderedPairModel wraps a OrderedPair object into a TemplateScalarModel and
- * TemplateHashModel
+ * TemplateSequenceModel (of length 2).
  */
-public class OrderedPairModel implements TemplateScalarModel, TemplateHashModel
+public class OrderedPairModel implements TemplateScalarModel,
+		TemplateSequenceModel, Reference<OrderedPair>
 {
+
 	/**
 	 * The underlying OrderedPair object
 	 */
@@ -38,8 +41,7 @@ public class OrderedPairModel implements TemplateScalarModel, TemplateHashModel
 	/**
 	 * Constructs a new OrderedPairModel with the given underlying OrderedPair
 	 * 
-	 * @param cat
-	 *            The OrderedPair this OrderedPairModel wraps
+	 * @param point The OrderedPair this OrderedPairModel wraps
 	 */
 	public OrderedPairModel(OrderedPair point)
 	{
@@ -50,9 +52,6 @@ public class OrderedPairModel implements TemplateScalarModel, TemplateHashModel
 		this.point = point;
 	}
 
-	/*
-	 * @see freemarker.template.TemplateScalarModel#getAsString()
-	 */
 	@Override
 	public String getAsString() throws TemplateModelException
 	{
@@ -60,24 +59,29 @@ public class OrderedPairModel implements TemplateScalarModel, TemplateHashModel
 	}
 
 	@Override
-	public TemplateModel get(String key) throws TemplateModelException
+	public OrderedPair get()
 	{
-		if (key.equalsIgnoreCase("x"))
-		{
-			ObjectWrapper.SIMPLE_WRAPPER.wrap(point.getPreciseX());
-		}
-		else if (key.equalsIgnoreCase("y"))
-		{
-			ObjectWrapper.SIMPLE_WRAPPER.wrap(point.getPreciseY());
-		}
-		throw new TemplateModelException(
-			"object of type OrderedPair did not have output of type " + key);
+		return point;
 	}
 
 	@Override
-	public boolean isEmpty() throws TemplateModelException
+	public TemplateModel get(int index) throws TemplateModelException
 	{
-		return false;
+		if (index == 0)
+		{
+			return SimpleWrapperLibrary.wrap(point.getPreciseX());
+		}
+		else if (index == 1)
+		{
+			return SimpleWrapperLibrary.wrap(point.getPreciseY());
+		}
+		return null;
+	}
+
+	@Override
+	public int size() throws TemplateModelException
+	{
+		return 2;
 	}
 
 }

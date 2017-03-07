@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 16/11/2010 08:15:00
  *
- * $Id$
  */
 package pcgen.gui2.prefs;
 
@@ -45,15 +43,11 @@ import pcgen.system.LanguageBundle;
 import pcgen.system.PCGenSettings;
 
 /**
- * The Class <code>DisplayOptionsPanel</code> is responsible for 
+ * The Class {@code DisplayOptionsPanel} is responsible for
  * displaying experience related preferences and allowing the 
  * preferences to be edited by the user.
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public class DisplayOptionsPanel extends PCGenPrefsPanel
@@ -126,7 +120,7 @@ public class DisplayOptionsPanel extends PCGenPrefsPanel
 
 		// Automatically sort the options alphabetically.
 		final SortedMap<String, JComponent> options =
-				new TreeMap<String, JComponent>();
+                new TreeMap<>();
 
 //		options.put(in_showMemory, showMemory);
 //		options.put(in_showImagePreview, showImagePreview);

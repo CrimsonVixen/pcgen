@@ -32,6 +32,9 @@ import pcgen.core.SizeAdjustment;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.PrimitiveToken;
 
+/**
+ * BaseSizeToken is a Primitive that filters based on the base SizeAdjustment of a Race.
+ */
 public class BaseSizeToken implements PrimitiveToken<Race>,
 		PrimitiveFilter<Race>
 {
@@ -77,7 +80,7 @@ public class BaseSizeToken implements PrimitiveToken<Race>,
 	public boolean allow(PlayerCharacter pc, Race race)
 	{
 		Formula raceSize = race.get(FormulaKey.SIZE);
-		return size.resolvesTo().getKeyName().equals(raceSize.toString());
+		return size.get().getKeyName().equals(raceSize.toString());
 	}
 
 	@Override

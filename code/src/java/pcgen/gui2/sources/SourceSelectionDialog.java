@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Apr 15, 2010, 7:15:13 PM
  */
 package pcgen.gui2.sources;
 
@@ -84,7 +83,6 @@ import pcgen.util.Comparators;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class SourceSelectionDialog extends JDialog
 		implements ActionListener, ChangeListener, ListSelectionListener
@@ -275,10 +273,10 @@ public class SourceSelectionDialog extends JDialog
 		{
 			final JList sourcesList = new JList();
 			final JTextField nameField = new JTextField();
-			ListFacade<SourceSelectionFacade> sources = 
-					new SortedListFacade<SourceSelectionFacade>(
-							Comparators.toStringIgnoreCaseCollator(),
-							FacadeFactory.getCustomSourceSelections());
+			ListFacade<SourceSelectionFacade> sources =
+                    new SortedListFacade<>(
+                            Comparators.toStringIgnoreCaseCollator(),
+                            FacadeFactory.getCustomSourceSelections());
 			sourcesList.setModel(new FacadeListModel(sources));
 			sourcesList.addListSelectionListener(new ListSelectionListener()
 			{
@@ -334,7 +332,7 @@ public class SourceSelectionDialog extends JDialog
 		{
 			// Swap to the install data dialog.
 			setVisible(false);
-			DataInstaller di = new DataInstaller(frame);
+			DataInstaller di = new DataInstaller();
 			di.setVisible(true);
 		}
 		else if (command.equals(HIDEUNHIDE_COMMAND))
@@ -346,7 +344,6 @@ public class SourceSelectionDialog extends JDialog
 			table.setShowGrid(false);
 			table.setFocusable(false);
 			table.setRowSelectionAllowed(false);
-			table.toggleSort(0);
 			rowTable.setRowSelectionAllowed(false);
 
 			pane.setPreferredSize(new Dimension(300, 200));
@@ -397,9 +394,6 @@ public class SourceSelectionDialog extends JDialog
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setVisible(boolean visible)
 	{
@@ -424,7 +418,7 @@ public class SourceSelectionDialog extends JDialog
 		public SourcesTableModel()
 		{
 			setDelegate(FacadeFactory.getSourceSelections());
-			displayedSources = new ArrayList<SourceSelectionFacade>();
+			displayedSources = new ArrayList<>();
 			displayedSources.addAll(ListFacades.wrap(FacadeFactory.getDisplayedSourceSelections()));
 		}
 
@@ -524,10 +518,10 @@ public class SourceSelectionDialog extends JDialog
 			JLabel label = new JLabel(LanguageBundle.getString("in_qsrc_intro"));
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			add(label, BorderLayout.NORTH);
-			ListFacade<SourceSelectionFacade> sources = 
-					new SortedListFacade<SourceSelectionFacade>(
-							Comparators.toStringIgnoreCaseCollator(),
-							FacadeFactory.getDisplayedSourceSelections());
+			ListFacade<SourceSelectionFacade> sources =
+                    new SortedListFacade<>(
+                            Comparators.toStringIgnoreCaseCollator(),
+                            FacadeFactory.getDisplayedSourceSelections());
 			sourceList.setModel(new FacadeListModel(sources));
 			sourceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			sourceList.setCellRenderer(new SourceListCellRenderer());

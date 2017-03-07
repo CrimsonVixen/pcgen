@@ -18,17 +18,16 @@
  *
  * Created 03-Oct-2008 02:59:53
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
 package pcgen.core.term;
 
+import pcgen.cdom.enumeration.IntegerKey;
+import pcgen.cdom.util.CControl;
 import pcgen.core.Equipment;
 import pcgen.core.PlayerCharacter;
-import pcgen.cdom.enumeration.IntegerKey;
+import pcgen.util.Logging;
 
 public class EQReachTermEvaluator extends BaseEQTermEvaluator implements TermEvaluator
 {
@@ -51,6 +50,12 @@ public class EQReachTermEvaluator extends BaseEQTermEvaluator implements TermEva
 			Equipment eq,
 			boolean primary,
 			PlayerCharacter pc) {
+		if (pc.hasControl(CControl.EQREACH))
+		{
+			Logging.errorPrint("REACH term"
+				+ " is disabled when EQREACH control is used");
+			return "0";
+		}
 		return String.valueOf(eq.getSafe(IntegerKey.REACH));
 	}
 

@@ -17,11 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */package plugin.pretokens.test;
 
@@ -37,7 +33,6 @@ import pcgen.core.prereq.PrerequisiteTest;
 import pcgen.system.LanguageBundle;
 
 /**
- * @author frugal@purplewombat.co.uk
  *
  */
 public class PreSkillMultTester extends AbstractPrerequisiteTest implements PrerequisiteTest
@@ -152,8 +147,8 @@ public class PreSkillMultTester extends AbstractPrerequisiteTest implements Prer
 
 		final String foo =
 				LanguageBundle.getFormattedString("PreSkillMult.toHtml", //$NON-NLS-1$
-					new Object[]{prereq.getOperator().toDisplayString(),
-						prereq.getOperand(), skillName});
+						prereq.getOperator().toDisplayString(),
+						prereq.getOperand(), skillName);
 		return foo;
 	}
 

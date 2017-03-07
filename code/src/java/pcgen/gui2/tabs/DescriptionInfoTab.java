@@ -15,9 +15,7 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 29/09/2010 7:16:42 PM
  *
- * $Id: DescriptionInfoTab.java 13208 2010-09-29 12:59:43Z jdempsey $
  */
 package pcgen.gui2.tabs;
 
@@ -56,15 +54,12 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.enumeration.Tab;
 
 /**
- * The Class <code>DescriptionInfoTab</code> is a placeholder for the yet to be
+ * The Class {@code DescriptionInfoTab} is a placeholder for the yet to be
  * implemented description tab.
  *
- * <br/>
- * Last Editor: $Author: jdempsey $ Last Edited: $Date: 2010-09-29 05:59:43
+ * <br>
  * -0700 (Wed, 29 Sep 2010) $
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision: 13208 $
  */
 @SuppressWarnings("serial")
 public class DescriptionInfoTab extends FlippingSplitPane implements CharacterInfoTab
@@ -138,7 +133,7 @@ public class DescriptionInfoTab extends FlippingSplitPane implements CharacterIn
 	{
 		ModelMap models = new ModelMap();
 		DefaultListModel listModel = new DefaultListModel();
-		List<NoteInfoPane> notePaneList = new ArrayList<NoteInfoPane>();
+		List<NoteInfoPane> notePaneList = new ArrayList<>();
 
 		PageItem firstPage = new PageItem(character, LanguageBundle.getString("in_descBiography"), bioPane); //$NON-NLS-1$
 		listModel.addElement(firstPage);
@@ -245,9 +240,6 @@ public class DescriptionInfoTab extends FlippingSplitPane implements CharacterIn
 			}
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void elementAdded(ListEvent<NoteFacade> e)
 		{
@@ -258,9 +250,6 @@ public class DescriptionInfoTab extends FlippingSplitPane implements CharacterIn
 			addPage(notePane);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void elementRemoved(ListEvent<NoteFacade> e)
 		{
@@ -303,9 +292,6 @@ public class DescriptionInfoTab extends FlippingSplitPane implements CharacterIn
 			}
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void elementsChanged(ListEvent<NoteFacade> e)
 		{
@@ -320,9 +306,6 @@ public class DescriptionInfoTab extends FlippingSplitPane implements CharacterIn
 			}
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void elementModified(ListEvent<NoteFacade> e)
 		{
@@ -444,7 +427,7 @@ public class DescriptionInfoTab extends FlippingSplitPane implements CharacterIn
 	}
 
 	/**
-	 * The Class <code>AddAction</code> acts on a user pressing the Add Note
+	 * The Class {@code AddAction} acts on a user pressing the Add Note
 	 * button.
 	 */
 	private class AddAction extends AbstractAction

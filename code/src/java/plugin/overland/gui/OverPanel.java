@@ -15,7 +15,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * $Id$
  */
  package plugin.overland.gui;
 
@@ -25,8 +24,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -47,6 +46,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import pcgen.system.LanguageBundle;
+
 import plugin.overland.model.RoomBoard;
 import plugin.overland.model.RoomBoardFactory;
 import plugin.overland.model.TravelMethod;
@@ -56,8 +56,6 @@ import plugin.overland.model.TravelSpeedEvent;
 
 /**
  *
- * @author  Juliean Galak
- * @author Vincent Lhote
  */
 public class OverPanel extends javax.swing.JPanel
 {
@@ -344,14 +342,7 @@ public class OverPanel extends javax.swing.JPanel
 		panelScaleConv.add(textMap, gridBagConstraints);
 
 		butToMap.setText(LanguageBundle.getString("in_plugin_overland_leftArrow")); //$NON-NLS-1$
-		butToMap.addActionListener(new java.awt.event.ActionListener()
-		{
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt)
-			{
-				butToMapActionPerformed(evt);
-			}
-		});
+		butToMap.addActionListener(this::butToMapActionPerformed);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -359,14 +350,7 @@ public class OverPanel extends javax.swing.JPanel
 		panelScaleConv.add(butToMap, gridBagConstraints);
 
 		butToReal.setText(LanguageBundle.getString("in_plugin_overland_rightArrow")); //$NON-NLS-1$
-		butToReal.addActionListener(new java.awt.event.ActionListener()
-		{
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt)
-			{
-				butToRealActionPerformed(evt);
-			}
-		});
+		butToReal.addActionListener(this::butToRealActionPerformed);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -1118,11 +1102,11 @@ public class OverPanel extends javax.swing.JPanel
 	private void updateMidUI()
 	{
 		Object inn = txtDayInn.getValue();
-		float DayInn = inn instanceof Number ? ((Number) inn).floatValue() : 0f;
+		float DayInn = inn instanceof Number ? ((Number) inn).floatValue() : 0.0f;
 		Object food = txtDayFood.getValue();
-		float DayFood = food instanceof Number ? ((Number) food).floatValue() : 0f;
+		float DayFood = food instanceof Number ? ((Number) food).floatValue() : 0.0f;
 		Object animal = txtDayAnimal.getValue();
-		float DayAnimal = animal instanceof Number ? ((Number) txtDayAnimal.getValue()).floatValue() : 0f;
+		float DayAnimal = animal instanceof Number ? ((Number) txtDayAnimal.getValue()).floatValue() : 0.0f;
 		float result = DayInn + DayFood + DayAnimal;
 
 		txtDayTotal.setValue(result);
@@ -1185,7 +1169,7 @@ public class OverPanel extends javax.swing.JPanel
 		updateMidUI(); //propagate changes down
 	}
 
-	private final class KeyListenerImplementation implements KeyListener
+	private final class KeyListenerImplementation extends KeyAdapter
 	{
 		private JButton button;
 
@@ -1198,24 +1182,12 @@ public class OverPanel extends javax.swing.JPanel
 		}
 
 		@Override
-		public void keyTyped(KeyEvent e)
-		{
-			// nothing to do
-		}
-
-		@Override
 		public void keyReleased(KeyEvent e)
 		{
 			if (KeyEvent.VK_ENTER == e.getKeyCode())
 			{
 				button.doClick();
 			}
-		}
-
-		@Override
-		public void keyPressed(KeyEvent e)
-		{
-			// nothing to do
 		}
 
 	}

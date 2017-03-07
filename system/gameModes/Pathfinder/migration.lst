@@ -1,5 +1,4 @@
 #
-# Current Ver: $Revision$
 # Last Editor: $Author$
 # Last Edited: $Date$
 #
@@ -10,6 +9,49 @@
 # SOURCE:JDTEST	MAXVER:6.4.00	NEWKEY:Paizo - Pathfinder Roleplaying Game Core Rulebook	MAXDEVVER:6.1.1
 # EQUIPMENT:JDTEST	MAXVER:6.4.00	NEWKEY:Outfit (Explorer's)	MAXVER:6.0.01	MAXVER:6.4.00	MAXDEVVER:6.1.2
 # NEWCATEGORY:Spell-like Ability
+# RACE:Old Race	MAXVER:6.6.01	MAXDEVVER:6.6.01	NEWKEY:New Race
+
+
+ABILITY:Special Ability|Wayang ~ Dissolutions Child			MAXVER:6.07.01	NEWKEY:Wayang ~ Dissolution's Child
+
+ABILITY:Special Ability|Skirmisher ~ Aiding Attack			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Aiding Attack		
+ABILITY:Special Ability|Skirmisher ~ Bolster Companion		MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Bolster Companion		
+ABILITY:Special Ability|Skirmisher ~ Catfall				MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Catfall			
+ABILITY:Special Ability|Skirmisher ~ Chameleon Step			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Chameleon Step		
+ABILITY:Special Ability|Skirmisher ~ Cunning Pantomime		MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Cunning Pantomime		
+ABILITY:Special Ability|Skirmisher ~ Defensive Bow Stance		MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Defensive Bow Stance	
+ABILITY:Special Ability|Skirmisher ~ Deft Stand				MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Deft Stand			
+ABILITY:Special Ability|Skirmisher ~ Distracting Attack		MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Distracting Attack		
+ABILITY:Special Ability|Skirmisher ~ Hateful Attack			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Hateful Attack		
+ABILITY:Special Ability|Skirmisher ~ Heel					MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Heel				
+ABILITY:Special Ability|Skirmisher ~ Hobbling Attack			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Hobbling Attack		
+ABILITY:Special Ability|Skirmisher ~ Quick Climb			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Quick Climb			
+ABILITY:Special Ability|Skirmisher ~ Quick Healing			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Quick Healing		
+ABILITY:Special Ability|Skirmisher ~ Quick Swim				MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Quick Swim			
+ABILITY:Special Ability|Skirmisher ~ Ranger's Counsel			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Ranger's Counsel		
+ABILITY:Special Ability|Skirmisher ~ Rattling Strike			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Rattling Strike		
+ABILITY:Special Ability|Skirmisher ~ Second Chance Strike		MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Second Chance Strike	
+ABILITY:Special Ability|Skirmisher ~ Sic 'Em				MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Sic 'Em			
+ABILITY:Special Ability|Skirmisher ~ Skill Sage				MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Skill Sage			
+ABILITY:Special Ability|Skirmisher ~ Stag's Leap			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Stag's Leap			
+ABILITY:Special Ability|Skirmisher ~ Surprise Shift			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Surprise Shift		
+ABILITY:Special Ability|Skirmisher ~ Tangling Attack			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Tangling Attack		
+ABILITY:Special Ability|Skirmisher ~ Trick Shot				MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Trick Shot			
+ABILITY:Special Ability|Skirmisher ~ Uncanny Senses			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Uncanny Senses		
+ABILITY:Special Ability|Skirmisher ~ Upending Strike			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Upending Strike		
+ABILITY:Special Ability|Skirmisher ~ Vengeance Strike			MAXVER:6.07.01	NEWKEY:Hunter's Tricks ~ Vengeance Strike		
+
+
+
+ABILITY:Special Ability|Boon ~ Triumph of the Lantern Lodge	MAXVER:6.06.01	NEWKEY:PFS Scenario 4-21 ~ Triumph of the Lantern Lodge
+ABILITY:Special Ability|Boon ~ Pawn of the Grandmaster		MAXVER:6.06.01	NEWKEY:PFS Scenario 4-24 ~ Pawn of the Grandmaster
+
+
+
+ABILITY:Special Ability|Order of the Blue Rose ~ Cavalier Order				MAXVER:6.06.01	NEWKEY:Cavalier Order ~ Order of the Blue Rose
+ABILITY:Special Ability|Order of the Seal ~ Cavalier Order					MAXVER:6.06.01	NEWKEY:Cavalier Order ~ Order of the Seal
+ABILITY:Special Ability|Order of the Tome ~ Cavalier Order					MAXVER:6.06.01	NEWKEY:Cavalier Order ~ Order of the Tome
+
 
 
 SOURCE:Dark Markets - A Guide to Katapesh (Conversion)	MAXVER:6.6.00	NEWKEY:Dark Markets - A Guide to Katapesh - Conversion
@@ -3064,3 +3106,14 @@ ABILITY:Special Ability|Ranger Bonus Feat ~ Greater Shield Focus				MAXVER:6.4.0
 # Fix typo
 EQUIPMENT:Sunblade (Bastard)		NEWKEY:Sun Blade (Bastard)	MAXVER:6.4.01
 EQUIPMENT:Sunblade (Short)		NEWKEY:Sun Blade (Short)	MAXVER:6.4.01
+
+RACE:Eidolon (Biped)		MAXVER:6.6.01		NEWKEY:Eidolon
+RACE:Eidolon (Quadruped)	MAXVER:6.6.01		NEWKEY:Eidolon
+RACE:Eidolon (Serpentine)	MAXVER:6.6.01		NEWKEY:Eidolon
+RACE:Eidolon (Aquatic)		MAXVER:6.6.01		NEWKEY:Eidolon
+
+
+
+RACE:Unchained Eidolon (Biped)	MAXVER:6.6.01		NEWKEY:Eidolon
+RACE:Unchained Eidolon (Quadruped)	MAXVER:6.6.01		NEWKEY:Eidolon
+RACE:Unchained Eidolon (Serpentine)	MAXVER:6.6.01		NEWKEY:Eidolon

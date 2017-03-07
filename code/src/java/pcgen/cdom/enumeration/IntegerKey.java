@@ -15,11 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on June 18, 2005.
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 package pcgen.cdom.enumeration;
 
@@ -31,7 +27,6 @@ import pcgen.cdom.base.Constants;
 import pcgen.core.Globals;
 
 /**
- * @author Tom Parker <thpr@users.sourceforge.net>
  * 
  * This is a Typesafe enumeration of legal Integer Characteristics of an object.
  * It is designed to act as an index to a specific integers within a CDOMObject.
@@ -46,8 +41,12 @@ public class IntegerKey
 	/**
 	 * This Map contains the mappings from Strings to the Type Safe Constant
 	 */
-	private static CaseInsensitiveMap<IntegerKey> typeMap = new CaseInsensitiveMap<IntegerKey>();
+	private static CaseInsensitiveMap<IntegerKey> typeMap = new CaseInsensitiveMap<>();
 
+	/**
+	 * @deprecated due to EQACCHECK CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey AC_CHECK = getConstant("AC_CHECK");
 
 	public static final IntegerKey ADD_SPELL_LEVEL = getConstant("ADD_SPELL_LEVEL");
@@ -61,14 +60,30 @@ public class IntegerKey
 
 	public static final IntegerKey COST = getConstant("COST");
 
+	/**
+	 * @deprecated due to CRITMULT CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey CRIT_MULT = getConstant("CRIT_MULT");
 
+	/**
+	 * @deprecated due to CRITRANGE CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey CRIT_RANGE = getConstant("CRIT_RANGE");
 
+	/**
+	 * @deprecated due to EDR CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey EDR = getConstant("EDR");
 
 	public static final IntegerKey HANDS = getConstant("HANDS", 1);
 
+	/**
+	 * @deprecated due to HANDS CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey CREATURE_HANDS = getConstant(
 			"CREATURE_HANDS", 2);
 
@@ -76,6 +91,10 @@ public class IntegerKey
 
 	public static final IntegerKey KNOWN_SPELLS_FROM_SPECIALTY = getConstant("KNOWN_SPELLS_FROM_SPECIALTY");
 
+	/**
+	 * @deprecated due to LEGS CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey LEGS = getConstant("LEGS", 2);
 
 	public static final IntegerKey LEVEL = getConstant("LEVEL");
@@ -87,6 +106,10 @@ public class IntegerKey
 
 	public static final IntegerKey MAX_CHARGES = getConstant("MAX_CHARGES");
 
+	/**
+	 * @deprecated due to MAXDEX CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey MAX_DEX = getConstant("MAX_DEX",
 			Constants.MAX_MAXDEX);
 
@@ -98,21 +121,35 @@ public class IntegerKey
 
 	public static final IntegerKey PLUS = getConstant("PLUS");
 
-	public static final IntegerKey PP_COST = getConstant("PP_COST");
-
 	public static final IntegerKey PROHIBIT_COST = getConstant("PROHIBIT_COST");
 
+	/**
+	 * @deprecated due to RANGE code control
+	 */
+	@Deprecated
 	public static final IntegerKey RANGE = getConstant("RANGE");
 
 	public static final IntegerKey CAMPAIGN_RANK = getConstant("CAMPAIGN_RANK",
 			9);
 
+	/**
+	 * @deprecated due to PCREACH and EQREACH CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey REACH = getConstant("REACH", 5);
 
+	/**
+	 * @deprecated due to EQREACH CodeControl
+	 */
+	@Deprecated
 	public static final IntegerKey REACH_MULT = getConstant("REACH_MULT", 1);
 
 	public static final IntegerKey SLOTS = getConstant("SLOTS", 1);
 
+	/**
+	 * @deprecated due to EQSPELLFAILURE code control
+	 */
+	@Deprecated
 	public static final IntegerKey SPELL_FAILURE = getConstant("SPELL_FAILURE");
 
 	public static final IntegerKey START_FEATS = getConstant("START_FEATS");

@@ -16,9 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Current Ver: $Revision$
- * Last Editor: $Author: $
- * Last Edited: $Date$
  */
 package pcgen.core.npcgen;
 
@@ -47,19 +44,17 @@ import pcgen.core.spell.Spell;
 import pcgen.system.ConfigurationSettings;
 
 /**
- * @author boomer70 <boomer70@yahoo.com>
  * 
- * @since 5.11.1
  */
 public class Configuration
 {
-	private static List<Configuration> theConfigurations = new ArrayList<Configuration>();
+	private static List<Configuration> theConfigurations = new ArrayList<>();
 	private static Configuration theDefaultConfiguration = new Configuration();
 	
 	private GameMode theMode = null;
 	
-	private List<GeneratorOption> theGeneratorOptions = new ArrayList<GeneratorOption>();
-	private Map<String, ClassData> theClassData = new HashMap<String, ClassData>();
+	private List<GeneratorOption> theGeneratorOptions = new ArrayList<>();
+	private Map<String, ClassData> theClassData = new HashMap<>();
 	
 	private static File optionsDir = new File(ConfigurationSettings.getSystemsDir()
 		+ File.separator + "npcgen"  //$NON-NLS-1$ 
@@ -139,7 +134,7 @@ public class Configuration
 	
 	public List<AlignGeneratorOption> getAlignmentOptions()
 	{
-		final List<AlignGeneratorOption> ret = new ArrayList<AlignGeneratorOption>();
+		final List<AlignGeneratorOption> ret = new ArrayList<>();
 		
 		for ( final GeneratorOption opt : theGeneratorOptions )
 		{
@@ -172,7 +167,7 @@ public class Configuration
 	
 	public List<RaceGeneratorOption> getRaceOptions()
 	{
-		final List<RaceGeneratorOption> ret = new ArrayList<RaceGeneratorOption>();
+		final List<RaceGeneratorOption> ret = new ArrayList<>();
 		
 		for ( final GeneratorOption opt : theGeneratorOptions )
 		{
@@ -193,7 +188,7 @@ public class Configuration
 
 	public List<GenderGeneratorOption> getGenderOptions()
 	{
-		final List<GenderGeneratorOption> ret = new ArrayList<GenderGeneratorOption>();
+		final List<GenderGeneratorOption> ret = new ArrayList<>();
 		
 		for ( final GeneratorOption opt : theGeneratorOptions )
 		{
@@ -214,7 +209,7 @@ public class Configuration
 
 	public List<ClassGeneratorOption> getClassOptions()
 	{
-		final List<ClassGeneratorOption> ret = new ArrayList<ClassGeneratorOption>();
+		final List<ClassGeneratorOption> ret = new ArrayList<>();
 		
 		for ( final GeneratorOption opt : theGeneratorOptions )
 		{
@@ -235,7 +230,7 @@ public class Configuration
 
 	public List<LevelGeneratorOption> getLevelOptions()
 	{
-		final List<LevelGeneratorOption> ret = new ArrayList<LevelGeneratorOption>();
+		final List<LevelGeneratorOption> ret = new ArrayList<>();
 		
 		for ( final GeneratorOption opt : theGeneratorOptions )
 		{

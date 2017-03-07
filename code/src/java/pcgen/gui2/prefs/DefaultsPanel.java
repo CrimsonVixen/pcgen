@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 20/07/2008 14:21:40
  *
- * $Id: $
  */
 package pcgen.gui2.prefs;
 
@@ -26,7 +24,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -44,16 +41,12 @@ import pcgen.system.ConfigurationSettings;
 import pcgen.system.LanguageBundle;
 
 /**
- * The Class <code>DefaultsPanel</code> is responsible for 
+ * The Class {@code DefaultsPanel} is responsible for
  * setting various defaults for characters that can be changed
  * on a per character basis, such as experience table, character
  * type, and so on. 
  * 
- * Last Editor: $Author: $
- * Last Edited: $Date:  $
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision:  $
  */
 @SuppressWarnings("serial")
 public class DefaultsPanel extends PCGenPrefsPanel
@@ -179,15 +172,10 @@ public class DefaultsPanel extends PCGenPrefsPanel
 		File sheetDir = new File(previewDir, gameMode.getCharSheetDir());
 		if (sheetDir.exists() && sheetDir.isDirectory())
 		{
-			String[] files = sheetDir.list(new FilenameFilter()
-			{
-				@Override
-				public boolean accept(File path, String filename)
-				{
-					File file = new File(path, filename);
-					return file.isFile() && !file.isHidden();
-				}
-			});
+			String[] files = sheetDir.list((path, filename) -> {
+                File file = new File(path, filename);
+                return file.isFile() && !file.isHidden();
+            });
 			//String[] files = sheetDir.list();
 			previewSheetCombo.removeAllItems();
 			previewSheetCombo.setModel(new DefaultComboBoxModel(files));

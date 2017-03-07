@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Jul 15, 2004
  *
- * $Id$
  *
  */
 package plugin.exporttokens;
@@ -30,14 +28,10 @@ import pcgen.io.ExportHandler;
 import pcgen.io.exporttoken.SpellListToken;
 
 /**
- * <code>SpellListTypeToken</code> outputs the type (i.e. Arcane or 
+ * {@code SpellListTypeToken} outputs the type (i.e. Arcane or
  * Divine) of the specified spell class.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class SpellListTypeToken extends SpellListToken

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Jul 16, 2004
  *
- * $Id$
  *
  */
 package plugin.exporttokens;
@@ -54,14 +52,10 @@ import pcgen.io.exporttoken.Token;
 import pcgen.util.Delta;
 
 /**
- * <code>SpellMemToken</code> displays information about the spells
+ * {@code SpellMemToken} displays information about the spells
  * in the character spellbooks..
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 // SPELLMEM.x.x.x.x.LABEL classNum.bookNum.level.spellnumber
@@ -147,7 +141,7 @@ public class SpellMemToken extends Token
 				{
 					// List of all the character's spells (including SLAs)
 					final List<CharacterSpell> charSpellList =
-							new ArrayList<CharacterSpell>();
+							new ArrayList<>();
 
 					// For each class
 					for (PCClass pcClass : aPC.getDisplay().getClassSet())
@@ -253,10 +247,6 @@ public class SpellMemToken extends Token
 						if ("RANGE".equals(aLabel))
 						{
 							retValue.append(aPC.getSpellRange(selectedCSpell, si));
-						}
-						else if ("BASEPPCOST".equals(aLabel))
-						{
-							retValue.append(aSpell.getSafe(IntegerKey.PP_COST));
 						}
 						else if ("CASTERLEVEL".equals(aLabel))
 						{
@@ -367,13 +357,13 @@ public class SpellMemToken extends Token
 						{
 							String aTemp = aSpell.getListAsString(ListKey.SPELL_SCHOOL);
 
-							if ((aSpell.getListAsString(ListKey.SPELL_SUBSCHOOL).length() > 0)
+							if ((!aSpell.getListAsString(ListKey.SPELL_SUBSCHOOL).isEmpty())
 								&& (!"NONE".equalsIgnoreCase(aSpell.getListAsString(ListKey.SPELL_SUBSCHOOL).trim())))
 							{
 								aTemp += (" (" + aSpell.getListAsString(ListKey.SPELL_SUBSCHOOL) + ')');
 							}
 
-							if (aSpell.getListAsString(ListKey.SPELL_DESCRIPTOR).length() > 0)
+							if (!aSpell.getListAsString(ListKey.SPELL_DESCRIPTOR).isEmpty())
 							{
 								aTemp += (" [" + aSpell.getListAsString(ListKey.SPELL_DESCRIPTOR) + ']');
 							}
@@ -428,7 +418,7 @@ public class SpellMemToken extends Token
 										aSpell.getKeyName(), aPC
 											.getDescription(aSpell), aPC);
 
-							if (altLabel.length() > 0)
+							if (!altLabel.isEmpty())
 							{
 								retValue.append(sString.replaceAll("\r?\n", altLabel));
 							}
@@ -557,7 +547,7 @@ public class SpellMemToken extends Token
 	{
 		final HashMapToList<CDOMList<Spell>, Integer> tempHash = aPC.getSpellLevelInfo(aSpell);
 		StringBuilder tempSource = new StringBuilder();
-		final Set<String> levelSet = new TreeSet<String>();
+		final Set<String> levelSet = new TreeSet<>();
 
 		for (CDOMList<Spell> spellList : tempHash.getKeySet())
 		{

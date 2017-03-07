@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Apr 9, 2005
  *
- * $Id$
  *
  */
 package pcgen.core;
@@ -31,7 +29,8 @@ import java.util.Iterator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import pcgen.AbstractCharacterTestCase;
-import pcgen.PCGenTestCase;
+import pcgen.base.format.OrderedPairManager;
+import pcgen.base.format.StringManager;
 import pcgen.base.lang.UnreachableError;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.FormulaFactory;
@@ -54,11 +53,9 @@ import pcgen.persistence.lst.CampaignSourceEntry;
 import pcgen.persistence.lst.GenericLoader;
 import pcgen.persistence.lst.PCClassLoader;
 import pcgen.rules.context.LoadContext;
-import plugin.format.StringManager;
 
 /**
  * Test the PObject class.
- * @author jdempsey
  */
 @SuppressWarnings("nls")
 public class PObjectTest extends AbstractCharacterTestCase
@@ -152,13 +149,17 @@ public class PObjectTest extends AbstractCharacterTestCase
 	 */
 	public void testGetPCCText() throws PersistenceLayerException
 	{
+		OrderedPairManager opManager = new OrderedPairManager();
+		LoadContext context = Globals.getContext();
+		context.getVariableContext().assertLegalVariableID(
+			context.getActiveScope().getLegalScope(), opManager, "Face");
 		Race race = new Race();
 		race.setName("TestRace");
 		race.put(ObjectKey.CHALLENGE_RATING, new ChallengeRating(FormulaFactory.getFormulaFor(5)));
 		String racePCCText = race.getPCCText();
 		assertNotNull("PCC Text for race should not be null", racePCCText);
 
-		GenericLoader<Race> raceLoader = new GenericLoader<Race>(Race.class);
+		GenericLoader<Race> raceLoader = new GenericLoader<>(Race.class);
 		CampaignSourceEntry source;
 		try
 		{
@@ -169,8 +170,8 @@ public class PObjectTest extends AbstractCharacterTestCase
 		{
 			throw new UnreachableError(e);
 		}
-		raceLoader.parseLine(Globals.getContext(), null, racePCCText, source);
-		Race reconstRace = Globals.getContext().getReferenceContext().silentlyGetConstructedCDOMObject(Race.class, "TestRace");
+		raceLoader.parseLine(context, null, racePCCText, source);
+		Race reconstRace = context.getReferenceContext().silentlyGetConstructedCDOMObject(Race.class, "TestRace");
 		assertEquals(
 			"getPCCText should be the same after being encoded and reloaded",
 			racePCCText, reconstRace.getPCCText());
@@ -186,7 +187,7 @@ public class PObjectTest extends AbstractCharacterTestCase
 
 		PCClassLoader classLoader = new PCClassLoader();
 		PCClass reconstClass =
-				classLoader.parseLine(Globals.getContext(), null, classPCCText,
+				classLoader.parseLine(context, null, classPCCText,
 					source);
 		assertEquals(
 			"getPCCText should be the same after being encoded and reloaded",
@@ -323,8 +324,8 @@ public class PObjectTest extends AbstractCharacterTestCase
 		pobj.addToListFor(ListKey.DESCRIPTION, desc1);
 
 		PlayerCharacter pc = getCharacter();
-		assertEquals("Description should match", pc
-			.getDescription(pobj), "Description 1.");
+		assertEquals("Description should match", "Description 1.", pc
+			.getDescription(pobj));
 
 		final Description desc2 = new Description("Description 2.");
 		pobj.addToListFor(ListKey.DESCRIPTION, desc2);
@@ -377,7 +378,7 @@ public class PObjectTest extends AbstractCharacterTestCase
 		{
 			throw new UnreachableError(e);
 		}
-		GenericLoader<Race> loader = new GenericLoader<Race>(Race.class);
+		GenericLoader<Race> loader = new GenericLoader<>(Race.class);
 		loader
 			.parseLine(
 				context,

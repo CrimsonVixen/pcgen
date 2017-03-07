@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 /**
  * Localized String. This class is used when there is language dependent
@@ -30,7 +30,6 @@ import org.jdom.Element;
  * translations. If PCGen UI language can only be changed after a restart, the
  * other language information is not stored to reduce memory usage.
  * 
- * @author Vincent Lhote
  * 
  */
 // TODO move to pcgen.?.util or gmgen.?.util
@@ -46,7 +45,7 @@ public class Localized
 	private static final String ATTRIBUTE_LANGUAGE = "language"; //$NON-NLS-1$
 
 	/** used to produce names based on element name when the {@value #ATTRIBUTE_DEFAULTNAME} is missing */
-	private static Map<String, Integer> unnamedCount = new HashMap<String, Integer>();
+	private static Map<String, Integer> unnamedCount = new HashMap<>();
 
 	/** This is the default string of the node */
 	private String defaultName;
@@ -58,7 +57,7 @@ public class Localized
 	/**
 	 * If no attribute is defined, the default name is empty.
 	 * @param element
-	 * @param attribute if <code>null</code>, uses the trimmed text of the node.
+	 * @param attribute if {@code null}, uses the trimmed text of the node.
 	 */
 	public Localized(Element element, String attribute)
 	{
@@ -70,7 +69,7 @@ public class Localized
 	}
 
 	/**
-	 * Use a name based on the element name if no {@value #ATTRIBUTE_DEFAULTNAME} is defined.
+	 * Use a name based on the element name if no {@linkplain  #defaultName} is defined.
 	 * @param element
 	 */
 	public Localized(Element element)
@@ -107,7 +106,7 @@ public class Localized
 		{
 			if (languageNames == null)
 			{
-				languageNames = new HashMap<String, String>();
+				languageNames = new HashMap<>();
 			}
 			languageNames.put(lang, name);
 		}
@@ -141,7 +140,7 @@ public class Localized
 	/**
 	 * 
 	 * @param e
-	 * @param attribute if <code>null</code>, use the trimmed text.
+	 * @param attribute if {@code null}, use the trimmed text.
 	 */
 	private void update(Element e, String attribute)
 	{

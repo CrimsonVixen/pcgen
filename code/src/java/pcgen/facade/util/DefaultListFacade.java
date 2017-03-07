@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Apr 25, 2010, 3:51:05 PM
  */
 package pcgen.facade.util;
 
@@ -28,7 +27,6 @@ import java.util.ListIterator;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class DefaultListFacade<E> extends AbstractListFacade<E>
 {
@@ -37,12 +35,12 @@ public class DefaultListFacade<E> extends AbstractListFacade<E>
 
 	public DefaultListFacade()
 	{
-		elementList = new ArrayList<E>();
+		elementList = new ArrayList<>();
 	}
 
 	public DefaultListFacade(Collection<? extends E> elements)
 	{
-		elementList = new ArrayList<E>(elements);
+		elementList = new ArrayList<>(elements);
 	}
 
 	@Override
@@ -112,13 +110,15 @@ public class DefaultListFacade<E> extends AbstractListFacade<E>
 		fireElementAdded(this, element, index);
 	}
 
-	public void removeElement(E element)
+	public boolean removeElement(E element)
 	{
 		int index = elementList.indexOf(element);
 		if (elementList.remove(element))
 		{
 			fireElementRemoved(this, element, index);
+			return true;
 		}
+		return false;
 	}
 
 	public void removeElement(int index)
@@ -254,12 +254,9 @@ public class DefaultListFacade<E> extends AbstractListFacade<E>
 	 */
 	public List<E> getContents()
 	{
-		return new ArrayList<E>(elementList);
+		return new ArrayList<>(elementList);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

@@ -18,16 +18,17 @@
  *
  * Created 03-Aug-2008 21:30:46
  *
- * Current Ver: $Revision:$
- * Last Editor: $Author:$
- * Last Edited: $Date:$
  *
  */
 
 package pcgen.core.term;
 
+import pcgen.cdom.util.CControl;
+import pcgen.cdom.util.ControlUtilities;
 import pcgen.core.Equipment;
+import pcgen.core.Globals;
 import pcgen.core.PlayerCharacter;
+import pcgen.util.Logging;
 
 public class PCACcheckTermEvaluator
 		extends BasePCTermEvaluator implements TermEvaluator {
@@ -41,16 +42,23 @@ public class PCACcheckTermEvaluator
 	@Override
 	public Float resolve(PlayerCharacter pc)
 	{
+		if (ControlUtilities.hasControlToken(Globals.getContext(),
+			CControl.EQACCHECK))
+		{
+			Logging.errorPrint(originalText
+				+ " term is deprecated (does not function)"
+				+ " when EQACCHECK CodeControl is used");
+		}
 		int maxCheck = 0;
 
 		for ( Equipment eq : pc.getEquipmentOfType("Armor", 1) )
 		{
-			maxCheck += eq.acCheck(pc);
+			maxCheck += eq.preFormulaAcCheck(pc);
 		}
 
 		for ( Equipment eq : pc.getEquipmentOfType("Shield", 1) )
 		{
-			maxCheck += eq.acCheck(pc);
+			maxCheck += eq.preFormulaAcCheck(pc);
 		}
 
 		return (float) maxCheck;

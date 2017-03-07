@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on Jan 6, 2006
  *
- * $Id$
  *
  */
 package pcgen.core.character;
@@ -32,15 +30,11 @@ import pcgen.core.utils.MessageType;
 import pcgen.core.utils.ShowMessageDelegate;
 
 /**
- * <code>SpellBook</code> contains details of a prepared spell list or 
+ * {@code SpellBook} contains details of a prepared spell list or
  * a spell book. The term spell book was used as that is the term used
  * throughout the rest of the code.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 
 public class SpellBook implements Cloneable

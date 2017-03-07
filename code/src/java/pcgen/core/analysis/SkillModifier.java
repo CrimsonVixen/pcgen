@@ -41,14 +41,14 @@ public final class SkillModifier
 		int bonus = 0;
 		if (aPC == null)
 		{
-			return Integer.valueOf(0);
+			return 0;
 		}
 
 		String keyName = sk.getKeyName();
 		CDOMSingleRef<PCStat> statref = sk.get(ObjectKey.KEY_STAT);
 		if (statref != null)
 		{
-			PCStat stat = statref.resolvesTo();
+			PCStat stat = statref.get();
 			bonus = aPC.getStatModFor(stat);
 			bonus += aPC.getTotalBonusTo("SKILL", "STAT." + stat.getKeyName());
 		}
@@ -101,7 +101,7 @@ public final class SkillModifier
 		bonus += aCheckBonus;
 
 		String aString = SettingsHandler.getGame().getRankModFormula();
-		if (aString.length() != 0)
+		if (!aString.isEmpty())
 		{
 			aString = aString.replaceAll(Pattern.quote("$$RANK$$"), SkillRankControl.getTotalRank(aPC, sk).toString());
 			bonus += aPC.getVariableValue(aString, "").intValue();
@@ -124,7 +124,7 @@ public final class SkillModifier
 			int statMod = 0;
 			if (Globals.getGameModeHasPointPool())
 			{
-				ArrayList<Type> typeList = new ArrayList<Type>();
+				ArrayList<Type> typeList = new ArrayList<>();
 				SkillInfoUtilities.getKeyStatList(pc, sk, typeList);
 				for (int i = 0; i < typeList.size(); ++i)
 				{
@@ -136,7 +136,7 @@ public final class SkillModifier
 		}
 		else
 		{
-			return pc.getStatModFor(stat.resolvesTo());
+			return pc.getStatModFor(stat.get());
 		}
 	}
 }

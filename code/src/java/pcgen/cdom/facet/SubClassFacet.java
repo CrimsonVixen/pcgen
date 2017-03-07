@@ -17,6 +17,7 @@
  */
 package pcgen.cdom.facet;
 
+import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.facet.base.AbstractAssociationFacet;
 import pcgen.core.PCClass;
 
@@ -24,9 +25,8 @@ import pcgen.core.PCClass;
  * SubClassFacet stores the SubClass identifier that are applied to a Player
  * Character, in relation to the parent PCClass objects.
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public class SubClassFacet extends
-		AbstractAssociationFacet<PCClass, String>
+		AbstractAssociationFacet<CharID, PCClass, String>
 {
 }

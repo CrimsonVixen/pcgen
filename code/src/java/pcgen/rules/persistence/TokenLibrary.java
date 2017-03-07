@@ -44,14 +44,13 @@ import pcgen.rules.persistence.token.CDOMSubToken;
 import pcgen.rules.persistence.token.CDOMToken;
 import pcgen.rules.persistence.token.ClassWrappedToken;
 import pcgen.rules.persistence.token.DeferredToken;
+import pcgen.rules.persistence.token.ModifierFactory;
 import pcgen.rules.persistence.token.PostDeferredToken;
 import pcgen.rules.persistence.token.PostValidationToken;
 import pcgen.rules.persistence.token.PreCompatibilityToken;
 import pcgen.rules.persistence.token.PrimitiveToken;
 import pcgen.rules.persistence.token.QualifierToken;
 import pcgen.rules.persistence.util.TokenFamily;
-import pcgen.rules.types.FormatManager;
-import pcgen.rules.types.FormatManagerLibrary;
 import pcgen.system.PluginLoader;
 import pcgen.util.Logging;
 
@@ -61,16 +60,18 @@ public final class TokenLibrary implements PluginLoader
 	private static final Class<PCClass> PCCLASS_CLASS = PCClass.class;
 	private static final Class<CDOMObject> CDOMOBJECT_CLASS = CDOMObject.class;
 	private static final TreeMapToList<Integer, PostDeferredToken<? extends Loadable>> POST_DEFERRED_TOKENS =
-			new TreeMapToList<Integer, PostDeferredToken<? extends Loadable>>();
+            new TreeMapToList<>();
 	private static final TreeMapToList<Integer, PostValidationToken<? extends Loadable>> POST_VALIDATION_TOKENS =
-			new TreeMapToList<Integer, PostValidationToken<? extends Loadable>>();
+            new TreeMapToList<>();
 	private static final DoubleKeyMap<Class<?>, String, Class<? extends QualifierToken<?>>> QUALIFIER_MAP =
-			new DoubleKeyMap<Class<?>, String, Class<? extends QualifierToken<?>>>();
+            new DoubleKeyMap<>();
 	private static final DoubleKeyMap<Class<?>, String, Class<? extends PrimitiveToken<?>>> PRIMITIVE_MAP =
-			new DoubleKeyMap<Class<?>, String, Class<? extends PrimitiveToken<?>>>();
-	private static final Set<TokenFamily> TOKEN_FAMILIES = new TreeSet<TokenFamily>();
+            new DoubleKeyMap<>();
+	private static final DoubleKeyMap<Class<?>, String, ModifierFactory<?>> modifierMap =
+            new DoubleKeyMap<>();
+	private static final Set<TokenFamily> TOKEN_FAMILIES = new TreeSet<>();
 	private static final CaseInsensitiveMap<Class<? extends BonusObj>> BONUS_TAG_MAP =
-			new CaseInsensitiveMap<Class<? extends BonusObj>>();
+            new CaseInsensitiveMap<>();
 
 	private static TokenLibrary instance = null;
 
@@ -101,7 +102,7 @@ public final class TokenLibrary implements PluginLoader
 	public static <T> PrimitiveToken<T> getPrimitive(Class<T> cl, String tokKey)
 	{
 		Iterator<PrimitiveToken<T>> it =
-				new PrimitiveTokenIterator<T, PrimitiveToken<T>>(cl, tokKey);
+                new PrimitiveTokenIterator<>(cl, tokKey);
 		if (it.hasNext())
 		{
 			return it.next();
@@ -112,7 +113,7 @@ public final class TokenLibrary implements PluginLoader
 	public static Collection<PostDeferredToken<? extends Loadable>> getPostDeferredTokens()
 	{
 		List<PostDeferredToken<? extends Loadable>> list =
-				new ArrayList<PostDeferredToken<? extends Loadable>>();
+                new ArrayList<>();
 		for (Integer key : POST_DEFERRED_TOKENS.getKeySet())
 		{
 			list.addAll(POST_DEFERRED_TOKENS.getListFor(key));
@@ -120,10 +121,35 @@ public final class TokenLibrary implements PluginLoader
 		return list;
 	}
 
+	public static void addToModifierMap(ModifierFactory<?> m)
+	{
+		if (ModifierFactory.class.isAssignableFrom(m.getClass()))
+		{
+			String name = m.getIdentification();
+			Class<?> cl = m.getVariableFormat();
+			ModifierFactory<?> prev = modifierMap.put(cl, name, m);
+			if (prev != null)
+			{
+				Logging.errorPrint("Found a second " + name + " Modifier for "
+					+ cl);
+			}
+		}
+	}
+
+	public static <T> ModifierFactory<T> getModifier(Class<T> cl, String tokKey)
+	{
+		for (Iterator<ModifierFactory<T>> it =
+             new ModifierIterator<>(cl, tokKey); it.hasNext();)
+		{
+			return it.next();
+		}
+		return null;
+	}
+
 	public static Collection<PostValidationToken<? extends Loadable>> getPostValidationTokens()
 	{
 		List<PostValidationToken<? extends Loadable>> list =
-				new ArrayList<PostValidationToken<? extends Loadable>>();
+                new ArrayList<>();
 		for (Integer key : POST_VALIDATION_TOKENS.getKeySet())
 		{
 			list.addAll(POST_VALIDATION_TOKENS.getListFor(key));
@@ -312,9 +338,9 @@ public final class TokenLibrary implements PluginLoader
 		{
 			addToPrimitiveMap((PrimitiveToken<?>) token);
 		}
-		if (FormatManager.class.isAssignableFrom(clazz))
+		if (ModifierFactory.class.isAssignableFrom(clazz))
 		{
-			FormatManagerLibrary.addFormatManager((FormatManager<?>) token);
+			addToModifierMap((ModifierFactory<?>) token);
 		}
 	}
 
@@ -325,8 +351,8 @@ public final class TokenLibrary implements PluginLoader
 				{
 					LstToken.class,
 					BonusObj.class,
-					FormatManager.class,
-					PrerequisiteParserInterface.class
+					PrerequisiteParserInterface.class,
+					ModifierFactory.class
 				};
 	}
 
@@ -512,6 +538,27 @@ public final class TokenLibrary implements PluginLoader
 
 	}
 
+	static class ModifierIterator<C, T extends ModifierFactory<? super C>>
+			extends TokenLibrary.AbstractTokenIterator<C, T>
+	{
+
+		public ModifierIterator(Class<C> cl, String key)
+		{
+			super(cl, key);
+		}
+
+		@Override
+		protected T grabToken(TokenFamily family, Class<?> cl, String key)
+		{
+			if (!TokenFamily.CURRENT.equals(family))
+			{
+				return null;
+			}
+			return (T) modifierMap.get(cl, key);
+		}
+
+	}
+
 	static class PreTokenIterator
 			extends TokenLibrary.AbstractTokenIterator<CDOMObject, PrerequisiteParserInterface>
 	{
@@ -551,5 +598,4 @@ public final class TokenLibrary implements PluginLoader
 	{
 		return BONUS_TAG_MAP.get(bonusName);
 	}
-
 }

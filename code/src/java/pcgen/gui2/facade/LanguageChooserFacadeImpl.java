@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 15/07/2010 4:08:09 PM
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -49,16 +47,12 @@ import pcgen.facade.util.DefaultListFacade;
 import pcgen.facade.util.ListFacade;
 
 /**
- * The Class <code>LanguageChooserFacadeImpl</code> is an implementation of the 
+ * The Class {@code LanguageChooserFacadeImpl} is an implementation of the
  * LanguageChooserFacade for the gui2 package. It is responsible for managing 
  * details of a possible selection of languages. 
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 {
@@ -89,10 +83,10 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 		this.name = name;
 		this.source = source;
 		
-		availableList = new DefaultListFacade<LanguageFacade>();
-		selectedList = new DefaultListFacade<LanguageFacade>();
-		originalSelectedList = new DefaultListFacade<LanguageFacade>();
-		numSelectionsRemain = new DefaultReferenceFacade<Integer>(0);
+		availableList = new DefaultListFacade<>();
+		selectedList = new DefaultListFacade<>();
+		originalSelectedList = new DefaultListFacade<>();
+		numSelectionsRemain = new DefaultReferenceFacade<>(0);
 	}
 	
 	/**
@@ -100,7 +94,7 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 	 */
 	private void buildLanguageList()
 	{
-		if (source == null || !(source instanceof Skill ))
+		if (!(source instanceof Skill))
 		{
 			buildBonusLangList();
 		}
@@ -118,7 +112,7 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 		CNAbility cna = theCharacter.getBonusLanguageAbility();
 		Ability a = cna.getAbility();
 
-		List<Language> availLangs = new ArrayList<Language>();
+		List<Language> availLangs = new ArrayList<>();
 		ChooseInformation<Language> chooseInfo =
 				(ChooseInformation<Language>) a.get(ObjectKey.CHOOSE_INFO);
 		availLangs.addAll(chooseInfo.getSet(theCharacter));
@@ -141,11 +135,11 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 		if (allowBonusLangAfterFirst || atFirstLvl)
 		{
 			int bonusLangMax = theCharacter.getBonusLanguageCount();
-			numSelectionsRemain.setReference(bonusLangMax-selLangs.size());
+			numSelectionsRemain.set(bonusLangMax-selLangs.size());
 		}
 		else
 		{
-			numSelectionsRemain.setReference(0);
+			numSelectionsRemain.set(0);
 		}
 	}
 
@@ -155,7 +149,7 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 	 */
 	private void buildObjectLangList()
 	{
-		final List<Language> availLangs = new ArrayList<Language>();
+		final List<Language> availLangs = new ArrayList<>();
 		ChooseInformation<Language> chooseInfo =
 				(ChooseInformation<Language>) source.getChooseInfo();
 		availLangs.addAll(chooseInfo.getSet(theCharacter));
@@ -165,7 +159,7 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 					theCharacter);
 		if (selLangs == null)
 		{
-			selLangs = new ArrayList<Language>();
+			selLangs = new ArrayList<>();
 		}
 		
 		Set<Language> languageSet = charDisplay.getLanguageSet();
@@ -186,12 +180,12 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 		{
 			ChoiceManagerList<Language> aMan =
 					ChooserUtilities.getConfiguredController(source,
-						theCharacter, null, new ArrayList<String>());
+						theCharacter, null, new ArrayList<>());
 			numSelections =
 					aMan.getNumEffectiveChoices(selLangs,
-						new ArrayList<String>(), theCharacter);
+                            new ArrayList<>(), theCharacter);
 		}
-		numSelectionsRemain.setReference(numSelections);
+		numSelectionsRemain.set(numSelections);
 	}
 
 	/**
@@ -216,13 +210,13 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 	@Override
 	public void addSelected(LanguageFacade language)
 	{
-		if (numSelectionsRemain.getReference() <= 0)
+		if (numSelectionsRemain.get() <= 0)
 		{
 			return;
 		}
 		selectedList.addElement(language);
 		availableList.removeElement(language);
-		numSelectionsRemain.setReference(numSelectionsRemain.getReference()-1);
+		numSelectionsRemain.set(numSelectionsRemain.get()-1);
 	}
 
 	/* (non-Javadoc)
@@ -233,7 +227,7 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 	{
 		selectedList.removeElement(language);
 		availableList.addElement(language);
-		numSelectionsRemain.setReference(numSelectionsRemain.getReference()+1);
+		numSelectionsRemain.set(numSelectionsRemain.get()+1);
 	}
 
 	/* (non-Javadoc)
@@ -282,7 +276,7 @@ public final class LanguageChooserFacadeImpl implements LanguageChooserFacade
 	{
 		ChoiceManagerList<Language> choiceManager = ChooserUtilities.getChoiceManager(source, theCharacter);
 		
-		List<Language> selected = new ArrayList<Language>(selectedList.getSize());
+		List<Language> selected = new ArrayList<>(selectedList.getSize());
 		for (LanguageFacade langFacade : selectedList)
 		{
 			selected.add((Language) langFacade);

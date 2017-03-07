@@ -26,15 +26,15 @@ import pcgen.core.PCClass;
 import pcgen.persistence.PersistenceLayerException;
 import pcgen.rules.persistence.CDOMLoader;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
-import plugin.lsttokens.testsupport.AbstractTokenTestCase;
+import plugin.lsttokens.testsupport.AbstractCDOMTokenTestCase;
 import plugin.lsttokens.testsupport.CDOMTokenLoader;
 import plugin.lsttokens.testsupport.ConsolidationRule;
 
-public class ExchangeLevelTokenTest extends AbstractTokenTestCase<PCClass>
+public class ExchangeLevelTokenTest extends AbstractCDOMTokenTestCase<PCClass>
 {
 
 	static ExchangelevelToken token = new ExchangelevelToken();
-	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<PCClass>();
+	static CDOMTokenLoader<PCClass> loader = new CDOMTokenLoader<>();
 
 	@Override
 	public Class<PCClass> getCDOMClass()
@@ -54,7 +54,7 @@ public class ExchangeLevelTokenTest extends AbstractTokenTestCase<PCClass>
 		return token;
 	}
 
-	public Class<PCClass> getTargetClass()
+	public static Class<PCClass> getTargetClass()
 	{
 		return PCClass.class;
 	}

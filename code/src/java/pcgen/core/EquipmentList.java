@@ -19,8 +19,6 @@
  * Created on November 30, 2003, 15:24
  *
  * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core;
@@ -48,10 +46,9 @@ import pcgen.util.Logging;
  * Equipment-related lists and methods extracted from Globals.java. Will
  * probably try to disentangle modifierlist into it's own class later.
  *
- * @author Jonas Karlsson <jujutsunerd@users.sourceforge.net>
- * @version $Revision$
+ * @author Jonas Karlsson &lt;jujutsunerd@users.sourceforge.net&gt;
  */
-public class EquipmentList {
+public final class EquipmentList {
 
 	/** this is determined by preferences */
 	private static boolean autoGeneration = false;
@@ -87,9 +84,9 @@ public class EquipmentList {
 	 * @return the Equipment matching the name
 	 */
 	public static Equipment getEquipmentFromName(final String baseName, final PlayerCharacter aPC) {
-		final List<String> modList = new ArrayList<String>();
-		final List<String> namList = new ArrayList<String>();
-		final List<String> sizList = new ArrayList<String>();
+		final List<String> modList = new ArrayList<>();
+		final List<String> namList = new ArrayList<>();
+		final List<String> sizList = new ArrayList<>();
 		Equipment eq;
 		String aName = baseName;
 		int i = aName.indexOf('(');
@@ -238,8 +235,8 @@ public class EquipmentList {
 
 			// If we haven't found it yet,
 			// try stripping Thrown from name
-			if (baseName.indexOf("Thrown") >= 0) {
-				if (omitString.length() == 0) {
+			if (baseName.contains("Thrown")) {
+				if (omitString.isEmpty()) {
 					omitString = "Thrown";
 
 					continue;
@@ -249,7 +246,7 @@ public class EquipmentList {
 			// Still haven't found it?
 			// Try adding bonus to end of name
 			if ((bonusCount > 0) && (bonuses != null)) {
-				if (bonusString.length() == 0) {
+				if (bonusString.isEmpty()) {
 					omitString = "";
 					bonusString = " " + Delta.toString(bonuses[0]);
 
@@ -292,7 +289,7 @@ public class EquipmentList {
 			//
 			if (bError) { return null; }
 
-			if (sizList.size() != 0) {
+			if (!sizList.isEmpty()) {
 				/*
 				 * CONSIDER This size can be further optimized by changing sizList
 				 */
@@ -338,9 +335,9 @@ public class EquipmentList {
 	{
 		final List<String> desiredTypeList = CoreUtility.split(desiredTypes, '.');
 		final List<String> excludedTypeList = CoreUtility.split(excludedTypes, '.');
-		final List<Equipment> typeList = new ArrayList<Equipment>(100);
+		final List<Equipment> typeList = new ArrayList<>(100);
 
-		if (desiredTypeList.size() != 0)
+		if (!desiredTypeList.isEmpty())
 		{
 			for (Equipment eq : Globals.getContext().getReferenceContext()
 					.getConstructedCDOMObjects(Equipment.class))
@@ -359,7 +356,7 @@ public class EquipmentList {
 					}
 				}
 
-				if (addIt && (excludedTypeList.size() != 0)) {
+				if (addIt && (!excludedTypeList.isEmpty())) {
 					//
 					// Can't have any of the types on the excluded list
 					//
@@ -515,7 +512,7 @@ public class EquipmentList {
 	private static void autogenerateRacialEquipment() {
 		if (SettingsHandler.isAutogenRacial()) {
 
-			Set<Integer> gensizesid = new HashSet<Integer>();
+			Set<Integer> gensizesid = new HashSet<>();
 			//
 			// Go through all loaded races and flag whether or not to make equipment
 			// sized for them.  Karianna, changed the array length by 1 as Collosal
@@ -536,7 +533,7 @@ public class EquipmentList {
 			}
 
 			SizeAdjustment defaultSize = SizeUtilities.getDefaultSizeAdjustment();
-			Set<SizeAdjustment> gensizes = new HashSet<SizeAdjustment>();
+			Set<SizeAdjustment> gensizes = new HashSet<>();
 			for (Integer i : gensizesid)
 			{
 				gensizes.add(ref.getSortedList(SizeAdjustment.class,
@@ -551,7 +548,7 @@ public class EquipmentList {
 				//
 				// Only apply to Armor, Shield and resizable items
 				//
-				if (!Globals.canResizeHaveEffect(dummyPc, eq, null))
+				if (!Globals.canResizeHaveEffect(eq, null))
 				{
 					continue;
 				}
@@ -600,7 +597,7 @@ public class EquipmentList {
 	private static void appendNameParts(final List<String> nameList, final String omitString, final StringBuilder newName) {
 		for ( String namePart : nameList )
 		{
-			if ((omitString.length() != 0) && namePart.equals(omitString)) {
+			if ((!omitString.isEmpty()) && namePart.equals(omitString)) {
 				continue;
 			}
 
@@ -656,9 +653,9 @@ public class EquipmentList {
 			//
 			// Change the names, to protect the innocent
 			//
-			final String sName = eq.nameItemFromModifiers(aPC);
+			final String sKeyName = eq.nameItemFromModifiers(aPC);
 			final Equipment eqExists = Globals.getContext().getReferenceContext().silentlyGetConstructedCDOMObject(
-					Equipment.class, sName);
+					Equipment.class, sKeyName);
 
 			if (eqExists != null) { return; }
 

@@ -17,7 +17,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 28, 2003
  *
  */package plugin.pretokens.test;
 
@@ -38,7 +37,6 @@ import pcgen.core.prereq.PrerequisiteTest;
 import pcgen.system.LanguageBundle;
 
 /**
- * @author arknight
  *
  */
 public class PreCSkillTester extends AbstractPrerequisiteTest implements PrerequisiteTest
@@ -51,9 +49,9 @@ public class PreCSkillTester extends AbstractPrerequisiteTest implements Prerequ
 	{
 		final int reqnumber = Integer.parseInt(prereq.getOperand());
 		int runningTotal = 0;
-		HashMap<Skill,HashSet<Skill>> serveAsSkills = new HashMap<Skill, HashSet<Skill>>();
-		Set<Skill> imitators = new HashSet<Skill>();
-		this.getImitators(serveAsSkills, imitators);
+		HashMap<Skill,HashSet<Skill>> serveAsSkills = new HashMap<>();
+		Set<Skill> imitators = new HashSet<>();
+		PreCSkillTester.getImitators(serveAsSkills, imitators);
 
 		// Compute the skill name from the Prerequisite
 		String requiredSkillKey = prereq.getKey().toUpperCase();
@@ -70,7 +68,7 @@ public class PreCSkillTester extends AbstractPrerequisiteTest implements Prerequ
 			requiredSkillKey = requiredSkillKey.substring(5);
 		}
 		final String skillKey = requiredSkillKey;
-		Set<Skill> skillMatches = new HashSet<Skill>();
+		Set<Skill> skillMatches = new HashSet<>();
 
 		if (isType)
 		{
@@ -140,18 +138,18 @@ BREAKOUT:		for(Skill fake: serveAsSkills.keySet())
 	 * @param imitators
 	 * @param character
 	 */
-	private void getImitators(
-		HashMap<Skill, HashSet<Skill>> serveAsSkills, Set<Skill> imitators)
+	private static void getImitators(
+			HashMap<Skill, HashSet<Skill>> serveAsSkills, Set<Skill> imitators)
 	{
 		for(Skill aSkill: Globals.getContext().getReferenceContext().getConstructedCDOMObjects(Skill.class))
 		{
-			Set<Skill> servesAs = new HashSet<Skill>();
+			Set<Skill> servesAs = new HashSet<>();
 			for(CDOMReference<Skill> ref: aSkill.getSafeListFor(ListKey.SERVES_AS_SKILL))
 			{
 				servesAs.addAll(ref.getContainedObjects());
 			}
 			
-			if(servesAs.size() > 0)
+			if(!servesAs.isEmpty())
 			{
 				imitators.add(aSkill);
 				serveAsSkills.put(aSkill, (HashSet<Skill>) servesAs);
@@ -186,13 +184,13 @@ BREAKOUT:		for(Skill fake: serveAsSkills.keySet())
 		if (prereq.getOperand().equals("1") && prereq.getOperator().equals(PrerequisiteOperator.GTEQ))
 		{
 			foo = LanguageBundle.getFormattedString("PreCSkill.single.toHtml", //$NON-NLS-1$
-					new Object[]{skillName});
+					skillName);
 		}
 		else
 		{
 			foo = LanguageBundle.getFormattedString("PreCSkill.toHtml", //$NON-NLS-1$
-					new Object[]{prereq.getOperator().toDisplayString(),
-						prereq.getOperand(), skillName});
+					prereq.getOperator().toDisplayString(),
+					prereq.getOperand(), skillName);
 		}
 		return foo;
 	}

@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
  */
 package plugin.exporttokens;
@@ -30,17 +29,13 @@ import pcgen.util.Logging;
 import java.util.StringTokenizer;
 
 /**
- * <code>VarToken</code> produces the output for the output token VAR.
+ * {@code VarToken} produces the output for the output token VAR.
  * Possible tag formats are:<pre>
  * VAR.x
  * VAR.x.INTVAL|.MINVAL|.NOSIGN
  * </pre>
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author Devon Jones <soulcatcher@evilsoft.org>
- * @version $Revision$
  */
 public class VarToken extends Token
 {

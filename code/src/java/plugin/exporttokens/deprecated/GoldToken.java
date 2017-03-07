@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens.deprecated;
@@ -39,10 +35,7 @@ import pcgen.io.exporttoken.Token;
  * Handle the GOLD token which outputs the amount of unallocated wealth
  * that the character has.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @version $Revision$
  */
 public class GoldToken extends Token
 {

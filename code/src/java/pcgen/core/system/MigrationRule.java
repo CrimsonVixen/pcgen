@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 2013-06-01 10:15:00 AM
  *
- * $Id$
  */
 package pcgen.core.system;
 
@@ -26,15 +24,11 @@ import pcgen.core.utils.CoreUtility;
 
 
 /**
- * The Class <code>MigrationRule</code> defines a key change that needs to 
+ * The Class {@code MigrationRule} defines a key change that needs to
  * be made to a character when it is loaded. 
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class MigrationRule
 {
@@ -47,7 +41,8 @@ public class MigrationRule
 		ABILITY(true), 
 		EQUIPMENT(false), 
 		RACE(false), 
-		SOURCE(false);
+		SOURCE(false),
+		SPELL(false);
 		
 		private final boolean categorized;
 		

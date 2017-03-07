@@ -18,8 +18,6 @@
  * Created on Novmeber 06, 2003, 11:59 PM PST
  *
  * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.core;
@@ -30,11 +28,10 @@ import pcgen.cdom.base.Loadable;
 import pcgen.cdom.reference.CDOMSingleRef;
 
 /**
- * <code>RuleCheck</code> describes checks that can be turned on or off in the
+ * {@code RuleCheck} describes checks that can be turned on or off in the
  * GUI by the users
  * 
- * @author Jayme Cox <jaymecox@users.sourceforge.net>
- * @version $Revision$
+ * @author Jayme Cox &lt;jaymecox@users.sourceforge.net&gt;
  */
 public final class RuleCheck implements Loadable
 {

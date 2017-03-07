@@ -15,14 +15,13 @@
  */
 package plugin.lsttokens.datacontrol;
 
+import pcgen.base.util.FormatManager;
 import pcgen.cdom.content.ContentDefinition;
 import pcgen.rules.context.LoadContext;
 import pcgen.rules.persistence.token.AbstractNonEmptyToken;
 import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.DeferredToken;
 import pcgen.rules.persistence.token.ParseResult;
-import pcgen.rules.types.FormatManager;
-import pcgen.rules.types.FormatManagerLibrary;
 import pcgen.util.Logging;
 
 public class DataFormatToken extends AbstractNonEmptyToken<ContentDefinition>
@@ -43,9 +42,10 @@ public class DataFormatToken extends AbstractNonEmptyToken<ContentDefinition>
 	protected ParseResult parseNonEmptyToken(LoadContext context,
 		ContentDefinition def, String value)
 	{
-		FormatManager<?> fmtMgr = FormatManagerLibrary.getFormatManager(value);
-		FormatManager<?> old = def.setFormatManager(fmtMgr);
-		if ((old != null) && (!old.equals(fmtMgr)))
+		FormatManager<?> fmtManager =
+				context.getReferenceContext().getFormatManager(value);
+		FormatManager<?> old = def.setFormatManager(fmtManager);
+		if ((old != null) && (!old.equals(fmtManager)))
 		{
 			return new ParseResult.Fail("Content Definition "
 				+ def.getClass().getSimpleName() + " " + def.getKeyName()
@@ -58,12 +58,12 @@ public class DataFormatToken extends AbstractNonEmptyToken<ContentDefinition>
 	@Override
 	public String[] unparse(LoadContext context, ContentDefinition def)
 	{
-		FormatManager<?> manager = def.getFormatManager();
-		if (manager == null)
+		FormatManager<?> fmtManager = def.getFormatManager();
+		if (fmtManager == null)
 		{
 			return null;
 		}
-		return new String[]{manager.getIdentifierType()};
+		return new String[]{fmtManager.getIdentifierType()};
 	}
 
 	@Override

@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on November 29, 2002, 10:38 PM
  *
- * $Id$
  */
 package pcgen.core.pclevelinfo;
 
@@ -36,12 +34,10 @@ import pcgen.core.bonus.BonusObj;
 import pcgen.core.bonus.BonusUtilities;
 
 /**
- * <code>PCLevelInfo</code>.
+ * {@code PCLevelInfo}.
  *
  * Represents the data kept about a level that a PC has added.
  *
- * @author Greg Bingleman <byngl@hotmail.com>
- * @version  $Revision$
  */
 public final class PCLevelInfo implements Cloneable
 {
@@ -137,7 +133,7 @@ public final class PCLevelInfo implements Cloneable
 	public int getSkillPointsGained(PlayerCharacter pc)
 	{
 		// If this information in not saved on PCG, then try to recalc it
-		if ((skillPointsGained == Integer.MIN_VALUE) && (classKeyName.length() > 0))
+		if ((skillPointsGained == Integer.MIN_VALUE) && (!classKeyName.isEmpty()))
 		{
 			final PCClass aClass = Globals.getContext().getReferenceContext().silentlyGetConstructedCDOMObject(PCClass.class, classKeyName);
 			skillPointsGained = pc.recalcSkillPointMod(aClass, classLevel) +
@@ -229,7 +225,7 @@ public final class PCLevelInfo implements Cloneable
 		{
 			if (statsPreModified == null)
 			{
-				statsPreModified = new ArrayList<PCLevelInfoStat>();
+				statsPreModified = new ArrayList<>();
 			}
 
 			statList = statsPreModified;
@@ -238,7 +234,7 @@ public final class PCLevelInfo implements Cloneable
 		{
 			if (statsPostModified == null)
 			{
-				statsPostModified = new ArrayList<PCLevelInfoStat>();
+				statsPostModified = new ArrayList<>();
 			}
 
 			statList = statsPostModified;
@@ -323,7 +319,7 @@ public final class PCLevelInfo implements Cloneable
 			{
 				if (clone.statsPostModified == null)
 				{
-					clone.statsPostModified = new ArrayList<PCLevelInfoStat>();
+					clone.statsPostModified = new ArrayList<>();
 				}
 				clone.statsPostModified.add(stat);
 			}
@@ -334,7 +330,7 @@ public final class PCLevelInfo implements Cloneable
 			{
 				if (clone.statsPreModified == null)
 				{
-					clone.statsPreModified = new ArrayList<PCLevelInfoStat>();
+					clone.statsPreModified = new ArrayList<>();
 				}
 				clone.statsPreModified.add(stat);
 			}

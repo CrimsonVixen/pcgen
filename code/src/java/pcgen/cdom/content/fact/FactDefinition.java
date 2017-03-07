@@ -19,9 +19,11 @@ package pcgen.cdom.content.fact;
 
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.content.ContentDefinition;
+import pcgen.cdom.enumeration.DataSetID;
 import pcgen.cdom.enumeration.FactKey;
+import pcgen.cdom.facet.CDOMWrapperInfoFacet;
+import pcgen.cdom.facet.FacetLibrary;
 import pcgen.output.actor.FactKeyActor;
-import pcgen.output.wrapper.CDOMObjectWrapper;
 import pcgen.rules.context.LoadContext;
 import pcgen.util.Logging;
 
@@ -60,14 +62,15 @@ public class FactDefinition<T extends CDOMObject, F> extends
 	}
 
 	/**
-	 * @see pcgen.cdom.content.ContentDefinition#activateOutput()
+	 * @see pcgen.cdom.content.ContentDefinition#activateOutput(DataSetID)
 	 */
 	@Override
-	protected void activateOutput()
-	{
-		FactKeyActor<?> fca = new FactKeyActor<>(getFactKey());
-		CDOMObjectWrapper cow = CDOMObjectWrapper.getInstance();
-		if (!cow.load(getUsableLocation(), factName.toLowerCase(), fca))
+	protected void activateOutput(DataSetID dsID)
+ 	{
+ 		FactKeyActor<?> fca = new FactKeyActor<>(getFactKey());
+		CDOMWrapperInfoFacet wiFacet =
+				FacetLibrary.getFacet(CDOMWrapperInfoFacet.class);
+		if (!wiFacet.set(dsID, getUsableLocation(), factName.toLowerCase(), fca))
 		{
 			Logging.errorPrint(getUsableLocation().getSimpleName() + " output "
 				+ factName.toLowerCase()
@@ -82,16 +85,16 @@ public class FactDefinition<T extends CDOMObject, F> extends
 	@Override
 	protected void activateTokens(LoadContext context)
 	{
-		context.loadLocalToken(new FactParser<T, F>(this));
+		context.loadLocalToken(new FactParser<>(this));
 		Boolean required = getRequired();
 		if ((required != null) && required.booleanValue())
 		{
-			context.loadLocalToken(new FactDefinitionEnforcer<T, F>(this));
+			context.loadLocalToken(new FactDefinitionEnforcer<>(this));
 		}
 		Boolean selectable = getSelectable();
 		if ((selectable != null) && selectable.booleanValue())
 		{
-			context.loadLocalToken(new FactGroupDefinition<T, F>(this));
+			context.loadLocalToken(new FactGroupDefinition<>(this));
 		}
 	}
 
@@ -109,7 +112,7 @@ public class FactDefinition<T extends CDOMObject, F> extends
 		{
 			throw new IllegalArgumentException("Fact Name cannot be null");
 		}
-		if (name.length() == 0)
+		if (name.isEmpty())
 		{
 			throw new IllegalArgumentException("Fact Name cannot be empty");
 		}

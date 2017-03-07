@@ -15,10 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * Created on 12/05/2009 6:43:46 PM
- *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -39,18 +35,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.swing.undo.UndoManager;
-
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
-
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import pcgen.cdom.base.AssociatedPrereqObject;
 import pcgen.cdom.base.CDOMObject;
 import pcgen.cdom.base.CDOMReference;
 import pcgen.cdom.base.ChooseDriver;
 import pcgen.cdom.base.Constants;
 import pcgen.cdom.content.CNAbility;
+import pcgen.cdom.content.VarModifier;
 import pcgen.cdom.enumeration.BiographyField;
 import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.enumeration.EquipmentLocation;
@@ -59,7 +53,9 @@ import pcgen.cdom.enumeration.Handed;
 import pcgen.cdom.enumeration.IntegerKey;
 import pcgen.cdom.enumeration.ListKey;
 import pcgen.cdom.enumeration.Nature;
+import pcgen.cdom.enumeration.NumericPCAttribute;
 import pcgen.cdom.enumeration.ObjectKey;
+import pcgen.cdom.enumeration.PCAttribute;
 import pcgen.cdom.enumeration.PCStringKey;
 import pcgen.cdom.enumeration.SkillFilter;
 import pcgen.cdom.enumeration.StringKey;
@@ -72,6 +68,7 @@ import pcgen.cdom.facet.fact.XPFacet;
 import pcgen.cdom.facet.model.LanguageFacet;
 import pcgen.cdom.facet.model.TemplateFacet;
 import pcgen.cdom.helper.ClassSource;
+import pcgen.cdom.inst.EquipmentHead;
 import pcgen.cdom.inst.PCClassLevel;
 import pcgen.cdom.meta.CorePerspective;
 import pcgen.cdom.reference.CDOMDirectSingleRef;
@@ -168,6 +165,7 @@ import pcgen.facade.util.DefaultReferenceFacade;
 import pcgen.facade.util.ListFacade;
 import pcgen.facade.util.ListFacades;
 import pcgen.facade.util.ReferenceFacade;
+import pcgen.facade.util.WriteableReferenceFacade;
 import pcgen.facade.util.event.ChangeListener;
 import pcgen.facade.util.event.ListEvent;
 import pcgen.facade.util.event.ListListener;
@@ -176,6 +174,7 @@ import pcgen.gui2.util.HtmlInfoBuilder;
 import pcgen.io.ExportException;
 import pcgen.io.ExportHandler;
 import pcgen.io.PCGIOHandler;
+import pcgen.output.channel.ChannelCompatibility;
 import pcgen.pluginmgr.PluginManager;
 import pcgen.pluginmgr.messages.PlayerCharacterWasClosedMessage;
 import pcgen.system.CharacterManager;
@@ -187,21 +186,11 @@ import pcgen.util.enumeration.Tab;
 import pcgen.util.enumeration.View;
 
 /**
- * The Class <code>CharacterFacadeImpl</code> is an implementation of 
+ * The Class {@code CharacterFacadeImpl} is an implementation of
  * the {@link CharacterFacade} interface for the new user interface. It is 
  * intended to provide a full implementation of the new ui/core 
  * interaction layer.
- * <p>
- * <b>Issues needing resolution:</b>
- * <ul>
- * <li>Who is responsible for undo management and how will it work?</li>
- * </ul>
- * <br/>
- * Last Editor: $Author$ <br/>
- * Last Edited: $Date$
- * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
+ * TODO: Who is responsible for undo management and how will it work?
  */
 public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListener, ListListener<EquipmentFacade>,
 		HitPointListener 
@@ -217,7 +206,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	private DefaultListFacade<CharacterLevelFacade> pcClassLevels;
     private DefaultListFacade<HandedFacade> availHands;
     private DefaultListFacade<GenderFacade> availGenders;
-	private Map<StatFacade, DefaultReferenceFacade<Integer>> statScoreMap;
+	private Map<StatFacade, WriteableReferenceFacade<Number>> statScoreMap;
 	private UndoManager undoManager;
 	private DelegatingDataSet dataSet;
 	private DefaultReferenceFacade<RaceFacade> race;
@@ -310,10 +299,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		undoManager = new UndoManager();
 	}
 
-	/**
-	 * {@inheritDoc} 
-	 */
-    @Override
+	@Override
 	public void closeCharacter()
 	{
 		FacetLibrary.getFacet(LanguageFacet.class)
@@ -359,44 +345,55 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		descriptionFacade = new DescriptionFacadeImpl(theCharacter);
 		spellSupportFacade = new SpellSupportFacadeImpl(theCharacter, delegate, dataSet, todoManager, this);
 
-		name = new DefaultReferenceFacade<String>(charDisplay.getName());
-		file = new DefaultReferenceFacade<File>(new File(charDisplay.getFileName()));
+		name = new DefaultReferenceFacade<>(charDisplay.getName());
+		file = new DefaultReferenceFacade<>(new File(charDisplay.getFileName()));
 		
 		companionSupportFacade = new CompanionSupportFacadeImpl(theCharacter, todoManager, name, file, this);
 		
-		availTempBonuses = new DefaultListFacade<TempBonusFacade>();
+		availTempBonuses = new DefaultListFacade<>();
 		refreshAvailableTempBonuses();
-		appliedTempBonuses = new DefaultListFacade<TempBonusFacade>();
+		appliedTempBonuses = new DefaultListFacade<>();
 		buildAppliedTempBonusList();
-		kitList = new DefaultListFacade<KitFacade>();
+		kitList = new DefaultListFacade<>();
 		refreshKitList();
 
-		statScoreMap = new HashMap<StatFacade, DefaultReferenceFacade<Integer>>();
+		statScoreMap = new HashMap<>();
+		for (StatFacade stat : dataSet.getStats())
+		{
+			if (stat instanceof PCStat)
+			{
+				statScoreMap.put(stat, ChannelCompatibility.getStatScore(theCharacter.getCharID(), (PCStat) stat));
+			}
+			else
+			{
+				statScoreMap.put(stat, new DefaultReferenceFacade<>());
+			}
+		}
 
 		File portraitFile = null;
 		if (!StringUtils.isEmpty(charDisplay.getPortraitPath()))
 		{
 			portraitFile = new File(charDisplay.getPortraitPath());
 		}
-		portrait = new DefaultReferenceFacade<File>(portraitFile);
+		portrait = new DefaultReferenceFacade<>(portraitFile);
 		cropRect = new RectangleReference(charDisplay.getPortraitThumbnailRect());
-		characterType = new DefaultReferenceFacade<String>(charDisplay.getCharacterType());
-		previewSheet = new DefaultReferenceFacade<String>(charDisplay.getPreviewSheet());
-		skillFilter = new DefaultReferenceFacade<SkillFilter>(charDisplay.getSkillFilter());
+		characterType = new DefaultReferenceFacade<>(charDisplay.getCharacterType());
+		previewSheet = new DefaultReferenceFacade<>(charDisplay.getPreviewSheet());
+		skillFilter = new DefaultReferenceFacade<>(charDisplay.getSkillFilter());
 
-		tabName = new DefaultReferenceFacade<String>(charDisplay.getTabName());
-		playersName = new DefaultReferenceFacade<String>(charDisplay.getPlayersName());
-		race = new DefaultReferenceFacade<RaceFacade>(charDisplay.getRace());
-		raceList = new DefaultListFacade<RaceFacade>();
+		tabName = new DefaultReferenceFacade<>(charDisplay.getTabName());
+		playersName = new DefaultReferenceFacade<>(charDisplay.getPlayersName());
+		race = new DefaultReferenceFacade<>(charDisplay.getRace());
+		raceList = new DefaultListFacade<>();
 		if (charDisplay.getRace() != null && charDisplay.getRace() != Globals.s_EMPTYRACE)
 		{
 			raceList.addElement(charDisplay.getRace());
 		}
-		handedness = new DefaultReferenceFacade<HandedFacade>();
-		gender = new DefaultReferenceFacade<GenderFacade>();
+		handedness = new DefaultReferenceFacade<>();
+		gender = new DefaultReferenceFacade<>();
         
-        availHands = new DefaultListFacade<HandedFacade>();
-        availGenders = new DefaultListFacade<GenderFacade>();
+        availHands = new DefaultListFacade<>();
+        availGenders = new DefaultListFacade<>();
 		for (Handed handed : Handed.values())
 		{
 			availHands.addElement(handed);
@@ -412,7 +409,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			{
 				if (handsFacade.equals(charDisplay.getHandedObject()))
 				{
-					handedness.setReference(handsFacade);
+					handedness.set(handsFacade);
 					break;
 				}
 			}
@@ -420,89 +417,89 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			{
 				if (pcGender.equals(charDisplay.getGenderObject()))
 				{
-					gender.setReference(pcGender);
+					gender.set(pcGender);
 					break;
 				}
 			}
 		}
 
-		alignment = new DefaultReferenceFacade<AlignmentFacade>(charDisplay.getPCAlignment());
-		age = new DefaultReferenceFacade<Integer>(charDisplay.getAge());
-		ageCategory = new DefaultReferenceFacade<SimpleFacade>();
+		alignment = new DefaultReferenceFacade<>(charDisplay.getPCAlignment());
+		age = new DefaultReferenceFacade<>(charDisplay.getAge());
+		ageCategory = new DefaultReferenceFacade<>();
 		updateAgeCategoryForAge();
-		currentXP = new DefaultReferenceFacade<Integer>(charDisplay.getXP());
+		currentXP = new DefaultReferenceFacade<>(charDisplay.getXP());
 		xpListener = new XPListener();
 		FacetLibrary.getFacet(XPFacet.class).addDataFacetChangeListener(xpListener);
-		xpForNextlevel = new DefaultReferenceFacade<Integer>(charDisplay.minXPForNextECL());
-		xpTableName = new DefaultReferenceFacade<String>(charDisplay.getXPTableName());
-		hpRef = new DefaultReferenceFacade<Integer>(theCharacter.hitPoints());
+		xpForNextlevel = new DefaultReferenceFacade<>(charDisplay.minXPForNextECL());
+		xpTableName = new DefaultReferenceFacade<>(charDisplay.getXPTableName());
+		hpRef = new DefaultReferenceFacade<>(theCharacter.hitPoints());
 
-		skinColor = new DefaultReferenceFacade<String>(charDisplay.getSafeStringFor(PCStringKey.SKINCOLOR));
-		hairColor = new DefaultReferenceFacade<String>(charDisplay.getSafeStringFor(PCStringKey.HAIRCOLOR));
-		eyeColor = new DefaultReferenceFacade<String>(charDisplay.getSafeStringFor(PCStringKey.EYECOLOR));
-		weightRef = new DefaultReferenceFacade<Integer>();
-		heightRef = new DefaultReferenceFacade<Integer>();
+		skinColor = new DefaultReferenceFacade<>(charDisplay.getSafeStringFor(PCStringKey.SKINCOLOR));
+		hairColor = new DefaultReferenceFacade<>(charDisplay.getSafeStringFor(PCStringKey.HAIRCOLOR));
+		eyeColor = new DefaultReferenceFacade<>(charDisplay.getSafeStringFor(PCStringKey.EYECOLOR));
+		weightRef = new DefaultReferenceFacade<>();
+		heightRef = new DefaultReferenceFacade<>();
 		refreshHeightWeight();
 
 		purchasedEquip = new EquipmentListFacadeImpl(theCharacter.getEquipmentMasterList());
 		autoEquipListener = new AutoEquipListener();
 		FacetLibrary.getFacet(AutoEquipmentFacet.class).addDataFacetChangeListener(autoEquipListener);
-		carriedWeightRef = new DefaultReferenceFacade<String>();
-		loadRef = new DefaultReferenceFacade<String>();
-		weightLimitRef = new DefaultReferenceFacade<String>();
-		equipSet = new DefaultReferenceFacade<EquipmentSetFacade>();
-		equipmentSets = new DefaultListFacade<EquipmentSetFacade>();
+		carriedWeightRef = new DefaultReferenceFacade<>();
+		loadRef = new DefaultReferenceFacade<>();
+		weightLimitRef = new DefaultReferenceFacade<>();
+		equipSet = new DefaultReferenceFacade<>();
+		equipmentSets = new DefaultListFacade<>();
 		initEquipSet();
 
 		GameMode game = (GameMode) dataSet.getGameMode();
-		rollMethodRef = new DefaultReferenceFacade<Integer>(game.getRollMethod());
+		rollMethodRef = new DefaultReferenceFacade<>(game.getRollMethod());
 
 		charLevelsFacade =
 				new CharacterLevelsFacadeImpl(theCharacter, delegate,
 					todoManager, dataSet, this);
-		pcClasses = new ArrayList<ClassFacade>();
-		pcClassLevels = new DefaultListFacade<CharacterLevelFacade>();
+		pcClasses = new ArrayList<>();
+		pcClassLevels = new DefaultListFacade<>();
 		refreshClassLevelModel();
 		charLevelsFacade.addHitPointListener(this);
 
 		deity =
-				new DefaultReferenceFacade<DeityFacade>(charDisplay.getDeity());
-		domains = new DefaultListFacade<DomainFacade>();
+                new DefaultReferenceFacade<>(charDisplay.getDeity());
+		domains = new DefaultListFacade<>();
 		maxDomains =
-				new DefaultReferenceFacade<Integer>(
-					theCharacter.getMaxCharacterDomains());
+                new DefaultReferenceFacade<>(
+                        theCharacter.getMaxCharacterDomains());
 		remainingDomains =
-				new DefaultReferenceFacade<Integer>(
-					theCharacter.getMaxCharacterDomains() - domains.getSize());
-		availDomains = new DefaultListFacade<DomainFacade>();
+                new DefaultReferenceFacade<>(
+                        theCharacter.getMaxCharacterDomains() - domains.getSize());
+		availDomains = new DefaultListFacade<>();
 		buildAvailableDomainsList();
 
 		templates =
-				new DefaultListFacade<TemplateFacade>(
-					charDisplay.getDisplayVisibleTemplateList());
+                new DefaultListFacade<>(
+                        charDisplay.getDisplayVisibleTemplateList());
 		templateListener = new TemplateListener(); 
 		FacetLibrary.getFacet(TemplateFacet.class).addDataFacetChangeListener(templateListener);
 
 		initTodoList();
 
-		statTotalLabelText = new DefaultReferenceFacade<String>();
-		statTotalText = new DefaultReferenceFacade<String>();
-		modTotalLabelText = new DefaultReferenceFacade<String>();
-		modTotalText = new DefaultReferenceFacade<String>();
+		statTotalLabelText = new DefaultReferenceFacade<>();
+		statTotalText = new DefaultReferenceFacade<>();
+		modTotalLabelText = new DefaultReferenceFacade<>();
+		modTotalText = new DefaultReferenceFacade<>();
 		updateScorePurchasePool(false);
 
-		languages = new DefaultListFacade<LanguageFacade>();
-		numBonusLang = new DefaultReferenceFacade<Integer>(0);
-		numSkillLang = new DefaultReferenceFacade<Integer>(0);
+		languages = new DefaultListFacade<>();
+		numBonusLang = new DefaultReferenceFacade<>(0);
+		numSkillLang = new DefaultReferenceFacade<>(0);
 		refreshLanguageList();
 		langListener = new LanguageListener();
 		FacetLibrary.getFacet(LanguageFacet.class).addDataFacetChangeListener(langListener);
 
 		purchasedEquip.addListListener(spellSupportFacade);
 		purchasedEquip.addEquipmentListListener(spellSupportFacade);
-		fundsRef = new DefaultReferenceFacade<BigDecimal>(theCharacter.getGold());
-		wealthRef = new DefaultReferenceFacade<BigDecimal>(theCharacter.totalValue());
-		gearBuySellSchemeRef = new DefaultReferenceFacade<GearBuySellFacade>(findGearBuySellRate());
+		fundsRef = new DefaultReferenceFacade<>(theCharacter.getGold());
+		wealthRef = new DefaultReferenceFacade<>(theCharacter.totalValue());
+		gearBuySellSchemeRef = new DefaultReferenceFacade<>(findGearBuySellRate());
 		allowDebt = false;
 	}
 
@@ -511,7 +508,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void refreshKitList()
 	{
-		List<Kit> kits = new ArrayList<Kit>();
+		List<Kit> kits = new ArrayList<>();
 		for (Kit kit : charDisplay.getKitInfo())
 		{
 			kits.add(kit);
@@ -542,7 +539,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	/**
 	 * Initialise the equipment set facades, ensuring that the character has a 
 	 * default equipment set. 
-	 * @param pc The character being loaded
 	 */
 	private void initEquipSet()
 	{
@@ -556,15 +552,15 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		// Detach listeners from old set
-		if (equipSet.getReference() != null)
+		if (equipSet.get() != null)
 		{
-			EquipmentListFacade equippedItems = equipSet.getReference().getEquippedItems();
+			EquipmentListFacade equippedItems = equipSet.get().getEquippedItems();
 			equippedItems.removeListListener(this);
 			equippedItems.removeEquipmentListListener(this);
 		}
 		
 		// Make facades for each root equipset.
-		List<EquipmentSetFacade> eqSetList = new ArrayList<EquipmentSetFacade>();
+		List<EquipmentSetFacade> eqSetList = new ArrayList<>();
 		EquipmentSetFacade currSet = null;
 		String currIdPath = theCharacter.getCalcEquipSetId();
 		for (EquipSet es : charDisplay.getEquipSet())
@@ -584,10 +580,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		equipmentSets.updateContents(eqSetList);
 		if (currSet != null)
 		{
-			equipSet.setReference(currSet);
+			equipSet.set(currSet);
 		}
 
-		EquipmentSetFacade set = equipSet.getReference();
+		EquipmentSetFacade set = equipSet.get();
 		set.getEquippedItems().addListListener(this);
 		set.getEquippedItems().addEquipmentListListener(this);
 		refreshTotalWeight();
@@ -599,8 +595,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void buildAgeCategories()
 	{
-		List<String> cats = new ArrayList<String>();
-		for (String aString : Globals.getBioSet().getAgeCategories())
+		List<String> cats = new ArrayList<>();
+		for (String aString : SettingsHandler.getGame().getBioSet().getAgeCategories())
 		{
 			final int idx = aString.indexOf('\t');
 
@@ -615,7 +611,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			}
 		}
 		Collections.sort(cats);
-		ageCategoryList = new DefaultListFacade<SimpleFacade>();
+		ageCategoryList = new DefaultListFacade<>();
 		for (String ageCat : cats)
 		{
 			ageCategoryList.addElement(new SimpleFacadeImpl(ageCat));
@@ -680,7 +676,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		buildAvailableDomainsList();
 		companionSupportFacade.refreshCompanionData();
 		refreshEquipment();
-		hpRef.setReference(theCharacter.hitPoints());
+		hpRef.set(theCharacter.hitPoints());
 	}
 
 	/* (non-Javadoc)
@@ -692,7 +688,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		characterAbilities.removeAbility(category, ability);
 		refreshKitList();
 		companionSupportFacade.refreshCompanionData();
-		hpRef.setReference(theCharacter.hitPoints());
+		hpRef.set(theCharacter.hitPoints());
 	}
 
 	/* (non-Javadoc)
@@ -731,18 +727,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return characterAbilities.getRemainingSelections(category);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void addAbilityCatSelectionListener(ChangeListener listener)
 	{
 		characterAbilities.addAbilityCatSelectionListener(listener);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removeAbilityCatSelectionListener(ChangeListener listener)
 	{
@@ -859,11 +849,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		refreshKitList();
 		refreshAvailableTempBonuses();
 		refreshEquipment();
-		currentXP.setReference(charDisplay.getXP());
-		xpForNextlevel.setReference(charDisplay.minXPForNextECL());
-		xpTableName.setReference(charDisplay.getXPTableName());
-		hpRef.setReference(theCharacter.hitPoints());
-		age.setReference(charDisplay.getAge());
+		currentXP.set(charDisplay.getXP());
+		xpForNextlevel.set(charDisplay.minXPForNextECL());
+		xpTableName.set(charDisplay.getXPTableName());
+		hpRef.set(theCharacter.hitPoints());
+		age.set(charDisplay.getAge());
 		refreshHeightWeight();
 		refreshStatScores();
 
@@ -881,14 +871,14 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	{
 		characterAbilities.rebuildAbilityLists();
 		refreshAvailableTempBonuses();
-		hpRef.setReference(theCharacter.hitPoints());
+		hpRef.set(theCharacter.hitPoints());
 	}
 
 	private void refreshHeightWeight()
 	{
-		weightRef.setReference(Globals.getGameModeUnitSet()
+		weightRef.set(Globals.getGameModeUnitSet()
 			.convertWeightToUnitSet(charDisplay.getWeight()));
-		heightRef.setReference((int) Math.round(Globals.getGameModeUnitSet()
+		heightRef.set((int) Math.round(Globals.getGameModeUnitSet()
 			.convertHeightToUnitSet(charDisplay.getHeight())));
 	}
 
@@ -1067,9 +1057,9 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	{
 		for (StatFacade stat : dataSet.getStats())
 		{
-			ReferenceFacade<Integer> facade = getScoreBaseRef(stat);
+			ReferenceFacade<Number> facade = getScoreBaseRef(stat);
 
-			if (facade.getReference() != 0)
+			if (facade.get().intValue() != 0)
 			{
 				return false;
 			}
@@ -1120,7 +1110,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 	void refreshAvailableTempBonuses()
 	{
-		List<TempBonusFacadeImpl> tempBonuses = new ArrayList<TempBonusFacadeImpl>();
+		List<TempBonusFacadeImpl> tempBonuses = new ArrayList<>();
 
 		// first objects on the PC
 		for (CDOMObject cdo : theCharacter.getCDOMObjectList())
@@ -1164,13 +1154,15 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 		//
 		// Next do all spells to get TEMPBONUS:ANYPC or TEMPBONUS:EQUIP
-		for (Spell spell : Globals.getSpellMap().values())
+		for (Spell spell : Globals.getContext().getReferenceContext()
+				.getConstructedCDOMObjects(Spell.class))
 		{
 			scanForNonPcTempBonuses(tempBonuses, spell);
 		}
 
 		// do all Templates to get TEMPBONUS:ANYPC or TEMPBONUS:EQUIP
-		for (PCTemplate aTemp : Globals.getContext().getReferenceContext().getConstructedCDOMObjects(PCTemplate.class))
+		for (PCTemplate aTemp : Globals.getContext().getReferenceContext()
+				.getConstructedCDOMObjects(PCTemplate.class))
 		{
 			scanForNonPcTempBonuses(tempBonuses, aTemp);
 		}
@@ -1185,7 +1177,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			return;
 		}
-		if (TempBonusHelper.hasNonPCTempBonus(obj, theCharacter))
+		if (TempBonusHelper.hasNonPCTempBonus(obj))
 		{
 			tempBonuses.add(new TempBonusFacadeImpl(obj));
 		}
@@ -1197,7 +1189,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			return;
 		}
-		if (TempBonusHelper.hasAnyPCTempBonus(obj, theCharacter))
+		if (TempBonusHelper.hasAnyPCTempBonus(obj))
 		{
 			tempBonuses.add(new TempBonusFacadeImpl(obj));
 		}
@@ -1209,7 +1201,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			return;
 		}
-		if (TempBonusHelper.hasTempBonus(obj, theCharacter))
+		if (TempBonusHelper.hasTempBonus(obj))
 		{
 			tempBonuses.add(new TempBonusFacadeImpl(obj));
 		}
@@ -1229,7 +1221,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void buildAppliedTempBonusList()
 	{
-		Set<String> found = new HashSet<String>();
+		Set<String> found = new HashSet<>();
 		for (TempBonusInfo tbi : theCharacter.getTempBonusMap().values())
 		{
 			Object aC = tbi.source;
@@ -1294,9 +1286,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		postLevellingUpdates();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removeTempBonus(TempBonusFacade bonusFacade)
 	{
@@ -1319,9 +1308,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		postLevellingUpdates();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setTempBonusActive(TempBonusFacade bonusFacade, boolean active)
 	{
@@ -1344,9 +1330,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		refreshStatScores();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<TempBonusFacade> getTempBonuses()
 	{
@@ -1373,7 +1356,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			return;
 		}
 
-		this.alignment.setReference(alignment);
+		this.alignment.set(alignment);
 		if (alignment instanceof PCAlignment)
 		{
 			theCharacter.setAlignment((PCAlignment) alignment);
@@ -1391,7 +1374,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private boolean validateAlignmentChange(AlignmentFacade newAlign)
 	{
-		AlignmentFacade oldAlign = this.alignment.getReference();
+		AlignmentFacade oldAlign = this.alignment.get();
 
 		if (oldAlign == null || newAlign.equals(oldAlign))
 		{
@@ -1409,7 +1392,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		//
 		StringBuilder unqualified = new StringBuilder(100);
 		List<PCClass> classList = charDisplay.getClassList();
-		List<PCClass> exclassList = new ArrayList<PCClass>();
+		List<PCClass> exclassList = new ArrayList<>();
 		PCAlignment savedAlignmnet = charDisplay.getPCAlignment();
 		for (PCClass aClass : classList)
 		{
@@ -1461,11 +1444,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 	void refreshClassLevelModel()
 	{
-		List<CharacterLevelFacade> newlevels = new ArrayList<CharacterLevelFacade>();
+		List<CharacterLevelFacade> newlevels = new ArrayList<>();
 		List<PCClass> newClasses = charDisplay.getClassList();
 		Collection<PCLevelInfo> levelInfo = charDisplay.getLevelInfo();
 
-		Map<String, PCClass> classMap = new HashMap<String, PCClass>();
+		Map<String, PCClass> classMap = new HashMap<>();
 		for (PCClass pcClass : newClasses)
 		{
 			classMap.put(pcClass.getKeyName(), pcClass);
@@ -1530,7 +1513,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		theCharacter.setGender((Gender) gender);
 		Gender newGender = charDisplay.getGenderObject();
 		this.selectedGender = newGender.toString();
-		this.gender.setReference(newGender);
+		this.gender.set(newGender);
 		refreshLanguageList();
 	}
 
@@ -1558,7 +1541,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	{
 		if (stat instanceof PCStat && !charDisplay.isNonAbility((PCStat) stat))
 		{
-			return Integer.valueOf(theCharacter.getStatModFor((PCStat) stat));
+			return theCharacter.getStatModFor((PCStat) stat);
 		}
 		return 0;
 	}
@@ -1567,12 +1550,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 * @see pcgen.core.facade.CharacterFacade#getScoreTotalRef(pcgen.core.facade.StatFacade)
 	 */
 	@Override
-	public ReferenceFacade<Integer> getScoreBaseRef(StatFacade stat)
+	public ReferenceFacade<Number> getScoreBaseRef(StatFacade stat)
 	{
-		DefaultReferenceFacade<Integer> score = statScoreMap.get(stat);
+		WriteableReferenceFacade<Number> score = statScoreMap.get(stat);
 		if (score == null)
 		{
-			score = new DefaultReferenceFacade<Integer>(theCharacter.getTotalStatFor((PCStat) stat));
+			score = new DefaultReferenceFacade<>(theCharacter.getTotalStatFor((PCStat) stat));
 			statScoreMap.put(stat, score);
 		}
 		return score;
@@ -1662,10 +1645,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setScoreBase(StatFacade stat, int score)
 	{
-		DefaultReferenceFacade<Integer> facade = statScoreMap.get(stat);
+		WriteableReferenceFacade<Number> facade = statScoreMap.get(stat);
 		if (facade == null)
 		{
-			facade = new DefaultReferenceFacade<Integer>(score);
+			facade = new DefaultReferenceFacade<>(score);
 			statScoreMap.put(stat, facade);
 		}
 
@@ -1732,10 +1715,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		theCharacter.setStat(pcStat, score);
-		facade.setReference(score);
+		facade.set(score);
 		theCharacter.saveStatIncrease(pcStat, score - baseScore, false);
 		theCharacter.calcActiveBonuses();
-		hpRef.setReference(theCharacter.hitPoints());
+		hpRef.set(theCharacter.hitPoints());
 		refreshLanguageList();
 
 		updateScorePurchasePool(true);
@@ -1818,14 +1801,14 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 	private void refreshStatScores()
 	{
-		for (StatFacade stat : statScoreMap.keySet())
-		{
-			DefaultReferenceFacade<Integer> score = statScoreMap.get(stat);
-			if (stat instanceof PCStat)
-			{
-				score.setReference(theCharacter.getTotalStatFor((PCStat) stat));
-			}
-		}
+//		for (StatFacade stat : statScoreMap.keySet())
+//		{
+//			WriteableReferenceFacade<Integer> score = statScoreMap.get(stat);
+//			if (stat instanceof PCStat)
+//			{
+//				score.set(theCharacter.getTotalStatFor((PCStat) stat));
+//			}
+//		}
 		if (charLevelsFacade != null)
 		{
 			charLevelsFacade.fireSkillBonusEvent(this, 0, true);
@@ -1861,7 +1844,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 		int poolPointsUsed = poolPointsTotal - theCharacter.getSkillPoints();
 
-		poolPointText.setReference(Integer.toString(poolPointsUsed) + " / " + Integer.toString(poolPointsTotal)); //$NON-NLS-1$
+		poolPointText.set(Integer.toString(poolPointsUsed) + " / " + Integer.toString(poolPointsTotal)); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -1906,7 +1889,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			race = Globals.s_EMPTYRACE;
 		}
-		this.race.setReference(race);
+		this.race.set(race);
 		if (race instanceof Race && race != charDisplay.getRace())
 		{
 			Logging.log(Logging.INFO, charDisplay.getName()
@@ -1933,7 +1916,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 	private void refreshRaceRelatedFields()
 	{
-		race.setReference(charDisplay.getRace());
+		race.set(charDisplay.getRace());
 
 		if (charDisplay.getRace() != null)
 		{
@@ -1941,7 +1924,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			{
 				if (handsFacade.toString().equals(charDisplay.getHanded()))
 				{
-					handedness.setReference(handsFacade);
+					handedness.set(handsFacade);
 					break;
 				}
 			}
@@ -1949,22 +1932,22 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			{
 				if (pcGender.equals(charDisplay.getGenderObject()))
 				{
-					gender.setReference(pcGender);
+					gender.set(pcGender);
 					break;
 				}
 			}
 		}
 		refreshClassLevelModel();
 		refreshStatScores();
-		age.setReference(charDisplay.getAge());
+		age.set(charDisplay.getAge());
 		updateAgeCategoryForAge();
 		refreshHeightWeight();
 		characterAbilities.rebuildAbilityLists();
-		currentXP.setReference(charDisplay.getXP());
-		xpForNextlevel.setReference(charDisplay.minXPForNextECL());
-		xpTableName.setReference(charDisplay.getXPTableName());
-		hpRef.setReference(theCharacter.hitPoints());
-		alignment.setReference(charDisplay.getPCAlignment());
+		currentXP.set(charDisplay.getXP());
+		xpForNextlevel.set(charDisplay.minXPForNextECL());
+		xpTableName.set(charDisplay.getXPTableName());
+		hpRef.set(theCharacter.hitPoints());
+		alignment.set(charDisplay.getPCAlignment());
 		refreshAvailableTempBonuses();
 		companionSupportFacade.refreshCompanionData();
 
@@ -1999,8 +1982,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setTabName(String name)
 	{
-		tabName.setReference(name);
-		theCharacter.setTabName(name);
+		tabName.set(name);
+		theCharacter.setPCAttribute(PCAttribute.TABNAME, name);
 	}
 
 	/* (non-Javadoc)
@@ -2018,7 +2001,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setName(String name)
 	{
-		this.name.setReference(name);
+		this.name.set(name);
 		theCharacter.setName(name);
 		if (isNewCharName(charDisplay.getName()))
 		{
@@ -2052,104 +2035,74 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		theCharacter.setSuppressBioField(field, !export);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<String> getSkinColorRef()
 	{
 		return skinColor;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setSkinColor(String color)
 	{
-		skinColor.setReference(color);
-		theCharacter.setSkinColor(color);
+		skinColor.set(color);
+		theCharacter.setPCAttribute(PCAttribute.SKINCOLOR, color);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<String> getHairColorRef()
 	{
 		return hairColor;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setHairColor(String color)
 	{
-		hairColor.setReference(color);
-		theCharacter.setHairColor(color);
+		hairColor.set(color);
+		theCharacter.setPCAttribute(PCAttribute.HAIRCOLOR, color);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<String> getEyeColorRef()
 	{
 		return eyeColor;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setEyeColor(String color)
 	{
-		eyeColor.setReference(color);
+		eyeColor.set(color);
 		theCharacter.setEyeColor(color);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<Integer> getHeightRef()
 	{
 		return heightRef;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setHeight(int height)
 	{
 		int heightInInches =
 				Globals.getGameModeUnitSet().convertHeightFromUnitSet(height);
-		heightRef.setReference(height);
+		heightRef.set(height);
 		theCharacter.setHeight(heightInInches);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<Integer> getWeightRef()
 	{
 		return weightRef;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setWeight(int weight)
 	{
 		int weightInPounds =
 				(int) Globals.getGameModeUnitSet().convertWeightFromUnitSet(
 					weight);
-		weightRef.setReference(weight);
-		theCharacter.setWeight(weightInPounds);
+		weightRef.set(weight);
+		theCharacter.setPCAttribute(NumericPCAttribute.WEIGHT,weightInPounds);
 	}
 
 	/* (non-Javadoc)
@@ -2167,7 +2120,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setDeity(DeityFacade deity)
 	{
-		this.deity.setReference(deity);
+		this.deity.set(deity);
 		if (deity instanceof Deity)
 		{
 			theCharacter.setDeity((Deity) deity);
@@ -2226,7 +2179,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 			theCharacter.calcActiveBonuses();
 
-			remainingDomains.setReference(theCharacter.getMaxCharacterDomains() - charDisplay.getDomainCount());
+			remainingDomains.set(theCharacter.getMaxCharacterDomains() - charDisplay.getDomainCount());
 			updateDomainTodo();
 			spellSupportFacade.refreshAvailableKnownSpells();
 			companionSupportFacade.refreshCompanionData();
@@ -2248,13 +2201,15 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void removeDomain(DomainFacade domain)
 	{
-		domains.removeElement(domain);
-		Domain dom = ((DomainFacadeImpl) domain).getRawObject();
-		DomainApplication.removeDomain(theCharacter, dom);
-		theCharacter.removeDomain(((DomainFacadeImpl) domain).getRawObject());
-		remainingDomains.setReference(theCharacter.getMaxCharacterDomains() - charDisplay.getDomainCount());
-		updateDomainTodo();
-		spellSupportFacade.refreshAvailableKnownSpells();
+		if (domains.removeElement(domain))
+		{
+			Domain dom = ((DomainFacadeImpl) domain).getRawObject();
+			DomainApplication.removeDomain(theCharacter, dom);
+			theCharacter.removeDomain(((DomainFacadeImpl) domain).getRawObject());
+			remainingDomains.set(theCharacter.getMaxCharacterDomains() - charDisplay.getDomainCount());
+			updateDomainTodo();
+			spellSupportFacade.refreshAvailableKnownSpells();
+		}
 	}
 
 	/**
@@ -2262,12 +2217,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void updateDomainTodo()
 	{
-		if (remainingDomains.getReference() > 0)
+		if (remainingDomains.get() > 0)
 		{
 			todoManager.addTodo(new TodoFacadeImpl(Tab.DOMAINS, "Domains", "in_domTodoDomainsLeft", 120));
 			todoManager.removeTodo("in_domTodoTooManyDomains");
 		}
-		else if (remainingDomains.getReference() < 0)
+		else if (remainingDomains.get() < 0)
 		{
 			todoManager
 					.addTodo(new TodoFacadeImpl(Tab.DOMAINS, "Domains", "in_domTodoTooManyDomains", 120));
@@ -2312,8 +2267,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void buildAvailableDomainsList()
 	{
-		List<DomainFacadeImpl> availDomainList = new ArrayList<DomainFacadeImpl>();
-		List<DomainFacadeImpl> selDomainList = new ArrayList<DomainFacadeImpl>();
+		List<DomainFacadeImpl> availDomainList = new ArrayList<>();
+		List<DomainFacadeImpl> selDomainList = new ArrayList<>();
 		Deity pcDeity = charDisplay.getDeity();
 
 		if (pcDeity != null)
@@ -2379,8 +2334,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 		availDomains.updateContents(availDomainList);
 		domains.updateContents(selDomainList);
-		maxDomains.setReference(theCharacter.getMaxCharacterDomains());
-		remainingDomains.setReference(theCharacter.getMaxCharacterDomains() - charDisplay.getDomainCount());
+		maxDomains.set(theCharacter.getMaxCharacterDomains());
+		remainingDomains.set(theCharacter.getMaxCharacterDomains() - charDisplay.getDomainCount());
 		updateDomainTodo();
 	}
 
@@ -2435,7 +2390,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		for (QualifiedObject<CDOMSingleRef<Domain>> qo : obj.getSafeListFor(ListKey.DOMAIN))
 		{
 			CDOMSingleRef<Domain> ref = qo.getRawObject();
-			Domain domain = ref.resolvesTo();
+			Domain domain = ref.get();
 			if (!isDomainInList(availDomainList, domain))
 			{
 				availDomainList.add(new DomainFacadeImpl(domain, qo.getPrerequisiteList()));
@@ -2458,7 +2413,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setEquipmentSet(EquipmentSetFacade set)
 	{
-		EquipmentSetFacade oldSet = equipSet.getReference();
+		EquipmentSetFacade oldSet = equipSet.get();
 		if (oldSet != null)
 		{
 			oldSet.getEquippedItems().removeListListener(this);
@@ -2468,7 +2423,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			((EquipmentSetFacadeImpl) set).activateEquipSet();
 		}
-		equipSet.setReference(set);
+		equipSet.set(set);
 		set.getEquippedItems().addListListener(this);
 		set.getEquippedItems().addEquipmentListListener(this);
 		refreshTotalWeight();
@@ -2480,7 +2435,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	void refreshLanguageList()
 	{
 		long startTime = new Date().getTime();
-		List<Language> sortedLanguages = new ArrayList<Language>(charDisplay.getLanguageSet());
+		List<Language> sortedLanguages = new ArrayList<>(charDisplay.getLanguageSet());
 		Collections.sort(sortedLanguages);
 		languages.updateContents(sortedLanguages);
 		autoLanguagesCache = null;
@@ -2490,7 +2445,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 		int bonusLangMax = theCharacter.getBonusLanguageCount();
 		
-		currBonusLangs = new ArrayList<Language>();
+		currBonusLangs = new ArrayList<>();
 		CNAbility a = theCharacter.getBonusLanguageAbility();
 		List<String> currBonusLangNameList = theCharacter.getAssociationList(a);
 		for (LanguageFacade langFacade : languages)
@@ -2506,7 +2461,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			bonusLangRemain = 0;
 		}
-		numBonusLang.setReference(bonusLangRemain);
+		numBonusLang.set(bonusLangRemain);
 		if (bonusLangRemain > 0)
 		{
 			if (allowBonusLangAfterFirst)
@@ -2541,7 +2496,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		int skillLangRemain = skillLangMax - numSkillLangSelected;
-		numSkillLang.setReference(skillLangRemain);
+		numSkillLang.set(skillLangRemain);
 		if (skillLangRemain > 0)
 		{
 			todoManager.addTodo(new TodoFacadeImpl(Tab.SUMMARY,
@@ -2574,14 +2529,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return languages;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<LanguageChooserFacade> getLanguageChoosers()
 	{
 		CNAbility cna = theCharacter.getBonusLanguageAbility();
-		DefaultListFacade<LanguageChooserFacade> chooserList = new DefaultListFacade<LanguageChooserFacade>();
+		DefaultListFacade<LanguageChooserFacade> chooserList = new DefaultListFacade<>();
 		chooserList.addElement(new LanguageChooserFacadeImpl(this,
 			LanguageBundle.getString("in_sumLangBonus"), cna)); //$NON-NLS-1$
 
@@ -2595,9 +2547,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return chooserList;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removeLanguage(LanguageFacade lang)
 	{
@@ -2607,8 +2556,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			return;
 		}
 
-		List<Language> availLangs = new ArrayList<Language>();
-		List<Language> selLangs = new ArrayList<Language>();
+		List<Language> availLangs = new ArrayList<>();
+		List<Language> selLangs = new ArrayList<>();
 		ChoiceManagerList<Language> choiceManager = ChooserUtilities.getChoiceManager(owner, theCharacter);
 		choiceManager.getChoices(theCharacter, availLangs, selLangs);
 		selLangs.remove(lang);
@@ -2646,7 +2595,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setFile(File file)
 	{
-		this.file.setReference(file);
+		this.file.set(file);
 		try
 		{
 			theCharacter.setFileName(file.getCanonicalPath());
@@ -2746,9 +2695,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			+ " due to concurrent modifications.");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setDefaultOutputSheet(boolean pdf, File outputSheet)
 	{
@@ -2775,9 +2721,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getDefaultOutputSheet(boolean pdf)
 	{
@@ -2821,7 +2764,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setHanded(HandedFacade handedness)
 	{
-		this.handedness.setReference(handedness);
+		this.handedness.set(handedness);
 		theCharacter.setHanded((Handed) handedness);
 	}
 
@@ -2840,8 +2783,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setPlayersName(String name)
 	{
-		this.playersName.setReference(name);
-		theCharacter.setPlayersName(name);
+		playersName.set(name);
+		theCharacter.setPCAttribute(PCAttribute.PLAYERSNAME, name);
 	}
 
 	/* (non-Javadoc)
@@ -2875,7 +2818,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	{
 		GameMode mode = (GameMode) dataSet.getGameMode();
 		List<CampaignFacade> campaigns = ListFacades.wrap(dataSet.getCampaigns());
-		(new PCGIOHandler()).write(theCharacter, mode, campaigns, file.getReference());
+		(new PCGIOHandler()).write(theCharacter, mode, campaigns, file.get());
 		theCharacter.setDirty(false);
 	}
 
@@ -2892,9 +2835,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return autoLanguagesCache.contains(language);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isRemovable(LanguageFacade language)
 	{
 		if (isAutomatic(language))
@@ -2932,7 +2872,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setXP(final int xp)
 	{
-		if (xp == currentXP.getReference())
+		if (xp == currentXP.get())
 		{
 			// We've already processed this change, most likely via the adjustXP method
 			return;
@@ -2955,7 +2895,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void adjustXP(final int xp)
 	{
-		int currVal = currentXP.getReference();
+		int currVal = currentXP.get();
 		int newVal = currVal + xp;
 		theCharacter.setXP(newVal);
 		checkForNewLevel();
@@ -2980,15 +2920,15 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	public void setXPTable(String newTable)
 	{
 
-		xpTableName.setReference(newTable);
+		xpTableName.set(newTable);
 		theCharacter.setXPTable(newTable);
 		checkForNewLevel();
 	}
 
 	private void checkForNewLevel()
 	{
-		currentXP.setReference(charDisplay.getXP());
-		xpForNextlevel.setReference(charDisplay.minXPForNextECL());
+		currentXP.set(charDisplay.getXP());
+		xpForNextlevel.set(charDisplay.minXPForNextECL());
 
 		if (charDisplay.getXP() >= charDisplay.minXPForNextECL())
 		{
@@ -3007,7 +2947,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	public void setCharacterType(String newType)
 	{
 
-		characterType.setReference(newType);
+		characterType.set(newType);
 		theCharacter.setCharacterType(newType);
 		theCharacter.calcActiveBonuses();
 		
@@ -3024,7 +2964,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setPreviewSheet(String newSheet)
 	{
-		previewSheet.setReference(newSheet);
+		previewSheet.set(newSheet);
 		theCharacter.setPreviewSheet(newSheet);
 	}
 
@@ -3037,7 +2977,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setSkillFilter(SkillFilter newFilter)
 	{
-		skillFilter.setReference(newFilter);
+		skillFilter.set(newFilter);
 		theCharacter.setSkillFilter(newFilter);
 	}
 
@@ -3047,14 +2987,14 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setAge(final int age)
 	{
-		if (age == this.age.getReference())
+		if (age == this.age.get())
 		{
 			// We've already processed this change, most likely via the setAgeCategory method
 			return;
 		}
 
-		theCharacter.setAge(age);
-		this.age.setReference(age);
+		theCharacter.setPCAttribute(NumericPCAttribute.AGE, age);
+		this.age.set(age);
 		updateAgeCategoryForAge();
 		refreshStatScores();
 		refreshLanguageList();
@@ -3073,7 +3013,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			{
 				if (ageCatFacade.toString().equals(ageCatName))
 				{
-					ageCategory.setReference(ageCatFacade);
+					ageCategory.set(ageCatFacade);
 				}
 			}
 		}
@@ -3100,7 +3040,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setAgeCategory(final SimpleFacade ageCat)
 	{
-		if (ageCat == this.ageCategory.getReference())
+		if (ageCat == this.ageCategory.get())
 		{
 			// We've already processed this change, most likely via the setAge method
 			return;
@@ -3113,14 +3053,14 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			if (selAgeCat != null)
 			{
-				final int idx = Globals.getBioSet().getAgeSetNamed(selAgeCat);
+				final int idx = SettingsHandler.getGame().getBioSet().getAgeSetNamed(selAgeCat);
 
 				if (idx >= 0)
 				{
-					ageCategory.setReference(ageCat);
-					Globals.getBioSet().randomize("AGECAT" + Integer.toString(idx), theCharacter);
-					age.setReference(charDisplay.getAge());
-					ageCategory.setReference(ageCat);
+					ageCategory.set(ageCat);
+					SettingsHandler.getGame().getBioSet().randomize("AGECAT" + Integer.toString(idx), theCharacter);
+					age.set(charDisplay.getAge());
+					ageCategory.set(ageCat);
 					refreshStatScores();
 					refreshLanguageList();
 				}
@@ -3166,12 +3106,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 			if (availablePool != 0)
 			{
-				statTotalLabelText.setReference(LanguageBundle.getFormattedString("in_sumStatCost", SettingsHandler //$NON-NLS-1$
+				statTotalLabelText.set(LanguageBundle.getFormattedString("in_sumStatCost", SettingsHandler //$NON-NLS-1$
 						.getGame().getPurchaseModeMethodName()));
-				statTotalText.setReference(LanguageBundle.getFormattedString(
+				statTotalText.set(LanguageBundle.getFormattedString(
 						"in_sumStatPurchaseDisplay", bString, availablePool)); //$NON-NLS-1$
-				modTotalLabelText.setReference("");
-				modTotalText.setReference("");
+				modTotalLabelText.set("");
+				modTotalText.set("");
 			}
 
 			if (checkPurchasePoints && (availablePool != 0))
@@ -3209,11 +3149,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 				modTotal += currentMod;
 			}
 
-			statTotalLabelText.setReference(LanguageBundle.getString("in_sumStatTotalLabel")); //$NON-NLS-1$
+			statTotalLabelText.set(LanguageBundle.getString("in_sumStatTotalLabel")); //$NON-NLS-1$
 			statTotalText
-					.setReference(LanguageBundle.getFormattedString("in_sumStatTotal", Integer.toString(statTotal)));
-			modTotalLabelText.setReference(LanguageBundle.getString("in_sumModTotalLabel"));
-			modTotalText.setReference(LanguageBundle.getFormattedString("in_sumModTotal", Integer.toString(modTotal)));
+					.set(LanguageBundle.getFormattedString("in_sumStatTotal", Integer.toString(statTotal)));
+			modTotalLabelText.set(LanguageBundle.getString("in_sumModTotalLabel"));
+			modTotalText.set(LanguageBundle.getFormattedString("in_sumModTotal", Integer.toString(modTotal)));
 		}
 
 		if (charLevelsFacade.getSize() == 0
@@ -3325,7 +3265,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			return;
 		}
 		GameMode game = (GameMode) dataSet.getGameMode();
-		rollMethodRef.setReference(game.getRollMethod());
+		rollMethodRef.set(game.getRollMethod());
 		if (SettingsHandler.getGame().isPurchaseStatMode())
 		{
 			int availablePool = RollingMethods.roll(SettingsHandler.getGame().getPurchaseModeMethodPoolFormula());
@@ -3334,8 +3274,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			// Make sure all scores are within the valid range
 			for (StatFacade stat : statScoreMap.keySet())
 			{
-				DefaultReferenceFacade<Integer> score = statScoreMap.get(stat);
-				if (score.getReference() < SettingsHandler.getGame().getPurchaseScoreMin(theCharacter)
+				WriteableReferenceFacade<Number> score = statScoreMap.get(stat);
+				if (score.get().intValue() < SettingsHandler.getGame().getPurchaseScoreMin(theCharacter)
 						&& stat instanceof PCStat)
 				{
 					setStatToPurchaseNeutral((PCStat) stat, score);
@@ -3344,7 +3284,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 		}
 
-		hpRef.setReference(theCharacter.hitPoints());
+		hpRef.set(theCharacter.hitPoints());
 		updateScorePurchasePool(false);
 	}
 
@@ -3355,7 +3295,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 * @param pcStat The stata ebing adjusted.
 	 * @param scoreRef The reference tothe current score.
 	 */
-	private void setStatToPurchaseNeutral(PCStat pcStat, DefaultReferenceFacade<Integer> scoreRef)
+	private void setStatToPurchaseNeutral(PCStat pcStat, WriteableReferenceFacade<Number> scoreRef)
 	{
 		int newScore = SettingsHandler.getGame().getPurchaseModeBaseStatScore(theCharacter);
 		if (StringUtils.isNotEmpty(validateNewStatBaseScore(newScore, pcStat, charDisplay.totalNonMonsterLevels())))
@@ -3369,12 +3309,9 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		theCharacter.setStat(pcStat, newScore);
-		scoreRef.setReference(newScore);
+		scoreRef.set(newScore);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void adjustFunds(BigDecimal modVal)
 	{
@@ -3383,9 +3320,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		updateWealthFields();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setFunds(BigDecimal newVal)
 	{
@@ -3393,18 +3327,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		updateWealthFields();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<BigDecimal> getFundsRef()
 	{
 		return fundsRef;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<BigDecimal> getWealthRef()
 	{
@@ -3420,7 +3348,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setGearBuySellRef(GearBuySellFacade gearBuySell)
 	{
-		gearBuySellSchemeRef.setReference(gearBuySell);
+		gearBuySellSchemeRef.set(gearBuySell);
 		GearBuySellScheme scheme = (GearBuySellScheme) gearBuySell;
 		int rate = scheme.getBuyRate().intValue();
 		SettingsHandler.setGearTab_BuyRate(rate);
@@ -3433,22 +3361,16 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void updateWealthFields()
 	{
-		fundsRef.setReference(theCharacter.getGold());
-		wealthRef.setReference(theCharacter.totalValue());
+		fundsRef.set(theCharacter.getGold());
+		wealthRef.set(theCharacter.totalValue());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setAllowDebt(boolean allowDebt)
 	{
 		this.allowDebt = allowDebt;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isAllowDebt()
 	{
@@ -3468,7 +3390,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 * @see pcgen.core.facade.CharacterFacade#addPurchasedEquipment(pcgen.core.facade.EquipmentFacade, int)
 	 */
 	@Override
-	public void addPurchasedEquipment(EquipmentFacade equipment, int quantity, boolean customize)
+	public void addPurchasedEquipment(EquipmentFacade equipment, int quantity, boolean customize, boolean free)
 	{
 		if (equipment == null || quantity <= 0)
 		{
@@ -3502,7 +3424,9 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 		Equipment updatedItem = theCharacter.getEquipmentNamed(equipItemToAdjust.getName());
 
-		if (!canAfford(equipItemToAdjust, quantity, (GearBuySellScheme) gearBuySellSchemeRef.getReference()))
+		if (!free
+			&& !canAfford(equipItemToAdjust, quantity,
+				(GearBuySellScheme) gearBuySellSchemeRef.get()))
 		{
 			delegate.showInfoMessage(Constants.APPLICATION_NAME,
 					LanguageBundle.getFormattedString("in_igBuyInsufficientFunds", quantity, //$NON-NLS-1$
@@ -3537,8 +3461,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		// Update the PC and equipment
-		double itemCost = calcItemCost(updatedItem, quantity, (GearBuySellScheme) gearBuySellSchemeRef.getReference());
-		theCharacter.adjustGold(itemCost * -1);
+		if (!free)
+		{
+			double itemCost = calcItemCost(updatedItem, quantity, (GearBuySellScheme) gearBuySellSchemeRef.get());
+			theCharacter.adjustGold(itemCost * -1);
+		}
 		theCharacter.setCalcEquipmentList();
 		theCharacter.setDirty(true);
 		updateWealthFields();
@@ -3546,7 +3473,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 	private boolean hasBeenAdjusted(Equipment equipItemToAdjust)
 	{
-		Set<EquipmentModifier> allEqMods = new HashSet<EquipmentModifier>(equipItemToAdjust.getEqModifierList(true));
+		Set<EquipmentModifier> allEqMods = new HashSet<>(equipItemToAdjust.getEqModifierList(true));
 		allEqMods.addAll(equipItemToAdjust.getEqModifierList(false));
 		for (EquipmentModifier eqMod : allEqMods)
 		{
@@ -3606,6 +3533,27 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			newEquip.put(ObjectKey.BASE_ITEM, CDOMDirectSingleRef.getRef(aEq));
 		}
 
+		List<VarModifier<?>> modifiers = newEquip.getListFor(ListKey.MODIFY);
+		if (modifiers != null)
+		{
+			for (VarModifier<?> vm : modifiers)
+			{
+				theCharacter.addModifier(vm, newEquip, newEquip);
+			}
+		}
+
+		for (EquipmentHead head : newEquip.getEquipmentHeads())
+		{
+			modifiers = head.getListFor(ListKey.MODIFY);
+			if (modifiers != null)
+			{
+				for (VarModifier<?> vm : modifiers)
+				{
+					theCharacter.addModifier(vm, head, head);
+				}
+			}
+		}
+
 		EquipmentBuilderFacadeImpl builder =
 				new EquipmentBuilderFacadeImpl(newEquip, theCharacter, delegate);
 		CustomEquipResult result =
@@ -3614,6 +3562,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		{
 			dataSet.addEquipment(newEquip);
 		}
+		//TODO if this is returning null, then the SolverManager needs to destroy the unused channels :/
 		return result == CustomEquipResult.PURCHASE ? newEquip : null;
 	}
 
@@ -3621,7 +3570,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 * @see pcgen.core.facade.CharacterFacade#removePurchasedEquipment(pcgen.core.facade.EquipmentFacade, int)
 	 */
 	@Override
-	public void removePurchasedEquipment(EquipmentFacade equipment, int quantity)
+	public void removePurchasedEquipment(EquipmentFacade equipment, int quantity, boolean free)
 	{
 		if (equipment == null || quantity <= 0)
 		{
@@ -3673,18 +3622,19 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		// Update the PC and equipment
-		double itemCost = calcItemCost(updatedItem, numRemoved * -1,
-				(GearBuySellScheme) gearBuySellSchemeRef.getReference());
-		theCharacter.adjustGold(itemCost * -1);
+		if (!free)
+		{
+			double itemCost =
+					calcItemCost(updatedItem, numRemoved * -1,
+						(GearBuySellScheme) gearBuySellSchemeRef.get());
+			theCharacter.adjustGold(itemCost * -1);
+		}
 		theCharacter.setCalcEquipmentList();
 		theCharacter.setDirty(true);
 		updateWealthFields();
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void deleteCustomEquipment(EquipmentFacade eqFacade)
 	{
@@ -3708,7 +3658,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			return;
 		}
 		
-		removePurchasedEquipment(itemToBeDeleted, Integer.MAX_VALUE);
+		removePurchasedEquipment(itemToBeDeleted, Integer.MAX_VALUE, false);
 		Globals.getContext().getReferenceContext().forget(itemToBeDeleted);
 		
 		if (dataSet.getEquipment() instanceof DefaultListFacade<?>)
@@ -3744,7 +3694,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	{
 		final Equipment equip = (Equipment) equipment;
 		final SizeAdjustment newSize = charDisplay.getSizeAdjustment();
-		if (equip.getSizeAdjustment() == newSize || !Globals.canResizeHaveEffect(theCharacter, equip, null))
+		if (equip.getSizeAdjustment() == newSize || !Globals.canResizeHaveEffect(equip, null))
 		{
 			return equipment;
 		}
@@ -3924,10 +3874,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	private void refreshTotalWeight()
 	{
 		String weight = Globals.getGameModeUnitSet().displayWeightInUnitSet(charDisplay.totalWeight().doubleValue());
-		carriedWeightRef.setReference(weight);
+		carriedWeightRef.set(weight);
 
 		Load load = charDisplay.getLoadType();
-		loadRef.setReference(CoreUtility.capitalizeFirstLetter(load.toString()));
+		loadRef.set(CoreUtility.capitalizeFirstLetter(load.toString()));
 
 		Float mult = SettingsHandler.getGame().getLoadInfo().getLoadMultiplier(load.toString());
 		double limit = 0.0f;
@@ -3955,7 +3905,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			loadLimit.append("+ ");
 		}
 		loadLimit.append(Globals.getGameModeUnitSet().getWeightUnit());
-		weightLimitRef.setReference(loadLimit.toString());
+		weightLimitRef.set(loadLimit.toString());
 	}
 
 	/* (non-Javadoc)
@@ -3964,7 +3914,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void hitPointsChanged(CharacterLevelEvent e)
 	{
-		hpRef.setReference(theCharacter.hitPoints());
+		hpRef.set(theCharacter.hitPoints());
 	}
 
 	/* (non-Javadoc)
@@ -4010,6 +3960,21 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	}
 
 	/* (non-Javadoc)
+	 * @see pcgen.core.facade.CharacterFacade#isQualifiedFor(pcgen.core.facade.DeityFacade)
+	 */
+	@Override
+	public boolean isQualifiedFor(DeityFacade deityFacade)
+	{
+		if (!(deityFacade instanceof Deity))
+		{
+			return false;
+		}
+		Deity aDeity = (Deity) deityFacade;
+		return PrereqHandler.passesAll(aDeity.getPrerequisiteList(), theCharacter, aDeity)
+				&& theCharacter.isQualified(aDeity);
+	}
+	
+	/* (non-Javadoc)
 	 * @see pcgen.core.facade.CharacterFacade#isQualifiedFor(pcgen.core.facade.DomainFacade)
 	 */
 	@Override
@@ -4030,9 +3995,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isQualifiedFor(TempBonusFacade tempBonusFacade)
 	{
@@ -4050,9 +4012,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isQualifiedFor(SpellFacade spellFacade,
 		ClassFacade classFacade)
@@ -4079,9 +4038,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isQualifiedFor(EquipmentFacade equipFacade, EquipModFacade eqModFacade)
 	{
@@ -4094,7 +4050,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		EquipmentModifier eqMod = (EquipmentModifier) eqModFacade;
 		
 		//TODO: Handle second head
-		return equip.canAddModifier(eqMod, true);
+		return equip.canAddModifier(theCharacter, eqMod, true);
 	}
 	
 	/* (non-Javadoc)
@@ -4230,7 +4186,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setPortrait(File file)
 	{
-		portrait.setReference(file);
+		portrait.set(file);
 		theCharacter.setPortraitPath(file == null ? null : file.getAbsolutePath());
 	}
 
@@ -4243,31 +4199,22 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void setThumbnailCrop(Rectangle rect)
 	{
-		cropRect.setReference(rect);
+		cropRect.set(rect);
 		theCharacter.setPortraitThumbnailRect(rect);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isDirty()
 	{
 		return theCharacter.isDirty();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CompanionSupportFacade getCompanionSupport()
 	{
 		return companionSupportFacade;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getCompanionType()
 	{
@@ -4279,9 +4226,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CharacterStubFacade getMaster()
 	{
@@ -4318,9 +4262,9 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		@Override
-		public Rectangle getReference()
+		public Rectangle get()
 		{
-			Rectangle rect = super.getReference();
+			Rectangle rect = super.get();
 			if (rect != null)
 			{
 				rect = (Rectangle) rect.clone();
@@ -4329,9 +4273,9 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		}
 
 		@Override
-		public void setReference(Rectangle rect)
+		public void set(Rectangle rect)
 		{
-			Rectangle old = getReference();
+			Rectangle old = get();
 			if (ObjectUtils.equals(old, rect))
 			{
 				return;
@@ -4350,18 +4294,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public DefaultListFacade<KitFacade> getKits()
 	{
 		return kitList;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void addKit(KitFacade obj)
 	{
@@ -4378,8 +4316,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 
 		Logging.log(Logging.INFO, charDisplay.getName()
 			+ ": Testing kit " + kit); //$NON-NLS-1$
-		List<BaseKit> thingsToAdd = new ArrayList<BaseKit>();
-		List<String> warnings = new ArrayList<String>();
+		List<BaseKit> thingsToAdd = new ArrayList<>();
+		List<String> warnings = new ArrayList<>();
 		kit.testApplyKit(theCharacter, thingsToAdd, warnings);
 
 		//
@@ -4398,13 +4336,13 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		kitList.addElement(obj);
 
 		// Kits can upate most things so do a thorough refresh
-		race.setReference(charDisplay.getRace());
+		race.set(charDisplay.getRace());
 		refreshRaceRelatedFields();
-		name.setReference(charDisplay.getName());
-		characterType.setReference(charDisplay.getCharacterType());
+		name.set(charDisplay.getName());
+		characterType.set(charDisplay.getCharacterType());
 
 		// Deity and domains
-		deity.setReference(charDisplay.getDeity());
+		deity.set(charDisplay.getDeity());
 		buildAvailableDomainsList();
 		
 		refreshStatScores();
@@ -4415,8 +4353,8 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	 */
 	private void refreshEquipment()
 	{
-		fundsRef.setReference(theCharacter.getGold());
-		wealthRef.setReference(theCharacter.totalValue());
+		fundsRef.set(theCharacter.getGold());
+		wealthRef.set(theCharacter.totalValue());
 
 		purchasedEquip.refresh(theCharacter.getEquipmentMasterList());
 		initEquipSet();
@@ -4456,13 +4394,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return delegate.showWarningConfirm(kit.getDisplayName(), warningMsg.toString());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-    @Override
+	@Override
 	public List<KitFacade> getAvailableKits()
 	{
-		List<KitFacade> kits = new ArrayList<KitFacade>();
+		List<KitFacade> kits = new ArrayList<>();
 		for (KitFacade obj : dataSet.getKits())
 		{
 			if (obj == null || !(obj instanceof Kit))
@@ -4492,22 +4427,16 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 		return theCharacter.getVariable(variableString, isMax);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean matchesCharacter(PlayerCharacter pc)
 	{
 		return theCharacter != null && theCharacter.equals(pc);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void modifyCharges(List<EquipmentFacade> targets)
 	{
-		List<Equipment> chargedEquip = new ArrayList<Equipment>();
+		List<Equipment> chargedEquip = new ArrayList<>();
 		for (EquipmentFacade equipmentFacade : targets)
 		{
 			if (equipmentFacade instanceof Equipment && ((Equipment) equipmentFacade).getMaxCharges() > 0)
@@ -4573,7 +4502,7 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	@Override
 	public void addNote(List<EquipmentFacade> targets)
 	{
-		List<Equipment> notedEquip = new ArrayList<Equipment>();
+		List<Equipment> notedEquip = new ArrayList<>();
 		for (EquipmentFacade equipmentFacade : targets)
 		{
 			if (equipmentFacade instanceof Equipment)
@@ -4608,14 +4537,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	}
 	
 	/**
-	 * The Class <code>LanguageListener</code> tracks adding and removal of 
+	 * The Class {@code LanguageListener} tracks adding and removal of
 	 * languages to the character.
 	 */
 	public class LanguageListener implements DataFacetChangeListener<CharID, Language>
 	{
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataAdded(DataFacetChangeEvent<CharID, Language> dfce)
 		{
@@ -4626,9 +4552,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			refreshLanguageList();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataRemoved(DataFacetChangeEvent<CharID, Language> dfce)
 		{
@@ -4642,14 +4565,11 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	}
 	
 	/**
-	 * The Class <code>TemplateListener</code> tracks adding and removal of 
+	 * The Class {@code TemplateListener} tracks adding and removal of
 	 * templates to the character.
 	 */
 	public class TemplateListener implements DataFacetChangeListener<CharID, PCTemplate>
 	{
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataAdded(DataFacetChangeEvent<CharID, PCTemplate> dfce)
 		{
@@ -4660,9 +4580,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			refreshTemplates();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataRemoved(DataFacetChangeEvent<CharID, PCTemplate> dfce)
 		{
@@ -4676,13 +4593,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	}
 	
 	/**
-	 * The Class <code>XPListener</code> tracks changes to the character's experience value.
+	 * The Class {@code XPListener} tracks changes to the character's experience value.
 	 */
 	public class XPListener implements DataFacetChangeListener<CharID, Integer>
 	{
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataAdded(DataFacetChangeEvent<CharID, Integer> dfce)
 		{
@@ -4693,9 +4607,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			checkForNewLevel();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataRemoved(DataFacetChangeEvent<CharID, Integer> dfce)
 		{
@@ -4705,13 +4616,10 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	}
 	
 	/**
-	 * The Class <code>AutoEquipListener</code> tracks changes to the character's automatically granted equipment.
+	 * The Class {@code AutoEquipListener} tracks changes to the character's automatically granted equipment.
 	 */
 	public class AutoEquipListener implements DataFacetChangeListener<CharID, QualifiedObject<CDOMReference<Equipment>>>
 	{
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataAdded(DataFacetChangeEvent<CharID, QualifiedObject<CDOMReference<Equipment>>> dfce)
 		{
@@ -4722,9 +4630,6 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 			refreshEquipment();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public void dataRemoved(DataFacetChangeEvent<CharID, QualifiedObject<CDOMReference<Equipment>>> dfce)
 		{
@@ -4742,6 +4647,12 @@ public class CharacterFacadeImpl implements CharacterFacade, EquipmentListListen
 	{
 		List<CoreViewNodeFacade> coreDebugList = CoreUtils.buildCoreDebugList(theCharacter, pers);
 		return coreDebugList;
+	}
+
+	@Override
+	public CharID getCharID()
+	{
+		return theCharacter.getCharID();
 	}
 
 }

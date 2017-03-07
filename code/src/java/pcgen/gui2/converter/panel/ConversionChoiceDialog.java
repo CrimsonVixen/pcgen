@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 27/01/2009 10:56:36 PM
  *
- * $Id$
  */
 package pcgen.gui2.converter.panel;
 
@@ -43,15 +41,11 @@ import pcgen.system.LanguageBundle;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>ConversionChoiceDialog</code> is responsible for 
+ * The Class {@code ConversionChoiceDialog} is responsible for
  * displaying choices the user needs to make as part of the conversion 
  * of some data items. 
  * 
- * Last Editor: $Author$
- * Last Edited: $Date$
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("serial")
 public class ConversionChoiceDialog extends JDialog implements

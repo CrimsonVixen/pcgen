@@ -17,7 +17,6 @@ import java.util.Stack;
  * otherise.
  * </p>
  *
- * @author Ross M. Lodge
  *
  */
 public class IfCommand extends PCGenCommand
@@ -75,7 +74,7 @@ public class IfCommand extends PCGenCommand
 
 		if (param1 instanceof Number)
 		{
-			condition = (((Number) param1).doubleValue() != 0d);
+			condition = (((Number) param1).doubleValue() != 0.0d);
 		}
 		else if (param1 instanceof Boolean)
 		{

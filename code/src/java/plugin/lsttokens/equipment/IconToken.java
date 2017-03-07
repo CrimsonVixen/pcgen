@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 14/02/2011 8:40:15 PM
  *
- * $Id$
  */
 package plugin.lsttokens.equipment;
 
@@ -34,15 +32,11 @@ import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * The Class <code>IconToken</code> processes the ICPON token. This 
+ * The Class {@code IconToken} processes the ICPON token. This
  * allows an icon to be specified for the item of equipment.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class IconToken extends AbstractNonEmptyToken<Equipment> implements
 		CDOMPrimaryToken<Equipment>

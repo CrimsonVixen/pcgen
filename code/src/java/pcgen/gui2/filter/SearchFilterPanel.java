@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on May 14, 2010, 2:08:09 PM
  */
 package pcgen.gui2.filter;
 
@@ -32,7 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.facade.core.CampaignFacade;
 import pcgen.facade.core.InfoFacade;
@@ -44,12 +43,8 @@ import pcgen.system.LanguageBundle;
  * button. When text is typed into the field the table contents will be 
  * filtered to only those matching the search text.
  *
- * <br/>
- * Last Editor: $Author:  $
- * Last Edited: $Date:  $
+ * <br>
  * 
- * @author Connor Petty <cpmeister@users.sourceforge.net>
- * @version $Revision:  $
  */
 public class SearchFilterPanel extends JPanel
 		implements DisplayableFilter<Object, Object>, DocumentListener, ActionListener
@@ -90,7 +85,7 @@ public class SearchFilterPanel extends JPanel
 	private void refreshFilter()
 	{
 		String text = searchField.getText();
-		filterHandler.setSearchEnabled(text != null && text.length() > 0);
+		filterHandler.setSearchEnabled(text != null && !text.isEmpty());
 		filterHandler.refilter();
 		filterHandler.scrollToTop();
 	}
@@ -127,9 +122,6 @@ public class SearchFilterPanel extends JPanel
 		this.filterHandler = handler;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{

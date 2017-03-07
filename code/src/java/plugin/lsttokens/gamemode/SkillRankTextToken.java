@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on October 6, 2005, 8:58 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.lsttokens.gamemode;
@@ -32,9 +28,8 @@ import java.net.URI;
 import java.util.StringTokenizer;
 
 /**
- * <code>SkillRankTextToken</code>
+ * {@code SkillRankTextToken}
  *
- * @author  Greg Bingleman <byngl@hotmail.com>
  */
 public class SkillRankTextToken implements GameModeLstToken
 {

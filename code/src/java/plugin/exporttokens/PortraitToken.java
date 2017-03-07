@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on December 15, 2003, 12:21 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package plugin.exporttokens;
@@ -35,7 +31,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.cdom.base.Constants;
 import pcgen.core.display.CharacterDisplay;
@@ -44,15 +40,11 @@ import pcgen.io.exporttoken.AbstractExportToken;
 import pcgen.util.Logging;
 
 /**
- * The Class <code>PortraitToken</code> supports the PORTRAIT 
+ * The Class {@code PortraitToken} supports the PORTRAIT
  * token and its and PORTRAIT.THUMB variant.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class PortraitToken extends AbstractExportToken
 {
@@ -109,7 +101,7 @@ public class PortraitToken extends AbstractExportToken
 		File thumbFile;
 		try
 		{
-			thumbFile = File.createTempFile("pcgentmb_", ".jpg");
+			thumbFile = File.createTempFile("pcgentmb_", ".png");
 		}
 		catch (IOException e1)
 		{
@@ -119,7 +111,7 @@ public class PortraitToken extends AbstractExportToken
 		} 
 		try
 		{
-			ImageIO.write(thumb, "JPEG", thumbFile);
+			ImageIO.write(thumb, "PNG", thumbFile);
 		}
 		catch (IOException e)
 		{

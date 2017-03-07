@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Oct 1, 2011, 4:48:35 PM
  */
 package pcgen.gui2.tabs.models;
 
@@ -30,7 +29,6 @@ import pcgen.facade.util.event.ReferenceListener;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public abstract class TextFieldHandler implements DocumentListener, ReferenceListener<String>
 {
@@ -55,7 +53,7 @@ public abstract class TextFieldHandler implements DocumentListener, ReferenceLis
 	 */
 	public void install()
 	{
-		textField.setText(ref.getReference());
+		textField.setText(ref.get());
 		textField.getDocument().addDocumentListener(this);
 		ref.addReferenceListener(this);
 	}

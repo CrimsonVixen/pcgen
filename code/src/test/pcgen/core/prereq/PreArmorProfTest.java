@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 22/03/2008
  *
- * $Id$
  */
 package pcgen.core.prereq;
 
@@ -49,11 +47,7 @@ import pcgen.util.TestHelper;
  * <code>PreArmorProfTest</code> tests that the PREARMORPROF tag is
  * working correctly.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class PreArmorProfTest extends AbstractCharacterTestCase
 {

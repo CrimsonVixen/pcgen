@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 4-feb-07
  *
- * $Id$
  */
 package pcgen.gui2.util;
 
@@ -35,16 +33,12 @@ import junit.textui.TestRunner;
 /**
  * <code>InfoLabelTextBuilderTest</code> tests the HtmlInfoBuilder.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author Koen Van Daele <vandaelek@users.sourceforge.net>
- * @version $Revision$
  */
 @SuppressWarnings("nls")
 public class HtmlInfoBuilderTest extends TestCase
 {
-	public static void main(String args[])
+	public static void main(String[] args)
 	{
 		TestRunner.run(HtmlInfoBuilderTest.class);
 	}

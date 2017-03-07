@@ -20,8 +20,6 @@
  *
  *
  * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  */
 package pcgen.core;
 
@@ -47,10 +45,9 @@ import pcgen.system.PCGenSettings;
 import pcgen.util.Logging;
 
 /**
- * <code>CustomData</code>
+ * {@code CustomData}
  *
- * @author Greg Bingleman <byngl@hotmail.com>
- * @version $Revision$
+ * @author Greg Bingleman &lt;byngl@hotmail.com&gt;
  */
 public final class CustomData
 {
@@ -341,7 +338,7 @@ public final class CustomData
 			bw.write("#");
 			bw.newLine();
 
-			if (pbStatCosts.size() > 0)
+			if (!pbStatCosts.isEmpty())
 			{
 				for ( Integer statValue : pbStatCosts.keySet() )
 				{
@@ -511,7 +508,7 @@ public final class CustomData
 					}
 
 					final String key = race.getKeyName();
-					bw.write(Globals.getBioSet().getRacePCCText(region, key));
+					bw.write(SettingsHandler.getGame().getBioSet().getRacePCCText(region, key));
 					bw.newLine();
 				}
 			}
@@ -655,7 +652,7 @@ public final class CustomData
 	{
 		for ( Campaign c : Globals.getCampaignList() )
 		{
-			if (c.getSafe(StringKey.DESTINATION).length() > 0)
+			if (!c.getSafe(StringKey.DESTINATION).isEmpty())
 			{
 				CampaignOutput.output(Globals.getContext(), c);
 			}
@@ -675,7 +672,8 @@ public final class CustomData
 		{
 			writeCustomHeader(bw);
 
-			for(Spell spell : Globals.getSpellMap().values())
+			for(Spell spell : Globals.getContext().getReferenceContext()
+					.getConstructedCDOMObjects(Spell.class))
 			{
 				if (spell.isType(Constants.TYPE_CUSTOM))
 				{

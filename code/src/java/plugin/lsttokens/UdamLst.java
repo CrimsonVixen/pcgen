@@ -41,7 +41,6 @@ import pcgen.rules.persistence.token.ParseResult;
 import pcgen.util.Logging;
 
 /**
- * @author djones4
  *
  */
 public class UdamLst extends AbstractToken implements CDOMPrimaryToken<CDOMObject>,
@@ -136,19 +135,18 @@ public class UdamLst extends AbstractToken implements CDOMPrimaryToken<CDOMObjec
 		{
 			return null;
 		}
-		List<String> returnList = new ArrayList<String>(2);
+		List<String> returnList = new ArrayList<>(2);
 		if (changes.includesGlobalClear())
 		{
 			returnList.add(Constants.LST_DOT_CLEAR);
 		}
 		Collection<String> list = changes.getAdded();
-		if (list != null && (list.size() == 9 || list.size() == 1))
+		if (list != null)
 		{
 			returnList.add(StringUtil.join(list, Constants.COMMA));
 		}
 		if (returnList.isEmpty())
 		{
-			context.addWriteMessage(getTokenName() + " requires either 1 value or 9 values");
 			return null;
 		}
 		return returnList.toArray(new String[returnList.size()]);

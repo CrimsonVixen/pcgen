@@ -17,6 +17,7 @@
  */
 package pcgen.cdom.facet;
 
+import pcgen.cdom.enumeration.CharID;
 import pcgen.cdom.facet.base.AbstractAssociationFacet;
 import pcgen.cdom.inst.PCClassLevel;
 
@@ -24,9 +25,8 @@ import pcgen.cdom.inst.PCClassLevel;
  * SubstitutionClassFacet stores the SubClass identifier that are applied to a
  * Player Character, in relation to the parent PCClassLevel objects.
  * 
- * @author Thomas Parker (thpr [at] yahoo.com)
  */
 public class SubstitutionClassFacet extends
-		AbstractAssociationFacet<PCClassLevel, String>
+		AbstractAssociationFacet<CharID, PCClassLevel, String>
 {
 }

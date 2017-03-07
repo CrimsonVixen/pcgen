@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 28/01/2008
  *
- * $Id$
  */
 
 package plugin.lsttokens.campaign;
@@ -31,13 +29,9 @@ import pcgen.rules.persistence.token.CDOMPrimaryToken;
 import pcgen.rules.persistence.token.ParseResult;
 
 /**
- * <code>DescToken</code> parses the DESC token for campaigns.
+ * {@code DescToken} parses the DESC token for campaigns.
  *
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class DescToken extends AbstractNonEmptyToken<Campaign> implements
 		CDOMPrimaryToken<Campaign>

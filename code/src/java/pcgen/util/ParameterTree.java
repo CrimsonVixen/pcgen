@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 10 March 2007
  *
- * $Id$
  *
  */
 package pcgen.util;
@@ -103,7 +101,7 @@ public class ParameterTree
             final String pre = source.substring(0, pM.start());
             final int    end = getIndexOfClosingParen(source, pM.start());
 
-            if (0 == pre.length()) {
+            if (pre.isEmpty()) {
 
                 final String inside = source.substring(pM.end(), end - 1);
                 t = makeTree(inside, false);

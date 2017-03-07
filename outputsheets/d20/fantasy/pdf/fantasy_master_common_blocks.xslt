@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: fantasy_master_alt_condensed.xslt 23548 2014-03-28 06:52:47Z amaitland $ -->
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:fo="http://www.w3.org/1999/XSL/Format"
@@ -36,9 +35,18 @@
 	<xsl:variable name="vAttribs_tree">
 		<myAttribs:myAttribs>
 			<xsl:copy-of select="$vAttribs/*"/>
-		</myAttribs:myAttribs>
+      <pfs_chronicles.title><subattrib centre="" inverse=""/></pfs_chronicles.title>
+      <pfs_chronicles.border><subattrib border="" normal=""/></pfs_chronicles.border>
+      <pfs_chronicles.lightline><subattrib light=""/></pfs_chronicles.lightline>
+      <pfs_chronicles.darkline><subattrib medium=""/></pfs_chronicles.darkline>
+      <pfs_boons.title><subattrib centre="" inverse=""/></pfs_boons.title>
+      <pfs_boons.border><subattrib border="" normal=""/></pfs_boons.border>
+      <pfs_boons.lightline><subattrib light=""/></pfs_boons.lightline>
+      <pfs_boons.darkline><subattrib medium=""/></pfs_boons.darkline>
+    </myAttribs:myAttribs>
 	</xsl:variable>
 	<xsl:variable name="vAttribs_all" select="xalan:nodeset($vAttribs_tree)"/>
+
 	<xsl:variable name="pageHeight">
 		<xsl:choose>
 			<xsl:when test="contains(/character/export/paperinfo/height, 'in')">
@@ -222,7 +230,8 @@
 ====================================
 ====================================-->
 	<xsl:template name="page.footer.content">
-		<fo:table table-layout="fixed">
+		<xsl:attribute name="font-family"><xsl:value-of select="$PCGenFont"/></xsl:attribute>
+		<fo:table table-layout="fixed" width="100%">
 			<fo:table-column>
 				<xsl:attribute name="column-width"><xsl:value-of select="0.25 * $pagePrintableWidth" />mm</xsl:attribute>
 			</fo:table-column>
@@ -239,7 +248,7 @@
 						<fo:block font-size="5pt">Player: <fo:inline font-weight="bold"><xsl:value-of select="/character/basics/playername"/></fo:inline></fo:block>
 					</fo:table-cell>
 					<fo:table-cell text-align="center" wrap-option="no-wrap" border-top-color="black" border-top-style="solid" border-top-width="0.1pt" background-color="transparent" padding-top="2pt">
-						<fo:block text-align="center" font-size="5pt">PCGen Character Template by Frugal, based on work by ROG, Arcady, Barak, Dimrill, Dekker &amp; Andrew Maitland (LegacyKing).</fo:block>
+						<fo:block text-align="center" font-size="5pt">PCGen Character Template by Andrew Maitland (LegacyKing) and Stefan Radermacher (Zaister), based on work by Frugal, ROG, Arcady, Barak, Dimrill, &amp; Dekker.</fo:block>
 						<fo:block text-align="center" font-size="5pt">Created using <fo:basic-link external-destination="http://pcgen.org/" color="blue" text-decoration="underline">PCGen</fo:basic-link> v<xsl:value-of select="/character/export/version"/> on <xsl:value-of select="/character/export/date"/><xsl:text> at </xsl:text><xsl:value-of select="/character/export/time"/></fo:block>
 					</fo:table-cell>
 					<fo:table-cell text-align="end" border-top-color="black" border-top-style="solid" border-top-width="0.1pt" background-color="transparent" padding-top="2pt">
@@ -271,6 +280,7 @@
 				-->
 			<fo:page-sequence>
 				<xsl:attribute name="master-reference">Portrait</xsl:attribute>
+				<xsl:attribute name="font-family"><xsl:value-of select="$PCGenFont"/></xsl:attribute>
 				<xsl:call-template name="page.footer"/>
 				<!--	CHARACTER BODY STARTS HERE !!!	-->
 				<fo:flow flow-name="body" font-size="8pt">
@@ -279,7 +289,7 @@
 						<xsl:apply-templates select="basics"/>
 					</fo:block>
 					<fo:block span="all">
-						<fo:table table-layout="fixed">
+						<fo:table table-layout="fixed" width="100%">
 							<fo:table-column>
 								<xsl:attribute name="column-width"><xsl:value-of select="0.29 * $pagePrintableWidth" />mm</xsl:attribute>
 							</fo:table-column>
@@ -359,6 +369,7 @@
 			<fo:page-sequence>
 		
 				<xsl:attribute name="master-reference">Portrait 2 Column</xsl:attribute>
+				<xsl:attribute name="font-family"><xsl:value-of select="$PCGenFont"/></xsl:attribute>
 				<xsl:call-template name="page.footer"/>
 				<fo:flow flow-name="body" font-size="8pt">
 					<fo:block>
@@ -385,6 +396,7 @@
 						<xsl:apply-templates select="animal_tricks"/>	
 						<xsl:apply-templates select="special_abilities"/>
 						<xsl:apply-templates select="traits"/>
+						<xsl:apply-templates select="drawbacks"/>
 						<xsl:apply-templates select="afflictions"/>
 						<xsl:apply-templates select="racial_traits"/>
 						<xsl:apply-templates select="special_attacks"/>
@@ -425,9 +437,10 @@
 						<!-- End 4th Edition Style -->
 						<xsl:apply-templates select="salient_divine_abilities"/>
 						<xsl:apply-templates select="feats"/>
-						<xsl:apply-templates select="pfs_chronicles"/>	
+						<xsl:apply-templates select="pfs_chronicles"/>
+            <xsl:apply-templates select="pfs_boons"/>
 
-						<xsl:apply-templates select="domains"/>
+            <xsl:apply-templates select="domains"/>
 						<xsl:apply-templates select="weapon_proficiencies"/>
 <!-->						<xsl:apply-templates select="proficiency_specials"/>-->
 						<xsl:apply-templates select="templates"/>
@@ -441,7 +454,7 @@
 			<xsl:apply-templates select="spells"/>	
 			<xsl:apply-templates select="basics" mode="bio"/>
 			<xsl:apply-templates select="basics/notes" mode="bio"/>	
-			<xsl:apply-templates select="basics" mode="campaign_histories"/>
+			<xsl:apply-templates select="basics/campaign_histories"/>
 
 		</fo:root>
 	</xsl:template>

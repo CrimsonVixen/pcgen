@@ -17,13 +17,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 22-Jan-2004
  *
- * Current Ver: $Revision$
  * 
- * Last Editor: $Author$
  * 
- * Last Edited: $Date$
  *
  */
 package pcgen.persistence.lst.prereq;
@@ -39,7 +35,6 @@ import pcgen.persistence.PersistenceLayerException;
 import plugin.pretokens.parser.PreClassParser;
 
 /**
- * @author wardc
  *
  */
 @SuppressWarnings("nls")

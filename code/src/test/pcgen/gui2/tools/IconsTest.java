@@ -16,7 +16,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
- * Created on Feb 28, 2011, 11:55:55 PM
  */
 package pcgen.gui2.tools;
 
@@ -29,14 +28,9 @@ import org.junit.Test;
 
 /**
  *
- * @author Connor Petty <cpmeister@users.sourceforge.net>
  */
 public class IconsTest extends TestCase
 {
-
-	public IconsTest()
-	{
-	}
 
 	@BeforeClass
 	public static void setUpClass() throws Exception
@@ -50,14 +44,16 @@ public class IconsTest extends TestCase
 
 	@Before
     @Override
-	public void setUp()
+	public void setUp() throws Exception
 	{
+		super.setUp();
 	}
 
 	@After
     @Override
-	public void tearDown()
+	public void tearDown() throws Exception
 	{
+		super.tearDown();
 	}
 
 	/**

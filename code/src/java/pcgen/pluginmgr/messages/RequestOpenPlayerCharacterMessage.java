@@ -28,17 +28,14 @@ import pcgen.core.PlayerCharacter;
 import pcgen.pluginmgr.PCGenMessage;
 
 /**
- * The Class <code>RequestOpenPlayerCharacterMessage</code> encapsulates a 
+ * The Class {@code RequestOpenPlayerCharacterMessage} encapsulates a
  * message requesting that a specific character be loaded. The requester may
  * ask that the character be added to the message for later use, however this 
  * should not be assumed to be present until all message processing is completed.
  *
- * <br/>
- * Last Editor: $Author$
- * Last Edited: $Date$
+ * <br>
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
+ * @author James Dempsey &lt;jdempsey@users.sourceforge.net&gt;
  */
 @SuppressWarnings("serial")
 public class RequestOpenPlayerCharacterMessage extends PCGenMessage

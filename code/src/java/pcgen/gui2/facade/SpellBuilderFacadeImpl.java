@@ -16,9 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on 10/10/2013
  *
- * $Id$
  */
 package pcgen.gui2.facade;
 
@@ -29,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import pcgen.base.util.HashMapToList;
 import pcgen.cdom.base.CDOMList;
@@ -70,8 +68,6 @@ import pcgen.util.Logging;
  * choices to match the choices already made.
  * 
  * 
- * @author James Dempsey <jdempsey@users.sourceforge.net>
- * @version $Revision$
  */
 public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 {
@@ -99,7 +95,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 	private int minSpellLevel = 0;
 	private int maxSpellLevel = 9;
 	private String reqSpellType = "";
-	private List<String> subTypeList = new ArrayList<String>();
+	private List<String> subTypeList = new ArrayList<>();
 
 	private PlayerCharacter character;
 	private Type requiredType;
@@ -123,21 +119,21 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		masterAvailableSpellFacet = FacetLibrary.getFacet(MasterAvailableSpellFacet.class);	
 		datasetID = character.getCharID().getDatasetID();
 		
-		availClasses = new DefaultListFacade<InfoFacade>();
-		availSpellLevels = new DefaultListFacade<Integer>();
-		availSpells = new DefaultListFacade<InfoFacade>();
-		availVariants = new DefaultListFacade<String>();
-		availCasterlevels = new DefaultListFacade<Integer>();
-		availSpellTypes = new DefaultListFacade<String>();
-		availMetamagicFeats = new DefaultListFacade<AbilityFacade>();
+		availClasses = new DefaultListFacade<>();
+		availSpellLevels = new DefaultListFacade<>();
+		availSpells = new DefaultListFacade<>();
+		availVariants = new DefaultListFacade<>();
+		availCasterlevels = new DefaultListFacade<>();
+		availSpellTypes = new DefaultListFacade<>();
+		availMetamagicFeats = new DefaultListFacade<>();
 
-		pcClass = new DefaultReferenceFacade<InfoFacade>();
-		spellLevel = new DefaultReferenceFacade<Integer>();
-		spell = new DefaultReferenceFacade<InfoFacade>();
-		variant = new DefaultReferenceFacade<String>();
-		casterLevel = new DefaultReferenceFacade<Integer>();
-		spellType = new DefaultReferenceFacade<String>();
-		selMetamagicFeats = new DefaultListFacade<AbilityFacade>();
+		pcClass = new DefaultReferenceFacade<>();
+		spellLevel = new DefaultReferenceFacade<>();
+		spell = new DefaultReferenceFacade<>();
+		variant = new DefaultReferenceFacade<>();
+		casterLevel = new DefaultReferenceFacade<>();
+		spellType = new DefaultReferenceFacade<>();
+		selMetamagicFeats = new DefaultListFacade<>();
 
 		requiredType = Type.NONE;
 		if (equip != null)
@@ -219,7 +215,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 			{
 				if (classList == null)
 				{
-					classList = new ArrayList<String>();
+					classList = new ArrayList<>();
 				}
 
 				classList.add(aString.substring(6));
@@ -228,7 +224,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 			{
 				if (levelList == null)
 				{
-					levelList = new ArrayList<String>();
+					levelList = new ArrayList<>();
 				}
 
 				levelList.add(aString.substring(6));
@@ -314,8 +310,8 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 	 */
 	private void buildLists()
 	{
-		List<PCClass> classes = new ArrayList<PCClass>();
-		List<Domain> domains = new ArrayList<Domain>();
+		List<PCClass> classes = new ArrayList<>();
+		List<Domain> domains = new ArrayList<>();
 
 		if (classList != null)
 		{
@@ -345,7 +341,8 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		}
 		else
 		{
-			for (Spell spell : Globals.getSpellMap().values())
+			for (Spell spell : Globals.getContext().getReferenceContext()
+					.getConstructedCDOMObjects(Spell.class))
 			{
 				if (isSpellOfSubType(spell))
 				{
@@ -366,7 +363,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 					}
 
 					if (!("".equals(reqSpellType))
-						&& (reqSpellType.indexOf(aClass.getSpellType()) < 0))
+						&& (!reqSpellType.contains(aClass.getSpellType())))
 					{
 						continue;
 					}
@@ -396,7 +393,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 				// must have books
 				{
 					if (!(obj instanceof PCClass)
-						|| !((PCClass) obj).getSafe(ObjectKey.SPELLBOOK))
+						|| !obj.getSafe(ObjectKey.SPELLBOOK))
 					{
 						classes.remove(i);
 					}
@@ -408,7 +405,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 			}
 		}
 
-		List<InfoFacade> allObjects = new ArrayList<InfoFacade>();
+		List<InfoFacade> allObjects = new ArrayList<>();
 		Globals.sortPObjectListByName(classes);
 		allObjects.addAll(classes);
 		Globals.sortPObjectListByName(domains);
@@ -417,8 +414,8 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		availClasses.setContents(allObjects);
 
 		// Spell levels
-		List<Integer> spellLevelValues = new ArrayList<Integer>();
-		if ((levelList != null) && (levelList.size() > 0))
+		List<Integer> spellLevelValues = new ArrayList<>();
+		if ((levelList != null) && (!levelList.isEmpty()))
 		{
 			for (int i = minSpellLevel; i < levelList.size(); ++i)
 			{
@@ -429,7 +426,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		{
 			for (int i = minSpellLevel; i <= maxSpellLevel; i++)
 			{
-				spellLevelValues.add(Integer.valueOf(i));
+				spellLevelValues.add(i);
 			}
 		}
 		availSpellLevels.setContents(spellLevelValues);
@@ -440,7 +437,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		//Metamagic
 		if (metaAllowed)
 		{
-			List<Ability> metamagicFeats = new ArrayList<Ability>();
+			List<Ability> metamagicFeats = new ArrayList<>();
 			for (Ability anAbility : Globals.getContext().getReferenceContext().getManufacturer(
 				Ability.class, AbilityCategory.FEAT).getAllObjects())
 			{
@@ -457,11 +454,11 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 	private void addSpellInfoToList(final Spell aSpell, List<PCClass> classes,
 		List<Domain> domains, String spellType)
 	{
-		Set<String> unfoundItems = new HashSet<String>();
+		Set<String> unfoundItems = new HashSet<>();
 		final HashMapToList<CDOMList<Spell>, Integer> levelInfo =
 				character.getSpellLevelInfo(aSpell);
 
-		if ((levelInfo == null) || (levelInfo.size() == 0))
+		if ((levelInfo == null) || (levelInfo.isEmpty()))
 		{
 			//			Logging.errorPrint("Spell: "
 			//				+ aSpell.getKeyName()
@@ -486,7 +483,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 				if (aClass != null)
 				{
 					if (!("".equals(spellType))
-						&& (spellType.indexOf(aClass.getSpellType()) < 0))
+						&& (!spellType.contains(aClass.getSpellType())))
 					{
 						continue;
 					}
@@ -511,7 +508,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 			else if (spellList instanceof DomainSpellList)
 			{
 				if (!("".equals(spellType))
-					&& (spellType.indexOf("Divine") < 0))
+					&& (!spellType.contains("Divine")))
 				{
 					continue;
 				}
@@ -550,7 +547,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 
 	private boolean isSpellOfSubType(Spell aSpell)
 	{
-		if (subTypeList.size() == 0)
+		if (subTypeList.isEmpty())
 		{
 			return true;
 		}
@@ -619,10 +616,10 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 
 	private void updateAvailCasterLevels(int min, int max)
 	{
-		List<Integer> levelsForCasting = new ArrayList<Integer>(20);
+		List<Integer> levelsForCasting = new ArrayList<>(20);
 		for (int i = min; i <= max; i++)
 		{
-			levelsForCasting.add(Integer.valueOf(i));
+			levelsForCasting.add(i);
 		}
 		availCasterlevels.setContents(levelsForCasting);
 	}
@@ -633,10 +630,10 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 	 */
 	private void processLevelChange()
 	{
-		int baseSpellLevel = spellLevel.getReference();
+		int baseSpellLevel = spellLevel.get();
 
 		// List of available spells
-		List<Spell> spellsOfLevel = new ArrayList<Spell>();
+		List<Spell> spellsOfLevel = new ArrayList<>();
 		for (AvailableSpell availSpell : classSpells)
 		{
 			if (availSpell.getLevel() == baseSpellLevel)
@@ -647,7 +644,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		}
 		Globals.sortPObjectListByName(spellsOfLevel);
 		availSpells.setContents(spellsOfLevel);
-		InfoFacade selSpell = spell.getReference();
+		InfoFacade selSpell = spell.get();
 		if (selSpell == null || !spellsOfLevel.contains(selSpell))
 		{
 			Spell newSpell = null;
@@ -661,15 +658,15 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		// Spell type
 		List<String> spellTypeList = getSpellTypeList();
 		availSpellTypes.setContents(spellTypeList);
-		spellType.setReference(spellTypeList.get(0));
+		spellType.set(spellTypeList.get(0));
 	}
 
 	private void selectSpell(Spell newSpell)
 	{
-		spell.setReference(newSpell);
+		spell.set(newSpell);
 
 		// Handle variants
-		List<String> variants = new ArrayList<String>();
+		List<String> variants = new ArrayList<>();
 		;
 		if (newSpell != null)
 		{
@@ -679,14 +676,14 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		availVariants.setContents(variants);
 		if (variants.isEmpty())
 		{
-			variant.setReference(null);
+			variant.set(null);
 		}
 		else
 		{
-			String currVariant = variant.getReference();
+			String currVariant = variant.get();
 			if (currVariant != null && !variants.contains(currVariant))
 			{
-				variant.setReference(null);
+				variant.set(null);
 			}
 		}
 
@@ -707,7 +704,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		int minClassLevel = 1;
 		int maxClassLevel = 20;
 		PCClass aClass;
-		InfoFacade castingClass = pcClass.getReference();
+		InfoFacade castingClass = pcClass.get();
 		if (castingClass instanceof PCClass)
 		{
 			aClass = (PCClass) castingClass;
@@ -731,7 +728,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		{
 			minClassLevel =
 					character.getSpellSupport(aClass).getMinLevelForSpellLevel(
-						spellLevel.getReference() + levelAdjust, true);
+						spellLevel.get() + levelAdjust, true);
 			minClassLevel = Math.max(1, minClassLevel);
 			if (aClass.hasMaxLevel())
 			{
@@ -741,23 +738,23 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 
 		updateAvailCasterLevels(minClassLevel, maxClassLevel);
 		int currCasterLevel =
-				casterLevel.getReference() == null ? 0 : casterLevel
-					.getReference();
+				casterLevel.get() == null ? 0 : casterLevel
+					.get();
 		if (currCasterLevel < minClassLevel)
 		{
-			casterLevel.setReference(minClassLevel);
+			casterLevel.set(minClassLevel);
 		}
 		else if (currCasterLevel > maxClassLevel)
 		{
-			casterLevel.setReference(maxClassLevel);
+			casterLevel.set(maxClassLevel);
 		}
 	}
 
 	private List<String> getSpellTypeList()
 	{
-		List<String> spellTypes = new ArrayList<String>();
+		List<String> spellTypes = new ArrayList<>();
 
-		InfoFacade castingClass = pcClass.getReference();
+		InfoFacade castingClass = pcClass.get();
 		if (castingClass instanceof PCClass)
 		{
 			spellTypes.add(((PCClass) castingClass).getSpellType());
@@ -785,13 +782,10 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		return aSpell.isAllowed(requiredType);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setClass(InfoFacade classFacade)
 	{
-		pcClass.setReference(classFacade);
+		pcClass.set(classFacade);
 
 		if (classFacade instanceof Domain)
 		{
@@ -802,7 +796,7 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 			spellList = ((PCClass) classFacade).get(ObjectKey.CLASS_SPELLLIST);
 		}
 
-		classSpells = new ArrayList<AvailableSpell>();
+		classSpells = new ArrayList<>();
 		for (AvailableSpell availSpell : masterAvailableSpellFacet.getAllSpellsInList(spellList, datasetID))
 		{
 			if (canCreateItem(availSpell.getSpell()))
@@ -811,62 +805,44 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 			}
 		}
 
-		if (spellLevel.getReference() == null)
+		if (spellLevel.get() == null)
 		{
-			spellLevel.setReference(availSpellLevels.getElementAt(0));
+			spellLevel.set(availSpellLevels.getElementAt(0));
 		}
 		processLevelChange();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<InfoFacade> getClassRef()
 	{
 		return pcClass;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<InfoFacade> getClasses()
 	{
 		return availClasses;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setSpellLevel(Integer newSpellLevel)
 	{
-		spellLevel.setReference(newSpellLevel);
+		spellLevel.set(newSpellLevel);
 		processLevelChange();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<Integer> getLevels()
 	{
 		return availSpellLevels;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<Integer> getSpellLevelRef()
 	{
 		return spellLevel;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setSpell(InfoFacade spellFacade)
 	{
@@ -876,112 +852,76 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<InfoFacade> getSpellRef()
 	{
 		return spell;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<InfoFacade> getSpells()
 	{
 		return availSpells;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setVariant(String newVariant)
 	{
-		variant.setReference(newVariant);
+		variant.set(newVariant);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<String> getVariantRef()
 	{
 		return variant;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<String> getVariants()
 	{
 		return availVariants;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setCasterLevel(Integer newCasterLevel)
 	{
-		casterLevel.setReference(newCasterLevel);
+		casterLevel.set(newCasterLevel);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<Integer> getCasterLevelRef()
 	{
 		return casterLevel;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<Integer> getCasterLevels()
 	{
 		return availCasterlevels;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setSpellType(String newSpellType)
 	{
-		spellType.setReference(newSpellType);
+		spellType.set(newSpellType);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ReferenceFacade<String> getSpellTypeRef()
 	{
 		return spellType;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<String> getSpellTypes()
 	{
 		return availSpellTypes;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setSelectedMetamagicFeats(Object[] newFeats)
 	{
-		List<AbilityFacade> chosenFeats = new ArrayList<AbilityFacade>();
+		List<AbilityFacade> chosenFeats = new ArrayList<>();
 		for (Object choice : newFeats)
 		{
 			if (choice instanceof AbilityFacade)
@@ -993,18 +933,12 @@ public class SpellBuilderFacadeImpl implements SpellBuilderFacade
 		recalcCasterLevelDetails();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<AbilityFacade> getSelectedMetamagicFeats()
 	{
 		return selMetamagicFeats;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ListFacade<AbilityFacade> getAvailMetamagicFeats()
 	{

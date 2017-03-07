@@ -16,11 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
- * Created on March 07, 2002, 8:30 PM
  *
- * Current Ver: $Revision$
- * Last Editor: $Author$
- * Last Edited: $Date$
  *
  */
 package pcgen.io;
@@ -31,13 +27,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -107,8 +103,6 @@ import pcgen.util.enumeration.View;
  * code in here deals with replacing tokens and dealing with the FOR and IIF 
  * constructs that can be found in the character sheet templates. 
  *
- * @author Thomas Behr
- * @version $Revision$
  */
 public final class ExportHandler
 {
@@ -116,7 +110,7 @@ public final class ExportHandler
 	private static final Float JEP_TRUE = new Float(1.0);
 
 	/** A map of output tokens to export */
-	private static Map<String, Token> tokenMap = new HashMap<String, Token>();
+	private static Map<String, Token> tokenMap = new HashMap<>();
 
 	/** 
 	 * A variable to hold the state of whether or not the output token map to
@@ -148,8 +142,8 @@ public final class ExportHandler
 	 * These maps hold the loop variables and parameters of FOR constructs that 
 	 * will be replaced by their actual values when evaluated.
 	 */
-	private final Map<Object, Object> loopVariables = new HashMap<Object, Object>();
-	private final Map<Object, Object> loopParameters = new HashMap<Object, Object>();
+	private final Map<Object, Object> loopVariables = new HashMap<>();
+	private final Map<Object, Object> loopParameters = new HashMap<>();
 
 	/** The delimiter used by embedded DFOR/FOR loops */
 	private String csheetTag2 = "\\";
@@ -250,8 +244,6 @@ public final class ExportHandler
 					new StringTokenizer(template.toString(),
 						Constants.LINE_SEPARATOR, false);
 
-			final FileAccess fileAccess = new FileAccess();
-
 			// Get FOR loops and IIF statements
 			final FORNode root = parseFORsAndIIFs(tokenizer);
 
@@ -264,7 +256,7 @@ public final class ExportHandler
 
 			// Now actually process the FOR loops in the template
 			// and then clear the loop variables
-			loopFOR(root, 0, 0, 1, out, fileAccess, aPC);
+			loopFOR(root, 0, 0, 1, out, aPC);
 			loopVariables.clear();
 		}
 		catch (IOException exc)
@@ -339,7 +331,7 @@ public final class ExportHandler
 			// data-model
 			Map<String, Object> pc = OutputDB.buildDataModel(aPC.getCharID());
 			Map<String, Object> mode = OutputDB.buildModeDataModel(gamemode);
-			Map<String, Object> input = new HashMap<String, Object>();
+			Map<String, Object> input = new HashMap<>();
 			input.put("pcgen", OutputDB.getGlobal());
 			input.put("pc", ObjectWrapper.DEFAULT_WRAPPER.wrap(pc));
 			input.put("gamemode", mode);
@@ -348,17 +340,11 @@ public final class ExportHandler
 			// Process the template
 			template.process(input, outputWriter);
 		}
-		catch (IOException exc)
+		catch (IOException | TemplateException exc)
 		{
 			String message = "Error exporting character using template " + templateFile;
 			Logging.errorPrint(message, exc);
-			throw new ExportException(exc, message + " : " + exc.getLocalizedMessage());
-		}
-		catch (TemplateException e)
-		{
-			String message = "Error exporting character using template " + templateFile;
-			Logging.errorPrint(message, e);
-			throw new ExportException(e, message + " : " + e.getLocalizedMessage());
+			throw new ExportException(message + " : " + exc.getLocalizedMessage(), exc);
 		}
 		finally
 		{
@@ -384,7 +370,7 @@ public final class ExportHandler
 	 * @param br The BufferedReader containing the template
 	 * @throws IOException
 	 */
-	private StringBuilder prepareTemplate(BufferedReader br) throws IOException
+	private static StringBuilder prepareTemplate(BufferedReader br) throws IOException
 	{
 		// A pattern to replace || with | | to stop StringTokenizer from merging them
 		Pattern pat = Pattern.compile(Pattern.quote("||"));
@@ -527,7 +513,7 @@ public final class ExportHandler
 
 					// Either deal with an EQTYPE or a straight EQ token
 					EqToken token = null;
-					if (aString.indexOf("EQTYPE") > -1)
+					if (aString.contains("EQTYPE"))
 					{
 						token = new EqTypeToken();
 					}
@@ -628,11 +614,10 @@ public final class ExportHandler
 			{
 				return new Class[]{Token.class};
 			}
-
 		};
 	}
 	
-	private class VariableComparator implements Comparator<Object>
+	private static class VariableComparator implements Comparator<Object>, Serializable
 	{
 		@Override
 		public int compare(Object o1, Object o2)
@@ -654,12 +639,12 @@ public final class ExportHandler
 			}
 		}
 	}
-	
+
 	private String replaceVariables(String expr, Map<Object,Object> variables)
 	{
-		List<Object> keys = new ArrayList<Object>(variables.keySet());
-		Collections.sort(keys, new VariableComparator());
-		
+		List<Object> keys = new ArrayList<>(variables.keySet());
+		keys.sort(new VariableComparator());
+
 		for (final Object anObject : variables.keySet())
 		{
 			if (anObject != null)
@@ -897,7 +882,7 @@ public final class ExportHandler
 			{
 				return leftString.equals(rightString.substring(1));
 			}
-			return 0 <= leftString.toUpperCase().indexOf(rightString.toUpperCase());
+			return leftString.toUpperCase().contains(rightString.toUpperCase());
 		}
 	}
 
@@ -922,8 +907,8 @@ public final class ExportHandler
 	 * @param aPC PC containing values to help evaluate the expression
 	 * @return true if the expression was evaluated successfully, else false
 	 */
-	private boolean processSpellcasterExpression(String expr1,
-		PlayerCharacter aPC)
+	private static boolean processSpellcasterExpression(String expr1,
+	                                                    PlayerCharacter aPC)
 	{
 		final String fString = expr1.substring(12).trim();
 
@@ -1002,11 +987,10 @@ public final class ExportHandler
 	 * 
 	 * @param node The IIFNode to evaluate
 	 * @param output The output to write to (character sheet template)
-	 * @param fa The FileAccess
 	 * @param aPC The PC we are outputting
 	 */
 	private void evaluateIIF(final IIFNode node, final BufferedWriter output,
-		final FileAccess fa, final PlayerCharacter aPC)
+		final PlayerCharacter aPC)
 	{
 		// Comma is a delimiter for a higher-level parser, so 
 		// we'll use a semicolon and replace it with a comma for
@@ -1017,11 +1001,11 @@ public final class ExportHandler
 		// If we can evaluate the expression then evaluate its children
 		if (evaluateExpression(aString, aPC))
 		{
-			evaluateIIFChildren(node.trueChildren(), output, fa, aPC);
+			evaluateIIFChildren(node.trueChildren(), output, aPC);
 		}
 		else
 		{
-			evaluateIIFChildren(node.falseChildren(), output, fa, aPC);
+			evaluateIIFChildren(node.falseChildren(), output, aPC);
 		}
 	}
 
@@ -1030,11 +1014,10 @@ public final class ExportHandler
 	 * 
 	 * @param children The list of children for the IIF node
 	 * @param output The output to write to (filling in the character sheet template)
-	 * @param fa The file access helper
 	 * @param aPC THe PC to output
 	 */
 	private void evaluateIIFChildren(final List<?> children,
-		final BufferedWriter output, final FileAccess fa,
+		final BufferedWriter output,
 		final PlayerCharacter aPC)
 	{
 		for (Object aChild : children)
@@ -1068,7 +1051,7 @@ public final class ExportHandler
 				loopParameters.put(var + "!MAX", maxValue);
 				loopParameters.put(var + "!STEP", stepValue);
 
-				loopFOR(nextFor, minValue, maxValue, stepValue, output, fa, aPC);
+				loopFOR(nextFor, minValue, maxValue, stepValue, output, aPC);
 				loopParameters.remove(var + "!MIN");
 				loopParameters.remove(var + "!MAX");
 				loopParameters.remove(var + "!STEP");
@@ -1079,7 +1062,7 @@ public final class ExportHandler
 			// If child is an IIFNode, then evaluate that 
 			else if (aChild instanceof IIFNode)
 			{
-				evaluateIIF((IIFNode) aChild, output, fa, aPC);
+				evaluateIIF((IIFNode) aChild, output, aPC);
 			}
 			// Else it's something to be processed
 			else
@@ -1109,16 +1092,15 @@ public final class ExportHandler
 	 * @param end The ending value of the loop
 	 * @param step The amount by which the counter should be changed each iteration.
 	 * @param output The writer output is to be sent to.
-	 * @param fa The FileAccess instance to be used to manage the output.
 	 * @param aPC The character being processed.
 	 */
 	private void loopFOR(final FORNode node, final int start, final int end,
-		final int step, final BufferedWriter output, final FileAccess fa,
+		final int step, final BufferedWriter output,
 		final PlayerCharacter aPC)
 	{
 		for (int x = start; ((step < 0) ? x >= end : x <= end); x += step)
 		{
-			if (processLoop(node, output, fa, aPC, x))
+			if (processLoop(node, output, aPC, x))
 			{
 				break;
 			}
@@ -1130,13 +1112,12 @@ public final class ExportHandler
 	 * 
 	 * @param node The node being processed
 	 * @param output The writer output is to be sent to.
-	 * @param fa The FileAccess instance to be used to manage the output.
 	 * @param aPC The character being processed.
 	 * @param index The current value of the loop index
 	 * @return true if the loop should be stopped.
 	 */
 	private boolean processLoop(FORNode node, BufferedWriter output,
-		FileAccess fa, PlayerCharacter aPC, int index)
+		PlayerCharacter aPC, int index)
 	{
 		loopVariables.put(node.var(), index);
 		int numberOfChildrenNodes = node.children().size();
@@ -1167,7 +1148,7 @@ public final class ExportHandler
 				loopParameters.put(var + "!MAX", varMax);
 				loopParameters.put(var + "!STEP", varMax);
 				
-				loopFOR(nextFor, varMin, varMax, varStep, output, fa, aPC);
+				loopFOR(nextFor, varMin, varMax, varStep, output, aPC);
 				loopParameters.remove(var + "!MIN");
 				loopParameters.remove(var + "!MAX");
 				loopParameters.remove(var + "!STEP");
@@ -1177,7 +1158,7 @@ public final class ExportHandler
 			}
 			else if (node.children().get(y) instanceof IIFNode)
 			{
-				evaluateIIF((IIFNode) node.children().get(y), output, fa, aPC);
+				evaluateIIF((IIFNode) node.children().get(y), output, aPC);
 			}
 			else
 			{
@@ -1314,19 +1295,19 @@ public final class ExportHandler
 					}
 
 					// Set the next mode based on the mathematical sign
-					if ((str.length() > 0) && (str.charAt(i) == '+'))
+					if ((!str.isEmpty()) && (str.charAt(i) == '+'))
 					{
 						nextMode = ADDITION_MODE;
 					}
-					else if ((str.length() > 0) && (str.charAt(i) == '-'))
+					else if ((!str.isEmpty()) && (str.charAt(i) == '-'))
 					{
 						nextMode = SUBTRACTION_MODE;
 					}
-					else if ((str.length() > 0) && (str.charAt(i) == '*'))
+					else if ((!str.isEmpty()) && (str.charAt(i) == '*'))
 					{
 						nextMode = MULTIPLICATION_MODE;
 					}
-					else if ((str.length() > 0) && (str.charAt(i) == '/'))
+					else if ((!str.isEmpty()) && (str.charAt(i) == '/'))
 					{
 						nextMode = DIVISION_MODE;
 					}
@@ -1372,7 +1353,7 @@ public final class ExportHandler
 
 				try
 				{
-					if (valString.length() > 0)
+					if (!valString.isEmpty())
 					{
 						if (attackRoutine)
 						{
@@ -1449,22 +1430,22 @@ public final class ExportHandler
 
 								case SUBTRACTION_MODE:
 									total =
-											new Float(total.doubleValue()
-												- Double.parseDouble(valString));
+											(float) (total.doubleValue()
+													- Double.parseDouble(valString));
 
 									break;
 
 								case MULTIPLICATION_MODE:
 									total =
-											new Float(total.doubleValue()
-												* Double.parseDouble(valString));
+											(float) (total.doubleValue()
+													* Double.parseDouble(valString));
 
 									break;
 
 								case DIVISION_MODE:
 									total =
-											new Float(total.doubleValue()
-												/ Double.parseDouble(valString));
+											(float) (total.doubleValue()
+													/ Double.parseDouble(valString));
 
 									break;
 
@@ -1584,7 +1565,7 @@ public final class ExportHandler
 	private void outputNonToken(String nonToken, java.io.Writer output)
 	{
 		// Do nothing if something shouldn't be output.
-		if (canWrite && nonToken.length() != 0)
+		if (canWrite && !nonToken.isEmpty())
 		{
 			String finalToken = null;
 			// If we have manual white space then remove an tab characters
@@ -1674,8 +1655,8 @@ public final class ExportHandler
 		final String eTest = forVars.get(5);
 		boolean exists = false;
 
-		if (((eTest.length() > 0) && (eTest.charAt(0) == '1'))
-			|| ((eTest.length() > 0) && (eTest.charAt(0) == '2')))
+		if (((!eTest.isEmpty()) && (eTest.charAt(0) == '1'))
+			|| ((!eTest.isEmpty()) && (eTest.charAt(0) == '2')))
 		{
 			exists = true;
 		}
@@ -1729,18 +1710,18 @@ public final class ExportHandler
 	public static List<String> getParameters(String forToken)
 	{
 		String splitStr[] = forToken.split(",");
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		StringBuilder buf = new StringBuilder();
 		boolean inFormula = false;
 		for (String string : splitStr)
 		{
-			if (string.indexOf("(") >= 0
+			if (string.contains("(")
 				&& (string.indexOf(")") < string.indexOf("(")))
 			{
 				inFormula = true;
 				buf.append(string);
 			}
-			else if (inFormula && string.indexOf(")") >= 0)
+			else if (inFormula && string.contains(")"))
 			{
 				inFormula = false;
 				buf.append(",");
@@ -1892,7 +1873,7 @@ public final class ExportHandler
 		int lastIndex = aLine.lastIndexOf('|');
 
 		// If there are no pipes and it's a non empty string, just output the fixed text
-		if (lastIndex < 0 && aLine.length() > 0)
+		if (lastIndex < 0 && !aLine.isEmpty())
 		{
 			outputNonToken(aLine, output);
 		}
@@ -2108,11 +2089,11 @@ public final class ExportHandler
 	{
 		// If we 'cannot write' and the string is non-empty, non-filter token then 
 		// there is nothing to replace so return 0
-		if (!canWrite && (aString.length() > 0) && (aString.charAt(0) != '%'))
+		if (!canWrite && (!aString.isEmpty()) && (aString.charAt(0) != '%'))
 		{
 			return true;
 		}
-		if (aString.length() == 0)
+		if (aString.isEmpty())
 		{
 			return true;
 		}
@@ -2127,7 +2108,7 @@ public final class ExportHandler
 	 */
 	private boolean isFilterToken(String aString)
 	{
-		if ((aString.length() > 0) && (aString.charAt(0) == '%')
+		if ((!aString.isEmpty()) && (aString.charAt(0) == '%')
 			&& (aString.length() > 1) && (aString.lastIndexOf('<') == -1)
 			&& (aString.lastIndexOf('>') == -1))
 		{
@@ -2175,10 +2156,10 @@ public final class ExportHandler
 	private boolean containsMathematicalToken(String testString)
 	{
 		if ((testString.indexOf('+') >= 0) || (testString.indexOf('-') >= 0)
-			|| (testString.indexOf(".INTVAL") >= 0)
-			|| (testString.indexOf(".SIGN") >= 0)
-			|| (testString.indexOf(".NOZERO") >= 0)
-			|| (testString.indexOf(".TRUNC") >= 0)
+			|| (testString.contains(".INTVAL"))
+			|| (testString.contains(".SIGN"))
+			|| (testString.contains(".NOZERO"))
+			|| (testString.contains(".TRUNC"))
 			|| (testString.indexOf('*') >= 0) || (testString.indexOf('/') >= 0))
 		{
 			return true;
@@ -2304,7 +2285,7 @@ public final class ExportHandler
 			// New token syntax |%TEMPLATE.x| instead of |%TEMPLATEx|
 			final StringTokenizer aTok =
 					new StringTokenizer(aString.substring(1), ".");
-			final List<PCTemplate> tList = new ArrayList<PCTemplate>(aPC.getTemplateSet());
+			final List<PCTemplate> tList = new ArrayList<>(aPC.getTemplateSet());
 			String fString = aTok.nextToken();
 			final int index;
 
@@ -2365,7 +2346,7 @@ public final class ExportHandler
 		// Filter out FOLLOWERTYPE.
 		if (aString.substring(1).startsWith("FOLLOWERTYPE."))
 		{
-			List<Follower> aList = new ArrayList<Follower>();
+			List<Follower> aList = new ArrayList<>();
 
 			for (Follower follower : aPC.getFollowerList())
 			{
@@ -2431,7 +2412,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (catchPhrase.trim().length() == 0)
+			else if (catchPhrase.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2446,7 +2427,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (location.trim().length() == 0)
+			else if (location.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2461,7 +2442,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (residence.trim().length() == 0)
+			else if (residence.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2476,7 +2457,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (phobias.trim().length() == 0)
+			else if (phobias.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2491,7 +2472,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (interests.trim().length() == 0)
+			else if (interests.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2506,7 +2487,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (speechTendency.trim().length() == 0)
+			else if (speechTendency.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2521,7 +2502,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (trait1.trim().length() == 0)
+			else if (trait1.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2536,7 +2517,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (trait2.trim().length() == 0)
+			else if (trait2.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2550,7 +2531,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if ((aPC.getSafeStringFor(PCStringKey.ASSETS)).trim().length() == 0)
+			else if ((aPC.getSafeStringFor(PCStringKey.ASSETS)).trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2565,7 +2546,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (aPC.getSafeStringFor(PCStringKey.COMPANIONS).trim().length() == 0)
+			else if (aPC.getSafeStringFor(PCStringKey.COMPANIONS).trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2579,7 +2560,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (aPC.getSafeStringFor(PCStringKey.MAGIC).trim().length() == 0)
+			else if (aPC.getSafeStringFor(PCStringKey.MAGIC).trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2594,7 +2575,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (description.trim().length() == 0)
+			else if (description.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2609,7 +2590,7 @@ public final class ExportHandler
 			{
 				canWrite = false;
 			}
-			else if (bio.trim().length() == 0)
+			else if (bio.trim().isEmpty())
 			{
 				canWrite = false;
 			}
@@ -2661,11 +2642,11 @@ public final class ExportHandler
 			aTok.nextToken(); // ARMOR
 
 			String fString = aTok.nextToken();
-			final Collection<Equipment> aArrayList = new ArrayList<Equipment>();
+			final Collection<Equipment> aArrayList = new ArrayList<>();
 
 			for (Equipment eq : aPC.getEquipmentListInOutputOrder())
 			{
-				if (eq.hasBonusWithInfo(aPC, "AC")
+				if (eq.altersAC(aPC)
 					&& (!eq.isArmor() && !eq.isShield()))
 				{
 					aArrayList.add(eq);
@@ -3331,7 +3312,7 @@ public final class ExportHandler
 			FileAccess.write(output, tokenizedString[i]);
 		}
 
-		if (remainder.length() > 0)
+		if (!remainder.isEmpty())
 		{
 			Logging.errorPrint("OIF: extra characters on line: " + remainder);
 			FileAccess.write(output, remainder);
@@ -3727,7 +3708,8 @@ public final class ExportHandler
 			// terminate after printing one character. 
 			boolean breakloop = (forParser.existsOnly() && (currPC == null));
 
-			if (++x == forParser.step() || breakloop)
+			++x;
+			if (x == forParser.step() || breakloop)
 			{
 				x = 0;
 				FileAccess.write(out, forParser.endOfLine());
@@ -3749,7 +3731,7 @@ public final class ExportHandler
 	/**
 	 * @param canWrite The canWrite flag to set.
 	 */
-	public final void setCanWrite(boolean canWrite)
+	public void setCanWrite(boolean canWrite)
 	{
 		this.canWrite = canWrite;
 	}
@@ -3757,7 +3739,7 @@ public final class ExportHandler
 	/**
 	 * @return Returns the checkBefore flag.
 	 */
-	public final boolean getCheckBefore()
+	public boolean getCheckBefore()
 	{
 		return checkBefore;
 	}
@@ -3765,7 +3747,7 @@ public final class ExportHandler
 	/**
 	 * @return Returns the inLabel flag.
 	 */
-	public final boolean getInLabel()
+	public boolean getInLabel()
 	{
 		return inLabel;
 	}
@@ -3773,7 +3755,7 @@ public final class ExportHandler
 	/**
 	 * @return Returns the existsOnly flag.
 	 */
-	public final boolean getExistsOnly()
+	public boolean getExistsOnly()
 	{
 		return existsOnly;
 	}
@@ -3781,7 +3763,7 @@ public final class ExportHandler
 	/**
 	 * @param noMoreItems The noMoreItems flag to set.
 	 */
-	public final void setNoMoreItems(boolean noMoreItems)
+	public void setNoMoreItems(boolean noMoreItems)
 	{
 		this.noMoreItems = noMoreItems;
 	}
@@ -3789,7 +3771,7 @@ public final class ExportHandler
 	/**
 	 * @return Returns the manualWhitespace flag.
 	 */
-	public final boolean isManualWhitespace()
+	public boolean isManualWhitespace()
 	{
 		return manualWhitespace;
 	}
@@ -3797,7 +3779,7 @@ public final class ExportHandler
 	/**
 	 * @param manualWhitespace Set the manualWhitespace flag.
 	 */
-	public final void setManualWhitespace(boolean manualWhitespace)
+	public void setManualWhitespace(boolean manualWhitespace)
 	{
 		this.manualWhitespace = manualWhitespace;
 	}
@@ -3833,10 +3815,8 @@ public final class ExportHandler
 	 */
 
 	/**
-	 * <code>PStringTokenizer</code>
+	 * {@code PStringTokenizer}
 	 *
-	 * @author Bryan McRoberts <merton_monk@users.sourceforge.net>
-	 * @version $Revision$
 	 */
 	private static final class PStringTokenizer
 	{
@@ -3860,7 +3840,7 @@ public final class ExportHandler
 		 */
 		public boolean hasMoreTokens()
 		{
-			return (_forThisString.length() > 0);
+			return (!_forThisString.isEmpty());
 		}
 
 		/**
@@ -3926,7 +3906,7 @@ public final class ExportHandler
 
 		private final boolean existsOnly;
 
-		PartyForParser(String aString, final Integer numOfPCs)
+		private PartyForParser(String aString, final Integer numOfPCs)
 		{
 			pTok =
 					new PStringTokenizer(aString.substring(4), ",", "\\\\",
@@ -3976,22 +3956,22 @@ public final class ExportHandler
 			return cStep;
 		}
 
-		public String tokenString()
+		private String tokenString()
 		{
 			return tokenString;
 		}
 
-		public String startOfLine()
+		private String startOfLine()
 		{
 			return stringForStartOfLine;
 		}
 
-		public String endOfLine()
+		private String endOfLine()
 		{
 			return stringForEndOfLine;
 		}
 
-		public boolean existsOnly()
+		private boolean existsOnly()
 		{
 			return existsOnly;
 		}
